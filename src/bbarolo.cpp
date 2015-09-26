@@ -129,11 +129,11 @@ int main (int argc, char *argv[]) {
 		if (par->getflagGalFit()) {
             Model::Galfit<float> *fit = new Model::Galfit<float>(c);
             fit->galfit();
-            if (par->getNORM()=="AZIM") fit->writeModel_azim();
+            //if (par->getNORM()=="AZIM") fit->writeModel_azim();
             if (par->getTwoStage()) {
                 fit->SecondStage();
-                fit->writeModel_norm();
-            } else if (!par->getTwoStage() && par->getNORM()!="AZIM") fit->writeModel_norm();
+                //fit->writeModel_norm();
+            } //else if (!par->getTwoStage() && par->getNORM()!="AZIM") fit->writeModel_norm();
 			delete fit;
 		}
 		///----------------------

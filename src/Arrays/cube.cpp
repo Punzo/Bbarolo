@@ -389,7 +389,7 @@ void Cube<T>::setCubeStats() {
     
     stats.setRobust(par.getFlagRobustStats());
     bool *blanks = new bool[numPix];
-    for (int i=0; i<numPix; i++) blanks[i] = isBlank(array[i]) ? false : true;
+    for (int i=0; i<numPix; i++) blanks[i] = true;
 
     stats.calculate(array,numPix,blanks);
 	stats.setThresholdSNR(par.getCut());
