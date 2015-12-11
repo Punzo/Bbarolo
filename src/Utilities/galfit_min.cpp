@@ -691,9 +691,9 @@ double Galfit<T>::normalize (Rings<T> *dring, T *array, int *bhi, int *blo) {
 }
 template double Galfit<float>::normalize(Rings<float>*,float*,int*,int*);
 template double Galfit<double>::normalize(Rings<double>*,double*,int*,int*);
-//*/
+*/
 
-/*
+///*
 //ANELLO 3D
 template <class T>
 double Galfit<T>::normalize (Rings<T> *dring, T *array, int *bhi, int *blo) {
@@ -796,7 +796,7 @@ template double Galfit<float>::normalize(Rings<float>*,float*,int*,int*);
 template double Galfit<double>::normalize(Rings<double>*,double*,int*,int*);
 //*/
 
-///* anello 3D
+/* anello 3D
 template <class T>
 double Galfit<T>::residuals (Rings<T> *dring, T *array, int *bhi, int *blo) {
 
@@ -925,7 +925,7 @@ double Galfit<T>::residuals (Rings<T> *dring, T *array, int *bhi, int *blo) {
 }
 template double Galfit<float>::residuals(Rings<float>*,float*,int*,int*);
 template double Galfit<double>::residuals(Rings<double>*,double*,int*,int*);
-//*/
+*/
 ///*
 template <class T>
 double Galfit<T>::residuals (Rings<T> *dring, T *array, int *bhi, int *blo) {
