@@ -26,8 +26,8 @@
 #include <algorithm>
 #include <cmath>
 #include <cfloat>
-#include "../Arrays/cube.hh"
-#include "../Arrays/image.hh"
+#include "cube.hh"
+#include "image.hh"
 #include "galfit.hh"
 #include "galmod.hh"
 #include "utils.hh"
@@ -82,7 +82,7 @@ void Galfit<T>::writeModel (std::string normtype) {
     // Calculate the total flux inside last ring in data
     T *ringreg = getFinalRingsRegion();
     float totflux_data=0, totflux_model=0;
-    for (size_t i=0; i<in->DimX()*in->DimY(); i++) {
+    for (size_t i=0; i< (size_t)in->DimX()*in->DimY(); i++) {
         if (!isNaN(ringreg[i]) && !isNaN(totalmap->Array(i))) {
             totflux_data += totalmap->Array(i);
         }
@@ -120,7 +120,7 @@ void Galfit<T>::writeModel (std::string normtype) {
 
     if (normtype=="AZIM" || normtype=="BOTH") {
         double profmin=FLT_MAX;
-        for (size_t i=0; i<outr->nr; i++) {
+        for (size_t i=0; i< (size_t)outr->nr; i++) {
             double mean = ell.getMean(i);
             if (!isNaN(mean) && profmin>mean && mean>0) profmin = mean;
         }
@@ -133,7 +133,7 @@ void Galfit<T>::writeModel (std::string normtype) {
             profmin /= 10;
             factor /= 10;
         }
-        for (size_t i=0; i<outr->nr; i++) {
+        for (size_t i=0; i< (size_t)outr->nr; i++) {
             outr->dens[i]=factor*fabs(ell.getMean(i))*1E20;
             if (outr->dens[i]==0) outr->dens[i]=profmin*1E20;
         }
@@ -152,9 +152,9 @@ void Galfit<T>::writeModel (std::string normtype) {
         // thus just need to rescale the model to the total flux of data inside last ring.
 
         // Calculate total flux of model within last ring
-        for (size_t i=0; i<in->DimX()*in->DimY(); i++) {
+        for (size_t i=0; i< (size_t)in->DimX()*in->DimY(); i++) {
             if (!isNaN(ringreg[i])) {
-                for (size_t z=0; z<in->DimZ(); z++)
+                for (size_t z=0; z< (size_t)in->DimZ(); z++)
                     totflux_model += outarray[i+z*in->DimY()*in->DimX()];
             }
         }
@@ -817,10 +817,10 @@ int Galfit<T>::plotAll_Python() {
     int xmax=in->DimX()-1, ymax=in->DimY()-1, zmax=in->DimZ()-1;
     float vsys_av = findMedian(&outr->vsys[0],outr->nr);
 
-    int free[nfree];
+    /*int free[nfree];
     for (int nm=0, k=0; nm<MAXPAR; nm++) {
         if (mpar[nm]) free[k++]=nm;
-    }
+    }*/
 
     if (in->pars().getMASK()=="SEARCH") {
         if (in->pars().getFlagUserGrowthThreshold()) cont = in->pars().getGrowthThreshold();

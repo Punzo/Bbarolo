@@ -188,18 +188,18 @@ namespace PixelInfo
       // with the new pixel already existing in the Object2D
  
       // Remove that channel's information from the Object's information
-      xSum -= it->second.xSum;
-      ySum -= it->second.ySum;
-      zSum -= z*it->second.numPix;
-      numVox -= it->second.numPix;
+      xSum -= it->second.getXsum();
+      ySum -= it->second.getYsum();
+      zSum -= z*it->second.getSize();
+      numVox -= it->second.getSize();
 
       // Add the pixel
       it->second.addPixel(x,y);
     
-      numVox += it->second.numPix;
-      xSum += it->second.xSum;
-      ySum += it->second.ySum;
-      zSum += z*it->second.numPix;
+      numVox += it->second.getSize();
+      xSum += it->second.getXsum();
+      ySum += it->second.getYsum();
+      zSum += z*it->second.getSize();
       if(x<xmin) xmin = x;
       if(x>xmax) xmax = x;
       if(y<ymin) ymin = y;
@@ -239,42 +239,42 @@ namespace PixelInfo
     if(it == chanlist.end()) { // channel z is not already in object, so add it.
 		chanlist.insert(std::pair<long,Object2D<T> >(z,obj));
 		if(numVox == 0) { // if there are no other pixels, so initialise mins,maxs,sums
-			xmin = obj.xmin;
-			xmax = obj.xmax;
-			ymin = obj.ymin;
-			ymax = obj.ymax;
+            xmin = obj.getXmin();
+            xmax = obj.getXmax();
+            ymin = obj.getYmin();
+            ymax = obj.getYmax();
 			zmin = zmax = z;
-			xSum = obj.xSum;
-			ySum = obj.ySum;
+            xSum = obj.getXsum();
+            ySum = obj.getYsum();
 			zSum = z * obj.getSize();
 		}
 		else { // there are other pixels in other channels, so update mins, maxs, sums
-			if(obj.xmin<xmin) xmin = obj.xmin;
-			if(obj.xmax>xmax) xmax = obj.xmax;
-			if(obj.ymin<ymin) ymin = obj.ymin;
-			if(obj.ymax>ymax) ymax = obj.ymax;
+            if(obj.getXmin()<xmin) xmin = obj.getXmin();
+            if(obj.getXmax()>xmax) xmax = obj.getXmax();
+            if(obj.getYmin()<ymin) ymin = obj.getYmin();
+            if(obj.getYmax()>ymax) ymax = obj.getYmax();
 			if(z<zmin) zmin = z;
 			if(z>zmax) zmax = z;
-			xSum += obj.xSum;
-			ySum += obj.ySum;
+            xSum += obj.getXsum();
+            ySum += obj.getYsum();
 			zSum += z * obj.getSize();
 		}
 		numVox += obj.getSize();
     }
     else { // channel is already present, so need to combine objects.
-		xSum -= it->second.xSum;
-		ySum -= it->second.ySum;
+        xSum -= it->second.getXsum();
+        ySum -= it->second.getYsum();
 		zSum -= z*it->second.getSize();
 		numVox -= it->second.getSize();
 		it->second = it->second + obj;
-		xSum += it->second.xSum;
-		ySum += it->second.ySum;
+        xSum += it->second.getXsum();
+        ySum += it->second.getYsum();
 		zSum += z*it->second.getSize();
 		numVox += it->second.getSize();
-		if(obj.xmin<xmin) xmin = obj.xmin;
-		if(obj.xmax>xmax) xmax = obj.xmax;
-		if(obj.ymin<ymin) ymin = obj.ymin;
-		if(obj.ymax>ymax) ymax = obj.ymax;
+        if(obj.getXmin()<xmin) xmin = obj.getXmin();
+        if(obj.getXmax()>xmax) xmax = obj.getXmax();
+        if(obj.getYmin()<ymin) ymin = obj.getYmin();
+        if(obj.getYmax()>ymax) ymax = obj.getYmax();
     }
   }
   template void Object3D<short>::addChannel(const long&,Object2D<short>&);
@@ -334,13 +334,13 @@ namespace PixelInfo
 			ymax = it->second.getYmax();
 		}
 		else{
-			if(it->second.xmin<xmin) xmin = it->second.xmin;
-			if(it->second.xmax>xmax) xmax = it->second.xmax;
-			if(it->second.ymin<ymin) ymin = it->second.ymin;
-			if(it->second.ymax>ymax) ymax = it->second.ymax;
+            if(it->second.getXmin()<xmin) xmin = it->second.getXmin();
+            if(it->second.getXmax()>xmax) xmax = it->second.getXmax();
+            if(it->second.getYmin()<ymin) ymin = it->second.getYmin();
+            if(it->second.getYmax()>ymax) ymax = it->second.getYmax();
 		}
-		xSum += it->second.xSum;
-		ySum += it->second.ySum;
+        xSum += it->second.getXsum();
+        ySum += it->second.getYsum();
 		zSum += it->first * it->second.getSize();
 		numVox += it->second.getSize();
 	}
@@ -357,7 +357,7 @@ namespace PixelInfo
   void Object3D<T>::print(std::ostream& theStream) {
 	  
     for(typename std::map<long, Object2D<T> >::iterator it = chanlist.begin(); it!=chanlist.end();it++){
-		for(typename std::vector<Scan<T> >::iterator s=it->second.scanlist.begin();s!=it->second.scanlist.end();s++){
+        for(typename std::vector<Scan<T> >::iterator s=it->second.scanlist.begin();s!=it->second.scanlist.end();s++){
 			theStream << *s << "," << it->first << "\n";
 		}
 	}  
@@ -393,9 +393,9 @@ namespace PixelInfo
     long count = 0;
     for(typename std::map<long, Object2D<T> >::iterator it = chanlist.begin(); it!=chanlist.end();it++) {
 		long z = it->first;
-		for(typename std::vector<Scan<T> >::iterator s=it->second.scanlist.begin();s!=it->second.scanlist.end();s++) {
-			long y = s->getY();
-			for(long x=s->getX(); x<=s->getXmax(); x++) {
+        for(typename std::vector<Scan<T> >::iterator s=it->second.scanlist.begin();s!=it->second.scanlist.end();s++) {
+            long y = s->getY();
+            for(long x=s->getX(); x<=s->getXmax(); x++) {
 				voxList[count].setXYZF(x,y,z,0);
 				count++;
 			}
@@ -425,7 +425,7 @@ namespace PixelInfo
     long count = 0;
     for(typename std::map<long, Object2D<T> >::iterator it = chanlist.begin(); it!=chanlist.end();it++) {
 		long z = it->first;
-		for(typename std::vector<Scan<T> >::iterator s=it->second.scanlist.begin();s!=it->second.scanlist.end();s++){
+        for(typename std::vector<Scan<T> >::iterator s=it->second.scanlist.begin();s!=it->second.scanlist.end();s++){
 			long y = s->getY();
 			for(long x=s->getX(); x<=s->getXmax(); x++){
 				voxList[count].setXYZF(x,y,z,array[x+dim[0]*y+dim[0]*dim[1]*z]);

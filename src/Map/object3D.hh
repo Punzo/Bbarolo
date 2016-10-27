@@ -109,6 +109,6 @@ namespace PixelInfo
 
 }
 
-//#include "object3D.cpp"
+#include "object3D.tpp"
 
 #endif

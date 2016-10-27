@@ -26,8 +26,8 @@
 
 #include <iostream>
 #include "detection.hh"
-#include "../Arrays/cube.hh"
-#include "../Arrays/stats.hh"
+#include "cube.hh"
+#include "stats.hh"
 #include "voxel.hh"
 
 /// @brief A class to manage the growing of objects to a secondary
@@ -67,7 +67,6 @@ protected:
     T* itsFluxArray;                               		///< The location of the pixel values
 };
 
+#include "objectgrower.tpp"
 
-
-//#include "objectgrower.cpp"
 #endif

@@ -27,212 +27,221 @@
 #include <sys/time.h>
 #include <iomanip>
 #include <sys/stat.h>
-#include "./Arrays/param.hh"
-#include "./Arrays/cube.hh"
-#include "./Arrays/stats.hh"
-#include "./Utilities/moment.hh"
-#include "./Utilities/ringmodel.hh"
-#include "./Utilities/smooth3D.hh"
-#include "./Utilities/galfit.hh"
-#include "./Utilities/spacepar.hh"
-#include "./Utilities/utils.hh"
-#include "./Utilities/ellprof.hh"
-/*
-#include<signal.h>
-struct sigaction osa;
-void action_sigint(int sig_no)
-{
-    printf("\nI tap SIGINT and returns back \n");
-    sigaction(SIGINT,&osa,NULL);
-    kill(0,SIGINT);
-}
-*/
+#include "param.hh"
+#include "cube.hh"
+#include "stats.hh"
+#include "moment.hh"
+#include "ringmodel.hh"
+#include "smooth3D.hh"
+#include "galfit.hh"
+#include "spacepar.hh"
+#include "utils.hh"
+#include "ellprof.hh"
+
 int main (int argc, char *argv[]) {
 
-//    struct sigaction act;
-//    act.sa_handler = action_sigint;
-//    sigemptyset(&act.sa_mask);
-//    act.sa_flags = 0;
-//    sigaction(SIGINT, &act, 0);
-    
-    struct timeval begin, end;
-    gettimeofday(&begin, NULL);
+  struct timeval begin, end;
+  gettimeofday(&begin, NULL);
 
-    Param *par = new Param;
+  Param *par = new Param;
 
-	if (!par->getopts(argc, argv)) return EXIT_FAILURE;
-    if (par->getImageList()=="NONE") par->setImage(par->getImageFile());
-	std::cout << *par;
+  if (!par->getopts(argc, argv)) return EXIT_FAILURE;
+  if (par->getImageList()=="NONE") par->setImage(par->getImageFile());
+  std::cout << *par;
 
-	for (int im=0; im<par->getListSize(); im++) {
-		
-		if (par->getListSize()>1) {
-			std::cout << setfill('_') << std::endl;
-			std::cout << setw(70) << "" << std::endl << std::endl;
-			std::string s = "Working on "+ par->getImage(im)+" ";
-			std::cout << setfill(' ') << right << setw(70) << s;
-			std::cout << std::endl << left;
-			std::cout << std::endl << " File "<< im+1
-					  << " of " << par->getListSize()<<std::endl<<std::endl;
-		}
+  for (int im=0; im<par->getListSize(); im++)
+    {
+    if (par->getListSize()>1)
+      {
+      std::cout << setfill('_') << std::endl;
+      std::cout << setw(70) << "" << std::endl << std::endl;
+      std::string s = "Working on "+ par->getImage(im)+" ";
+      std::cout << setfill(' ') << right << setw(70) << s;
+      std::cout << std::endl << left;
+      std::cout << std::endl << " File "<< im+1
+                << " of " << par->getListSize()<<std::endl<<std::endl;
+      }
 	
-		par->setImageFile(par->getImage(im));
-		std::string fname = par->getImage(im);
-		int found = fname.find("[");
-		if (found>=0) fname.erase(found, fname.size()-found); 
-		if (!fexists(fname)) {
-			std::cout << "\nError reading " << par->getImage(im) 
-				  	  << " : the file doesn't exist!\n";
-			if(par->getListSize()-im>1) std::cout << "Skipping to next file...\n";
-            else {std::cout << "Exiting ...\n\n"; return EXIT_FAILURE;}
-			continue;
-		}
-
-        Cube<float> *c = new Cube<float>;
-		c->saveParam(*par);
-		
-		if (!c->readCube(par->getImageFile())) {
-			std::cout << par->getImageFile() << " is not a readable FITS image!\n";
-			if(par->getListSize()-im>1) std::cout << "Skipping to next file...\n";
-			else std::cout << "Exiting ...\n\n";
-			delete c;
-			continue;
+    par->setImageFile(par->getImage(im));
+    std::string fname = par->getImage(im);
+    int found = fname.find("[");
+    if (found>=0) fname.erase(found, fname.size()-found);
+    if (!fexists(fname))
+      {
+      std::cout << "\nError reading " << par->getImage(im)
+                << " : the file doesn't exist!\n";
+      if(par->getListSize()-im>1) std::cout << "Skipping to next file...\n";
+      else
+        {
+        std::cout << "Exiting ...\n\n";
+        return EXIT_FAILURE;
+        }
+      continue;
         }
 
-        std::string outfolder = c->pars().getOutfolder();
-        if (outfolder=="") {
-            std::string path = get_currentpath();
-            outfolder = path+"/output/"+c->Head().Obname()+"/";
-            c->pars().setOutfolder(outfolder);
+    Cube<float> *c = new Cube<float>;
+    c->saveParam(*par);
+
+    if (!c->readCube(par->getImageFile()))
+      {
+      std::cout << par->getImageFile() << " is not a readable FITS image!\n";
+      if(par->getListSize()-im>1) std::cout << "Skipping to next file...\n";
+      else std::cout << "Exiting ...\n\n";
+      delete c;
+      continue;
+      }
+
+    std::string outfolder = c->pars().getOutfolder();
+    if (outfolder=="")
+      {
+      std::string path = get_currentpath();
+      outfolder = path+"/output/"+c->Head().Obname()+"/";
+      c->pars().setOutfolder(outfolder);
+      }
+
+    mkdirp(outfolder.c_str());
+
+    if (par->getCheckCh()) c->CheckChannels();
+
+    if (par->getflagSmooth())
+      {
+      Smooth3D<float> *sm = new Smooth3D<float>;
+      sm->cubesmooth(c);
+      sm->fitswrite();
+      delete sm;
+      }
+
+    ///<<<<< Searching stuff
+    if (par->getSearch())
+      {
+      c->Search();
+      c->plotDetections();
+      std::ofstream detout((outfolder+"detections.txt").c_str());
+      c->printDetections(detout);
+      }
+
+    ///<<<<< Cube Fitting
+    if (par->getflagGalFit())
+      {
+      Model::Galfit<float> *fit = new Model::Galfit<float>(c);
+      int status= 0;
+      fit->galfit(&status);
+      if (par->getTwoStage()) fit->SecondStage(&status);
+      if (par->getFlagDebug()) fit->writeModel("BOTH");
+      else fit->writeModel(par->getNORM());
+      delete fit;
+      }
+
+    ///<<<<< Cube Model
+    if (par->getflagGalMod())
+      {
+      Model::Galfit<float> *fit = new Model::Galfit<float>(c);
+      if (par->getFlagDebug()) fit->writeModel("BOTH");
+      else fit->writeModel(par->getNORM());
+      delete fit;
+      }
+
+    ///----------------------
+    if (par->getflagSpace())
+      {
+      Spacepar<float> *sp = new Spacepar<float>(c);
+      sp->calculate();
+      delete sp;
+      }
+
+    ///<<<<<<< 2D Tilted-Ring Model
+    if (par->getFlagRing())
+      {
+      Ringmodel *trmod = new Ringmodel(c);
+      trmod->ringfit();
+      trmod->printfinal(std::cout);
+      delete trmod;
+      }
+
+    ///----------------------
+    if (par->getMaps())
+      {
+      MomentMap<float> map;
+      map.input(c);
+      std::string s = outfolder+c->Head().Name();
+      if (par->getTotalMap())
+        {
+        map.ZeroMoment(par->getBlankCube());
+        map.fitswrite_2d((s+"map_0th.fits").c_str());
         }
-        mkdirp(outfolder.c_str());
-
-		if (par->getCheckCh()) c->CheckChannels();
-
-		if (par->getflagSmooth()) {
-            Smooth3D<float> *sm = new Smooth3D<float>;
-			sm->cubesmooth(c);
-			sm->fitswrite();
-			delete sm;
-		}
-	
-		///<<<<< Searching stuff
-		if (par->getSearch()) {			
-			c->Search();
-			c->plotDetections();
-            std::ofstream detout((outfolder+"detections.txt").c_str());
-            c->printDetections(detout);
+      if (par->getVelMap())
+        {
+        map.FirstMoment(par->getBlankCube());
+        map.fitswrite_2d((s+"map_1st.fits").c_str());
         }
-	
-		///<<<<< Cube Fitting
-		if (par->getflagGalFit()) {
-            Model::Galfit<float> *fit = new Model::Galfit<float>(c);
-            fit->galfit();
-            if (par->getTwoStage()) fit->SecondStage();
-            if (par->getFlagDebug()) fit->writeModel("BOTH");
-            else fit->writeModel(par->getNORM());
-
-
-			delete fit;
-		}
-		///----------------------
-	
-		///<<<<< Cube Model
-		if (par->getflagGalMod()) {
-            Model::Galfit<float> *fit = new Model::Galfit<float>(c);
-            if (par->getFlagDebug()) fit->writeModel("BOTH");
-            else fit->writeModel(par->getNORM());
-			delete fit;
-		}
-		///----------------------
-
-		if (par->getflagSpace()) {
-            Spacepar<float> *sp = new Spacepar<float>(c);
-			sp->calculate();
-			delete sp;
+      if (par->getDispMap())
+        {
+        map.SecondMoment(par->getBlankCube());
+        map.fitswrite_2d((s+"map_2nd.fits").c_str());
         }
+      }
 
-        //<<<<<<< 2D Tilted-Ring Model
-        if (par->getFlagRing()) {
-            Ringmodel *trmod = new Ringmodel(c);
-            trmod->ringfit();
-            trmod->printfinal(std::cout);
-            delete trmod;
+    ///----------------------
+    if (par->getGlobProf())
+      {
+      Image2D<float> spectrum;
+      spectrum.extractGlobalSpectrum(c);
+      std::string specfname = c->pars().getOutfolder()+"spectrum.txt";
+      std::ofstream specfile; specfile.open(specfname.c_str());
+      for (int i=0; i<c->DimZ(); i++)
+        {
+        specfile << c->getZphys(i) << " " << spectrum.Array(i) << std::endl;
         }
-        ///----------------------
+      }
 
-		if (par->getMaps()) {
-            MomentMap<float> map;
-			map.input(c);
-			std::string s = outfolder+c->Head().Name();
-			if (par->getTotalMap()) {
-				map.ZeroMoment(par->getBlankCube());
-				map.fitswrite_2d((s+"map_0th.fits").c_str());
-			}
-			if (par->getVelMap()) {
-				map.FirstMoment(par->getBlankCube());
-				map.fitswrite_2d((s+"map_1st.fits").c_str());
-			}
-			if (par->getDispMap()) {
-				map.SecondMoment(par->getBlankCube());
-				map.fitswrite_2d((s+"map_2nd.fits").c_str());
-			}
-		}	
+    if (par->getflagReduce() && !par->getflagSmooth())
+      {
+      std::string name = c->pars().getOutfolder()+c->Head().Name()+"_red.fits";
+      Cube<float> *red = c->Reduce(floor(c->pars().getFactor()));
+      red->fitswrite_3d(name.c_str(),true);
+      delete red;
+      }
 		
-		if (par->getGlobProf()) {
-            Image2D<float> spectrum;
-			spectrum.extractGlobalSpectrum(c);
-			std::string specfname = c->pars().getOutfolder()+"spectrum.txt";
-			std::ofstream specfile; specfile.open(specfname.c_str());
-			for (int i=0; i<c->DimZ(); i++) 
-				specfile << c->getZphys(i) << " " << spectrum.Array(i) << std::endl;
-		}
 		
-		if (par->getflagReduce() && !par->getflagSmooth()) {
-			std::string name = c->pars().getOutfolder()+c->Head().Name()+"_red.fits";
-            Cube<float> *red = c->Reduce(floor(c->pars().getFactor()));
-			red->fitswrite_3d(name.c_str(),true);
-			delete red;
-		}
-		
-		
-        // Giusto per prendere i PV lungo angoli
-        if (par->getFlagPV()) {
-            float xpos = par->getXPOS_PV();
-            float ypos = par->getYPOS_PV();
-            float ang = par->getPA_PV();
-            std::string s = outfolder+c->Head().Name();
-            Image2D<float> *pv = PositionVelocity(c,xpos,ypos,ang);
-            pv->fitswrite_2d((s+"pv_"+to_string(ang,0)+".fits").c_str());
-            delete pv;
+    ///<<<<<<< P-V
+    if (par->getFlagPV())
+      {
+      float xpos = par->getXPOS_PV();
+      float ypos = par->getYPOS_PV();
+      float ang = par->getPA_PV();
+      std::string s = outfolder+c->Head().Name();
+      Image2D<float> *pv = PositionVelocity(c,xpos,ypos,ang);
+      pv->fitswrite_2d((s+"pv_"+to_string(ang,0)+".fits").c_str());
+      delete pv;
+      }
+
+    if (par->getFlagSlitfit())
+      {
+      Model::Galfit<float> *sfit = new Model::Galfit<float>;
+      sfit->slit_init(c);
+      int status = 0;
+      sfit->galfit(&status);
+      if (par->getTwoStage())
+        {
+        sfit->SecondStage(&status);
+        sfit->writeModel_slit();
         }
-		
-
-
-        if (par->getFlagSlitfit()) {
-            Model::Galfit<float> *sfit = new Model::Galfit<float>;
-            sfit->slit_init(c);
-            sfit->galfit();
-            if (par->getTwoStage()) {
-                sfit->SecondStage();
-                sfit->writeModel_slit();
-            }
-            else sfit->writeModel_slit();
+      else
+        {
+        sfit->writeModel_slit();
         }
+      }
 
-
-		delete c;
+    delete c;
+    }
 	
-	}
+  delete par;
 	
-	delete par;
-	
+  gettimeofday(&end, NULL);
+  double time = (end.tv_sec - begin.tv_sec) + ((end.tv_usec - begin.tv_usec)/1000000.0);
+  std::cout << "\nExecution time: " << int(time/60)
+            << " min and " << int(time)%60 << " sec.\n";
 
-        gettimeofday(&end, NULL);
-        double time = (end.tv_sec - begin.tv_sec) + ((end.tv_usec - begin.tv_usec)/1000000.0);
-	std::cout << "\nExecution time: " << int(time/60) 
-	   	  	  << " min and " << int(time)%60 << " sec.\n";
-
-	return EXIT_SUCCESS;
+  return EXIT_SUCCESS;
 	
 }

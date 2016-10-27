@@ -27,11 +27,13 @@
 #include <cctype>
 #include <vector>
 #include <fitsio.h>
-#include <wcslib/wcs.h>
-#include <wcslib/wcsunits.h>
-#include <wcslib/wcshdr.h>
-#include <wcslib/wcsfix.h>
+#include <wcs.h>
+#include <wcsunits.h>
+#include <wcshdr.h>
+#include <wcsfix.h>
 #include "header.hh"
+
+using namespace std;
 
 Header::Header () {
 	
@@ -45,6 +47,15 @@ Header::Header () {
     warning = true;
     wcs = new struct wcsprm;
     wcs->flag=-1;
+    wcserr_enable(1);
+    int WCSStatus =0;
+    if((WCSStatus = wcsini(1,0,wcs)))
+      {
+      cout<<"wcsini ERROR "<<WCSStatus<<":\n"<<
+                      "Message from "<<wcs->err->function<<
+                      "at line "<<wcs->err->line_no<<" of file "<<wcs->err->file<<
+                      ": \n"<<wcs->err->msg<<"\n"<<endl;
+      }
     wcsIsGood=false;
     nwcs=0;
 }
@@ -114,7 +125,7 @@ Header& Header::operator=(const Header& h) {
 	this->beamArea	= h.beamArea;
 	this->epoch		= h.epoch;
 	this->freq0		= h.freq0;
-        this->wave0		= h.wave0;
+    this->wave0		= h.wave0;
 	this->fitsname 	= h.fitsname;
 	this->bunit		= h.bunit;	
 	this->btype		= h.btype;
@@ -124,7 +135,7 @@ Header& Header::operator=(const Header& h) {
 	this->drval3	= h.drval3;
 	this->datamin	= h.datamin;
 	this->datamax	= h.datamax;
-        this->warning   = h.warning;
+    this->warning   = h.warning;
 	
 
     this->wcs = new struct wcsprm;
@@ -544,7 +555,37 @@ bool Header::header_read (std::string fname) {
 
     return true;
 
-}	
+}
+
+bool Header::saveWCSStruct(wcsprm *wcstemp)
+{
+    if(!wcstemp)
+      {
+      cout<<"wcsprm is invalid!"<<endl;
+      return false;
+      }
+
+    wcs->flag=-1;
+    int WCSStatus = 0;
+    if ((WCSStatus = wcscopy(1, wcstemp, wcs)))
+      {
+      cout<<"wcscopy ERROR "<<WCSStatus<<":\n"<<
+                    "Message from "<<wcs->err->function<<
+                    "at line "<<wcs->err->line_no<<" of file "<<wcs->err->file<<
+                    ": \n"<<wcs->err->msg<<"\n"<<endl;
+      return false;
+      }
+    if ((WCSStatus = wcsset (wcs)))
+      {
+      cout<<"wcsset ERROR "<<WCSStatus<<":\n"<<
+                    "Message from "<<wcs->err->function<<
+                    "at line "<<wcs->err->line_no<<" of file "<<wcs->err->file<<
+                    ": \n"<<wcs->err->msg<<"\n"<<endl;
+      return false;
+      }
+
+    return true;
+}
 
 
 void Header::headwrite_3d (fitsfile *fptr, bool fullHead) {

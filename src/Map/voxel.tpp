@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// voxel.cpp: Member functions for the Voxel class and the Pixel class
+// voxel.tpp: Member functions for the Voxel class and the Pixel class
 // -----------------------------------------------------------------------
 
 /*-----------------------------------------------------------------------
@@ -127,8 +127,8 @@ namespace PixelInfo
   
   
   template <class T>
-  Pixel<T>::Pixel(const Pixel& p) {
-   
+  Pixel<T>::Pixel(const Pixel& p) : Voxel<T>::Voxel(p)
+  {
     operator=(p);
   }
   

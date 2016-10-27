@@ -386,12 +386,12 @@ void bezier_interp(std::vector<T> x_in,  std::vector<T> y_in,
     if (np==-1) np=x_in.size();
     if (ns==-1) ns=np;
 
-    if (np>x_in.size()-fp) {
+    if (np>(signed int)x_in.size()-fp) {
         std::cout << "BEZIER Error: number of datapoints is greater than the size of input vectors.\n";
         exit(EXIT_FAILURE);
     }
 
-    if (x_out.size()!=ns || y_out.size()!=ns) {
+    if ((signed int) x_out.size()!=ns || (signed int) y_out.size()!=ns) {
         std::cout << "BEZIER Error: The dimensions of output bezier vector must be = n_samples.\n";
         exit(EXIT_FAILURE);
     }
@@ -400,7 +400,7 @@ void bezier_interp(std::vector<T> x_in,  std::vector<T> y_in,
 
     for (int i=0; i<ns; i++) {
            double sr = (double)i/(double)(ns-1);
-           unsigned int n = np-1;
+           int n = np-1;
            float px=0., py=0.;
 
            if (sr == 0.0) {
@@ -430,20 +430,4 @@ void bezier_interp(std::vector<T> x_in,  std::vector<T> y_in,
 }
 template void bezier_interp(std::vector<float>,std::vector<float>,std::vector<float>&, std::vector<float>&,int,int,int);
 template void bezier_interp(std::vector<double>,std::vector<double>,std::vector<double>&, std::vector<double>&,int,int,int);
-
-
-double *cp_binomial(int points) {
-
-    int e = points;
-    int n = points-1;
-    double *coeff = new double[e];
-    e = n/2;
-    coeff[0] = 0.0;
-    for (int k = 0; k<e; k++)
-        coeff[k+1] = coeff[k] + log(((double)(n-k))/((double)(k+1)));
-
-    for (int k=n; k>=e; k--) coeff[k] = coeff[n-k];
-
-    return (coeff);
-}
 

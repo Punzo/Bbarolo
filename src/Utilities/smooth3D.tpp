@@ -24,12 +24,15 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
-#include "../Arrays/cube.hh"
+#include "cube.hh"
 #include "smooth3D.hh"
 #include "utils.hh"
 #include "progressbar.hh"
-#include "conv2D.hh"
+#include "BbaroloConfigure.h"
 
+#ifdef BBAROLO_SUPPORT_FFTW3
+#include "conv2D.hh"
+#endif
 #define BLANK 0xff800000	
 
 template <class T>
@@ -315,9 +318,12 @@ void Smooth3D<T>::smooth(Cube<T> *c, int *Bhi, int *Blo, Beam Oldbeam, Beam Newb
 
 
 	bool allOK;
-
+#ifdef BBAROLO_SUPPORT_FFTW3
 	if (fft) allOK = calculatefft(c->Array(), array);
 	else allOK = calculate(c->Array(), array);
+#else
+    allOK = calculate(c->Array(), array);
+#endif
 	if (!allOK) {
 		std::cout << "SMOOTH error: cannot smooth data\n";
 		std::terminate();
@@ -367,8 +373,13 @@ bool Smooth3D<T>::smooth(Cube<T> *c, Beam Oldbeam, Beam Newbeam, T *OldArray, T 
     for (int i=0; i<NdatX*NdatY*NdatZ; i++) blanks[i] = isBlank(c->Array(i)) && useBlanks ? false : true;
 
 	bool allOK;
+
+#ifdef BBAROLO_SUPPORT_FFTW3
 	if (fft) allOK = calculatefft(OldArray, NewArray);
 	else allOK = calculate(OldArray, NewArray);
+#else
+    allOK = calculate(OldArray, NewArray);
+#endif
 	if (!allOK) {
 		std::cout << "SMOOTH error: cannot smooth data\n";
 		return false;
@@ -586,7 +597,7 @@ template bool Smooth3D<long>::calculate(long*,long*);
 template bool Smooth3D<float>::calculate(float*,float*);
 template bool Smooth3D<double>::calculate(double*,double*);
 
-
+#ifdef BBAROLO_SUPPORT_FFTW3
 template <class T>
 bool Smooth3D<T>::calculatefft(T *OldArray, T *NewArray) {
 	
@@ -642,7 +653,7 @@ template bool Smooth3D<int>::calculatefft(int*,int*);
 template bool Smooth3D<long>::calculatefft(long*,long*);
 template bool Smooth3D<float>::calculatefft(float*,float*);
 template bool Smooth3D<double>::calculatefft(double*,double*);
-
+#endif
 
 template <class T>	
 int Smooth3D<T>::Convolve(double *cfie, int ncx, int ncy, T *dat1, T *dat2, int ndx, int ndy) {

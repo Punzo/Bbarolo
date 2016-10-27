@@ -53,6 +53,7 @@ public:
     bool   	isVerbose () {return verbose;};
     void   	setVerbosity (bool f) {verbose=f;};
     bool    getShowbar () {return showbar;};
+    void    setShowbar (bool f) {showbar=f;};
     
     float 	getBeamFWHM() {return beamFWHM;};
     void	setBeamFWHM(float val) {beamFWHM=val;};
@@ -62,8 +63,9 @@ public:
     bool   	getFlagRobustStats () {return flagRobustStats;};
     void   	setFlagRobustStats (bool flag) {flagRobustStats=flag;};
     
+    void    setSearch (bool Search) {flagSearch=Search;};
     bool	getSearch () {return flagSearch;};
-    void   	setSearchType (std::string s) {searchType=s;};				
+    void   	setSearchType (std::string s) {searchType=s;};
     string 	getSearchType () {return searchType;};  			
     float  	getCut () {return snrCut;};
     void   	setCut (float c) {snrCut=c;};
@@ -124,78 +126,135 @@ public:
     void 	setNrings (int n) {nrings = n;};
     
     bool 	getflagGalFit () {return flagGalFit;};
+    void    setflagGalFit (bool GalFit) {flagGalFit=GalFit;};
     bool 	getflagGalMod () {return flagGalMod;};
+    void    setflagGalMod (bool GalMod) {flagGalMod=GalMod;};
     int		getBOX	(int i) {return BOX[i];};
+    void    setBOX (int dim, int index) {BOX[index]=dim;};
 	int		getNRADII () {return NRADII;};
+    void    setNRADII (int numRadii) {NRADII=numRadii;};
     string  getRADII () {return RADII;};
+    void    setRADII (string radiiString) {RADII=radiiString;};
     string	getXPOS () {return XPOS;};
+    void    setXPOS (string xposString) {XPOS=xposString;};
     string	getYPOS () {return YPOS;};
-	double	getRADSEP () {return RADSEP;};						
+    void    setYPOS (string yposString) {YPOS=yposString;};
+    double	getRADSEP () {return RADSEP;};
+    void    setRADSEP (double radsep) {RADSEP=radsep;};
     string	getVSYS () {return VSYS;};
+    void    setVSYS (string vSysString) {VSYS=vSysString;};
     string	getVROT () {return VROT;};
+    void    setVROT (string vRotString) {VROT=vRotString;};
     string	getVDISP () {return VDISP;};
+    void    setVDISP (string vDispString) {VDISP=vDispString;};
     string	getINC () {return INC;};
-	float	getDELTAINC () {return DELTAINC;};					
+    void    setINC (string IncString) {INC=IncString;};
+    float	getDELTAINC () {return DELTAINC;};
+    void    setDELTAINC (float deltaInc) {DELTAINC=deltaInc;};
     string	getPHI () {return PHI;};
-	float	getDELTAPHI () {return DELTAPHI;};											
+    void    setPHI (string PhiString) {PHI=PhiString;};
+    float	getDELTAPHI () {return DELTAPHI;};
+    void    setDELTAPHI (float deltaPhi) {DELTAPHI=deltaPhi;};
     string	getZ0 () {return Z0;};
+    void    setZ0 (string z0String) {Z0=z0String;};
     string	getDENS () {return DENS;};
-	int		getCDENS () {return CDENS;};				
-	int		getLTYPE () {return LTYPE;};					
-	int		getFTYPE () {return FTYPE;};					
-	int		getWFUNC () {return WFUNC;};					
-	int		getNV () {return NV;};					
-        double	getTOL () {return TOL;}
+    void    setDENS (string densString) {DENS=densString;};
+    int		getCDENS () {return CDENS;};
+    void    setCDENS (int cDens) {CDENS=cDens;};
+    int		getLTYPE () {return LTYPE;};
+    void    setLTYPE (int lType) {LTYPE=lType;};
+    int		getFTYPE () {return FTYPE;};
+    void    setFTYPE (int fType) {FTYPE=fType;};
+    int		getWFUNC () {return WFUNC;};
+    void    setWFUNC (int wFunc) {WFUNC=wFunc;};
+    int		getNV () {return NV;};
+    void    setNV (int nv) {NV=nv;};
+    double	getTOL () {return TOL;}
+    void    setTOL (double tollerance) {TOL=tollerance;};
     string	getMASK() {return MASK;}
-        bool	getSM () {return SM;}
-        void	setSM	(bool a) {SM=a;}
+    void    setMASK(string maskSring) {MASK=maskSring;};
+    bool	getSM () {return SM;}
+    void	setSM	(bool a) {SM=a;}
     void	setSIDE (string a) {SIDE=a;}
     string  getSIDE() {return SIDE;}
-        bool	getTwoStage () {return TwoStage;}
-        void	setTwoStage (bool b) {TwoStage=b;}
-        bool	getflagErrors() {return flagErrors;}
+    bool	getTwoStage () {return TwoStage;}
+    void	setTwoStage (bool b) {TwoStage=b;}
+    bool	getflagErrors() {return flagErrors;}
+    void    setflagErrors (bool flag) {flagErrors=flag;};
     string 	getPOLYN () {return POLYN;}
+    void    setPOLYN(string polynSring) {POLYN=polynSring;};
     string  getFREE () {return FREE;}
+    void    setFREE(string freeSring) {FREE=freeSring;};
     double	getDistance () {return distance;}
+    void    setDistance (double dist) {distance=dist;};
     int		getBweight () {return BWEIGHT;}
+    void    setBweight (int bWeight) {BWEIGHT=bWeight;};
     string  getNORM () {return NORM;}
+    void    setNORM(string normString) {NORM=normString;};
     int     getStartRad() {return startRAD;}
+    void    setStartRad(int startRad) {startRAD=startRad;};
     double  getRedshift() {return redshift;}
+    void    setRedshift(double redShift) {redshift=redShift;};
     double  getRestwave() {return restwave;}
+    void    setRestwave(double restWave) {restwave=restWave;};
     size_t  getNlines () {return nlines;}
 
+
     bool	getflagSpace () {return flagSpace;}
+    void    setflagSpace (bool flag) {flagSpace=flag;};
     string  getP1 () {return P1;}
+    void    setP1 (string P1String) {P1=P1String;};
     string  getP2 () {return P2;}
+    void    setP2 (string P2String) {P2=P2String;};
     float	getP1p (int i) {return P1p[i];}
+    void    setP1p (int index, float P1value) {P1p[index]=P1value;};
     float	getP2p (int i) {return P2p[i];}
-    
+    void    setP2p (int index, float P2value) {P2p[index]=P2value;};
+
     bool	getflagSmooth () {return flagSmooth;}
-        double	getBmaj	() {return bmaj;}
-        double	getBmin	() {return bmin;}
-        double	getBpa	() {return bpa;}
+    void    setflagSmooth (bool flag) {flagSmooth=flag;};
+    double	getBmaj	() {return bmaj;}
+    void    setBmaj(double Bmaj) {bmaj=Bmaj;};
+    double	getBmin	() {return bmin;}
+    void    setBmin(double Bmin) {bmin=Bmin;};
+    double	getBpa	() {return bpa;}
+    void    setBpa(double Bpa) {bpa=Bpa;};
     double	getOBmaj	() {return obmaj;}
+    void    setOBmaj(double OBmaj) {obmaj=OBmaj;};
     double	getOBmin	() {return obmin;}
+    void    setOBmin(double OBmin) {obmin=OBmin;};
     double	getOBpa	() {return obpa;}
-        bool	getflagFFT () {return flagFFT;}
-        void	setflagFFT (bool f) {flagFFT=f;}
-        float 	getLinear () {return linear;}
-        float 	getFactor () {return factor;}
+    void    setOBpa(double OBpa) {obpa=OBpa;};
+    bool	getflagFFT () {return flagFFT;}
+    void	setflagFFT (bool f) {flagFFT=f;}
+    float 	getLinear () {return linear;}
+    void    setLinear(float value) {linear=value;};
+    float 	getFactor () {return factor;}
+    void    setFactor(float value) {factor=value;};
     float   getScaleFactor () {return scalefactor;}
-        void 	setFactor (float f) {factor=f;}
-        bool	getflagReduce() {return flagReduce;}
+    void 	setScaleFactor (float value) {scalefactor=value;}
+    bool	getflagReduce() {return flagReduce;}
+    void    setflagReduce(bool flag) {flagReduce=flag;};
     string  getSmoothOut () {return smo_out;}
+    void    setSmoothOut(string SmoothOutString) {smo_out=SmoothOutString;};
 
     bool    getFlagSlitfit () {return flagSlitfit;}
+    void    setFlagSlitfit(bool flag) {flagSlitfit=flag;};
     string  getWavefile () {return wavefile;}
+    void    setWavefile(string WaveFile) {wavefile=WaveFile;};
     string  getIvarfile () {return ivarfile;}
+    void    setIvarfile(string IvarFile) {ivarfile=IvarFile;};
     string  getLine() {return linetofit;}
+    void    setLine(string LineToFit) {linetofit=LineToFit;};
 
     bool    getFlagPV() {return flagPV;}
+    void    setFlagPV(bool flag) {flagPV=flag;};
     float   getXPOS_PV() {return XPOS_PV;}
+    void    setXPOS_PV(float value) {XPOS_PV=value;};
     float   getYPOS_PV() {return YPOS_PV;}
+    void    setYPOS_PV(float value) {YPOS_PV=value;};
     float   getPA_PV() {return PA_PV;}
-
+    void    setPA_PV(float value) {PA_PV=value;};
     
     /// Utility functions:
     
@@ -338,7 +397,5 @@ void recordParameters(ostream& theStream, string paramName, string paramDesc, st
 
 
 void helpscreen(ostream& Str=cout);
-
-//#include "param.cpp"
 
 #endif

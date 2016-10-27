@@ -18,8 +18,8 @@
 -----------------------------------------------------------------------*/
 
 #include "galfit.hh"
-#include "../Arrays/cube.hh"
-#include "../Arrays/image.hh"
+#include "cube.hh"
+#include "image.hh"
 #include "utils.hh"
 #include "gnuplot.hh"
 
@@ -48,7 +48,8 @@ void Galfit<T>::slit_init(Cube<T> *c) {
         exit(EXIT_FAILURE);
     }
     else if (numObj>1) {
-        uint n=0, size=0;
+        int n=0;
+        uint size=0;
         for (int i=0; i<numObj; i++)
             if (in->pObject(i)->getSize()>size) {n=i;size=in->pObject(i)->getSize();}
         for (int i=0; i<numObj; i++)
@@ -93,7 +94,7 @@ void Galfit<T>::slit_init(Cube<T> *c) {
 
 
     // Setting spectral broadedning
-    double checkIvar = strtod(in->pars().getIvarfile().c_str(),NULL);
+    //double checkIvar = strtod(in->pars().getIvarfile().c_str(),NULL);
     // TO DO STUFF WITH IVAR FILE
 
 
@@ -137,7 +138,8 @@ void Galfit<T>::slit_init(Cube<T> *c) {
         exit(EXIT_FAILURE);
     }
     else if (numObj>1) {
-        uint n=0, size=0;
+        int n=0;
+        uint size=0;
         for (int i=0; i<numObj; i++)
             if (line_im->pObject(i)->getSize()>size) {n=i;size=line_im->pObject(i)->getSize();}
         for (int i=0; i<numObj; i++)
@@ -244,7 +246,7 @@ void Galfit<T>::slit_init(Cube<T> *c) {
                     file_rings.inc.size(),file_rings.phi.size()};
 
     int max_size=INT_MAX;
-    for (int i=0; i<10; i++) if (size[i]!=0 && size[i]<max_size) max_size=size[i];
+    for (int i=0; i<10; i++) if (size[i]!=0 && size[i]< (size_t)max_size) max_size=size[i];
 
     int nr=0;
     T radsep, xpos, ypos, vsys, vrot, vdisp, z0, dens, inc, pa;
@@ -463,7 +465,7 @@ void Galfit<T>::writeModel_slit() {
 
     std::ofstream outpv_m((outfold+"pv_mod.txt").c_str());
     std::ofstream outpv_o((outfold+"pv.txt").c_str());
-    float xmin=1.E10,xmax=0,xmmin=1.E10,xmmax=0;
+    float xmin=1.E10,xmax=0;
     for (int y=0; y<slit->DimY() ; y++) {
         for (int x=0;x<slit->DimX();x++) {
             int i = x+y*slit->DimX();

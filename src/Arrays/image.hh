@@ -59,6 +59,9 @@ public:
 	Type*	Array () {return array;};
     Type 	Array (long npix) {return array[npix];};
     Type	Array (int x, int y) {return array[y*axisDim[0]+x];};
+    Type*	Mask () {return mask;};
+    Type 	Mask (long npix) {return mask[npix];};
+    Type	Mask (int x, int y) {return mask[y*axisDim[0]+x];};
     Header&	Head	 () {Header &h = head; return h;};
     bool	HeadDef (){return headDefined;};
     void	setXsize (int i) {axisDim[0] = i;};
@@ -80,7 +83,8 @@ public:
 
     ///	I/O functions:
 
-    void setImage(Type *input, int *dim);		
+    void setImage(Type *input, int *dim);
+    void setMask(bool *input, int *dim);
     bool readImage (std::string fname);				
 	void copyHeader (Header &c);	
 	void setImageStats();
@@ -90,20 +94,28 @@ public:
     void extractImage(Type *Array, int *dim, long channel);	/// Extract an image from an array.																	
     void extractSpectrum(Cube<Type> &cube, long pixel);   			/// Extract a spectrum from a cube.
     void extractImage(Cube<Type> &cube, long channel);				/// Extract an image from a cube.
+
+    void extractMaskSpectrum(bool *MaskArray, int *dim, long pixel);  /// Extract a spectrum from an array.
+    void extractMaskImage(bool *MaskArray, int *dim, long channel);	/// Extract an image from an array.
+    void extractMaskSpectrum(Cube<Type> &cube, long pixel);   			/// Extract a spectrum from a cube.
+    void extractMaskImage(Cube<Type> &cube, long channel);				/// Extract an image from a cube.
+
     void extractGlobalSpectrum(Cube<Type> *cube);
     
 	/// Detection-related functions:
     
     bool isDetection(long x, long y);				 			/// A detection test for a pixel location. 
     std::vector<PixelInfo::Scan<Type> > findSources1D();	 			/// Front-end function for spectrumDetect.
-    std::vector<PixelInfo::Object2D<Type> > findSources2D();			/// Front-end function for imageDetect.   
+    std::vector<PixelInfo::Object2D<Type> > findSources2D();			/// Front-end function for imageDetect.
     
-    std::vector<PixelInfo::Scan<Type> > spectrumDetect(std::vector<bool> &arraybool);   /// Detect objects in a 1-D spectrum. 
-    std::vector<PixelInfo::Object2D<Type> > imageDetect(std::vector<bool> &arraybool);	 ///Detect objects in a 2-D image. 
+    std::vector<PixelInfo::Scan<Type> > spectrumDetect(std::vector<bool> &arraybool);   /// Detect objects in a 1-D spectrum.
+    std::vector<PixelInfo::Object2D<Type> > imageDetect(std::vector<bool> &arraybool);	 ///Detect objects in a 2-D image.
 	
 protected:
 	Type 		*array;						///< The cube data array.
 	bool		arrayAllocated;				///< Is array allocated?
+    bool 		*mask;						///< The cube data array.
+    bool		maskAllocated;				///< Is array allocated?
 	int			numAxes;					///< Number of axis.
 	long		numPix;						///< Total number of pixel.
 	int         axisDim[2];   				///< Array of axis dimensions of cube
@@ -118,7 +130,6 @@ protected:
 
 };
 
-//#include "image.cpp"
-
+#include "image.tpp"
 
 #endif

@@ -77,11 +77,11 @@ namespace PixelInfo
     /// Other utility functions:
     
     bool isNull();						/// Whether a scan is null.
-    bool addScan(const Scan &other);	/// Combine scans. 
+    bool addScan(const Scan<T> &other);	/// Combine scans.
     bool isInScan(long x, long y);	 	/// Tests whether a given (x,y) point is in the scan.
-    bool touches(const Scan &other);
-    bool overlaps(const Scan &other);
-    bool isAdjacentTo(const Scan &other);
+    bool touches(const Scan<T> &other);
+    bool overlaps(const Scan<T> &other);
+    bool isAdjacentTo(const Scan<T> &other);
    
 
     template <class Type> friend class Object2D; 
@@ -108,6 +108,6 @@ namespace PixelInfo
 
 }
 
-#include "scan.cpp"
+#include "scan.tpp"
 
 #endif 

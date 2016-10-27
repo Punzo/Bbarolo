@@ -211,4 +211,6 @@ private:
 };
 }
 
+#include "ellprof.tpp"
+
 #endif

@@ -31,8 +31,8 @@
 #include <fstream>
 #include <time.h>
 #include <fitsio.h>
-#include "../Arrays/header.hh"
-#include "../Map/voxel.hh"
+#include "header.hh"
+#include "voxel.hh"
 #include <sys/stat.h>
 
 
@@ -40,16 +40,17 @@
 
 
 /// Functions to allocate or deallocate multidimensional arrays.
-/// Defined in "allocator.cpp".
+/// Defined in "allocator.tpp".
 
 template <class Type> Type **allocate_2D (int xdim, int ydim);
 template <class Type> void deallocate_2D (Type **array2d, int xdim);
 template <class Type> Type ***allocate_3D (int xdim, int ydim, int zdim);
 template <class Type> void deallocate_3D (Type ***array3d, int xdim, int ydim);
 
+#include "allocator.tpp"
 
 /// Functions to calculate statistical parameters.
-///	Defined in "statistics.cpp".
+///	Defined in "statistics.tpp".
 
 template <class T> T absval(T value);
 template <class T> void findMinMax(const T *array, const size_t size, T &min, T &max);
@@ -66,6 +67,7 @@ template <class T> T findMedian(std::vector<T> array, size_t size);
 template <class T> T findMADFM(T *array, size_t size, T median, bool changeArray=false);
 template <class T> T findMADFM(T *array, bool *mask, size_t size, T median);
 
+#include "statistics.tpp"
 
 /// Functions to manipulate strings.
 /// Defined in string.cpp
@@ -94,7 +96,7 @@ void printHash(int num);
 void checkHome(std::string &s); 
 
 /// Fuctions to interpolation and fit.
-/// Defined in interpolation.cpp
+/// Defined in interpolation.tpp
 
 template <class T> double *spline(T *x, T *y, int n, double yp1=1.e91, double ypn=1.e91);
 template <class T> double splint(T *xa, T *ya, T *y2a, int n, T x);
@@ -111,6 +113,8 @@ double *cp_binomial(int points);
 template <class T> void bezier_interp(std::vector<T> x_in,  std::vector<T> y_in,
                                       std::vector<T> &x_out,std::vector<T> &y_out,
                                       int fp=0, int np=-1, int ns=-1);
+
+#include "interpolation.tpp"
 
 /// Other functions:
 /// Defined in utils.cpp

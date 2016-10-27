@@ -24,13 +24,16 @@
 #include <iostream>
 #include <cfloat>
 #include <cmath>
-#include "../Arrays/cube.hh"
-#include "../Arrays/image.hh"
-#include "../Map/voxel.hh"
+#include "cube.hh"
+#include "image.hh"
+#include "voxel.hh"
 #include "galfit.hh"
 #include "utils.hh"
 #include "galmod.hh"
+#include "BbaroloConfigure.h"
+#ifdef BBAROLO_SUPPORT_FFTW3
 #include "conv2D.hh"
+#endif
 
 using namespace PixelInfo;
 
@@ -500,10 +503,16 @@ T Galfit<T>::model(Rings<T> *dring) {
 	T *modp = mod->Out()->Array();
 	
 	//<<<<< Convolution....
+#ifdef BBAROLO_SUPPORT_FFTW3
 	if (in->pars().getSM()) {
 		if (in->pars().getflagFFT()) Convolve_fft(modp, bsize);
 		else Convolve(modp, bsize);
 	}
+#else
+    if (in->pars().getSM()) {
+        Convolve(modp, bsize);
+    }
+#endif
 		
 	//<<<<< Normalizing & calculating the residuals....
     double minfunc = (this->*func_norm)(dring,modp,bhi,blo);
@@ -573,7 +582,7 @@ void Galfit<T>::Convolve(T *array, int *bsize) {
 template void Galfit<float>::Convolve(float*,int*);
 template void Galfit<double>::Convolve(double*,int*);
 
-
+#ifdef BBAROLO_SUPPORT_FFTW3
 template <class T>
 void Galfit<T>::Convolve_fft(T *array, int *bsize) {
 	
@@ -598,6 +607,7 @@ void Galfit<T>::Convolve_fft(T *array, int *bsize) {
 }
 template void Galfit<float>::Convolve_fft(float*,int*);
 template void Galfit<double>::Convolve_fft(double*,int*);
+#endif
 
 ///*
 // ANELLO 2D

@@ -25,7 +25,7 @@
 #include <cmath>
 #include <vector>
 #include "galmod.hh"
-#include "../Arrays/cube.hh"
+#include "cube.hh"
 #include "smooth3D.hh"
 #include "moment.hh"
 #include "utils.hh"
@@ -792,7 +792,7 @@ void Galmod<T>::galmod() {
 
                 for (int iv=0; iv<nvtmp; iv++) {
                     double vdev = gasdev(isd)*vdisptmp;
-                    for (int nl=0; nl<nlines; nl++) {
+                    for (int nl=0; nl< (int)nlines; nl++) {
                         double v	 = vsys+vdev+relvel_lines[nl];
                         int isubs = lround(velgrid(v)+crpix3-1);
                         if (isubs<0 || isubs>=nsubs) continue;

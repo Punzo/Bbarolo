@@ -23,15 +23,15 @@
 
 #include <iostream>
 #include "stats.hh"
-#include "../Utilities/utils.hh"
+#include "utils.hh"
 
 
 namespace Statistics
 {
 
-	float sigmaToMADFM(float sigma){
-		return float(sigma)*correctionFactor;
-	}
+    float sigmaToMADFM(float sigma){
+        return float(sigma)*correctionFactor;
+    }
 
 
 	template <class T> 

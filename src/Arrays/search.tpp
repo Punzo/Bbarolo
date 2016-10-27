@@ -31,27 +31,29 @@
 #include <algorithm>
 #include "cube.hh"
 #include "image.hh"
-#include "../Map/objectgrower.hh"
-#include "../Map/detection.hh"
-#include "../Utilities/gnuplot.hh"
-#include "../Utilities/progressbar.hh"
-#include "../Utilities/utils.hh"
+#include "objectgrower.hh"
+#include "detection.hh"
+#include "gnuplot.hh"
+#include "progressbar.hh"
+#include "utils.hh"
 
 
 
 template <class T>
 void Cube<T>::Search() {
-	
+
 	Header &h = Head();	
 	Param  &p = pars();	 
+
 	if (!statsDefined) setCubeStats();
-	if (h.BeamArea()==0) {
+    if (h.BeamArea()==0) {
 		cout << "\n Beam information is not available in the header: assuming a "
 			 << p.getBeamFWHM()*3600 << " arcsec beam.\n";
 		h.setBmaj(p.getBeamFWHM());
 		h.setBmin(p.getBeamFWHM());
 		h.calcArea();
 	}
+
 	float PixScale = (fabs(h.Cdelt(0))+fabs(h.Cdelt(1)))/2.;
 	int thresS  = p.getThreshS()!=-1 	 ? p.getThreshS() 	  : ceil(h.Bmaj()/PixScale);
 	int thresV  = p.getThreshV()!=-1 	 ? p.getThreshV()     : 3;
@@ -63,7 +65,7 @@ void Cube<T>::Search() {
 	p.setMinChannels(minchan);
 	p.setMinPix(minpix);
 	p.setMinVoxels(minvox);			
-	
+
 	CubicSearch();
 	
     std::cout << "  Intermediate list has " << getNumObj();
@@ -97,7 +99,6 @@ void Cube<T>::CubicSearch() {
   ///  Once searching is complete, the detection map is updated and
   ///  the intermediate detections are logged in the log file.
 
-	
 	std::cout<<"\n\nStarting research for possible sources in the cube..."<<std::endl;
 	if(par.isVerbose()) std::cout << "  ";
 	
@@ -105,12 +106,13 @@ void Cube<T>::CubicSearch() {
 	else { 
 		if (!statsDefined) setCubeStats(); 
 	}
-	
-	*this->objectList = search3DArray();
+
+    *this->objectList = search3DArray();
 
 	if(par.isVerbose()) std::cout << "  Updating detection map... " << std::flush;
- 
+
     updateDetectMap();
+
 	if(par.isVerbose()) std::cout << "Done.\n";
 	
 }
@@ -178,7 +180,8 @@ std::vector <Detection<T> > Cube<T>::search3DArraySpectral() {
 
 				int npix = y*axisDim[0] + x;
                 if(par.isVerbose()) bar.update(npix+1);
-				spectrum->extractSpectrum(array,axisDim,npix);
+                if(maskAllocated) spectrum->extractMaskSpectrum(mask,axisDim,npix);
+                else spectrum->extractSpectrum(array,axisDim,npix);
 				std::vector<Scan<T> > objlist = spectrum->findSources1D();
 				typename std::vector<Scan<T> >::iterator obj;
 				num += objlist.size();
@@ -221,18 +224,18 @@ std::vector <Detection<T> > Cube<T>::search3DArraySpatial() {
   ///
   ///  \return A std::vector of detected objects.
 
-	std::vector <Detection<T> > outputList;
-	long zdim = axisDim[2];
-	int num = 0;
+    std::vector <Detection<T> > outputList;
+    long zdim = axisDim[2];
+
+    int num = 0;
 
     ProgressBar bar("Searching in progress... ");
     bool useBar = (zdim>1);
     bar.setShowbar(par.getShowbar());
     if(useBar && par.isVerbose()) bar.init(zdim);
 
-
-    int nthreads=par.getThreads();
-#pragma omp parallel for num_threads(nthreads) reduction (+:num)
+  //  int nthreads=par.getThreads();
+//#pragma omp parallel for num_threads(nthreads) reduction (+:num)
     for(int z=0; z<zdim; z++) {
         int imdim[2] = {axisDim[0],axisDim[1]};
         Image2D<T> *channelImage = new Image2D<T>(imdim);
@@ -240,29 +243,28 @@ std::vector <Detection<T> > Cube<T>::search3DArraySpatial() {
         channelImage->saveStats(stats);
         channelImage->setMinSize(1);
         if(par.isVerbose() && useBar) bar.update(z+1);
-        channelImage->extractImage(array,axisDim,z);
+        if(maskAllocated) channelImage->extractMaskImage(mask,axisDim,z);
+        else channelImage->extractImage(array,axisDim,z);
         std::vector<Object2D<T> > objlist = channelImage->findSources2D();
-		typename std::vector<Object2D<T> >::iterator obj;
+        typename std::vector<Object2D<T> >::iterator obj;
 		num += objlist.size();
         for(obj=objlist.begin();obj!=objlist.end();obj++){
 			Detection<T> newObject;
 			newObject.addChannel(z,*obj);
 			newObject.setOffsets();
-#pragma omp critical
-{
+//#pragma omp critical
+//{
             if(par.getTwoStageMerging()) mergeIntoList(newObject,outputList);
             else outputList.push_back(newObject);
-}
+//}
         }
         delete channelImage;
     }
-
 
 	if(par.isVerbose()){
         if(useBar) bar.remove();
         std::cout << "Found " << num << " items.\n";
     }
-
     return outputList;
 
 }
@@ -282,8 +284,7 @@ void Cube<T>::updateDetectMap() {
 
     typename std::vector<Detection<T> >::iterator obj;
     for(obj=objectList->begin();obj<objectList->end();obj++)
-		updateDetectMap(*obj);
-    
+        updateDetectMap(*obj);
 
 }
 template void Cube<short>::updateDetectMap();
@@ -303,10 +304,12 @@ void Cube<T>::updateDetectMap(Detection<T> obj) {
     ///					incorporated into the map.
 
     std::vector<Voxel<T> > vlist = obj.getPixelSet();
-    typename std::vector<Voxel<T> >::iterator vox;
-    for(vox=vlist.begin();vox<vlist.end();vox++) 
-		detectMap[vox->getX()+vox->getY()*axisDim[0]]++;
 
+    typename std::vector<Voxel<T> >::iterator vox;
+    for(vox=vlist.begin();vox<vlist.end();vox++)
+    {
+       detectMap[vox->getX()+vox->getY()*axisDim[0]]++;
+    }
 }
 template void Cube<short>::updateDetectMap(Detection<short>);
 template void Cube<int>::updateDetectMap(Detection<int>);
@@ -341,8 +344,8 @@ void Cube<T>::ObjectMerger() {
 		if(par.getFlagGrowth()) {
 			ObjectGrower<T> grower;
 			grower.define(this);
-            int nthreads=par.getThreads();
-#pragma omp parallel for num_threads(nthreads)
+           // int nthreads=par.getThreads();
+//#pragma omp parallel for num_threads(nthreads)
 			for(size_t i=0;i<currentList.size();i++){
                 if(par.isVerbose() && par.getShowbar()){
 					std::cout.setf(std::ios::right);

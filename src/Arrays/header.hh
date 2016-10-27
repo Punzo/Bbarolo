@@ -29,7 +29,7 @@
 #include <cmath>
 #include <vector>
 #include <fitsio.h> 
-#include <wcslib/wcs.h>
+#include <wcs.h>
 
 //enum CUNITS {DEGREE,ASEC,AMIN,M_S,KM_S,HZ,KHZ,MHZ,GHZ,MUM};
 //enum CTYPES {RA,DEC,LAT,LONG,VELO,FREQ,WAVE};
@@ -69,8 +69,8 @@ public:
 	double	Drval3	() {return drval3;};
 	double	PixScale () {return (fabs(cdelt[0])+fabs(cdelt[1]))/2.;};
     struct wcsprm *WCS () {return wcs;};
-        double Wave0 () {return wave0;}
-        double Redshift () {return redshift;}
+    double Wave0 () {return wave0;}
+    double Redshift () {return redshift;}
 
 	std::vector<std::string>& Keys () {std::vector<std::string> &k=keys; return k;};
 	std::string Name () {return object;};
@@ -87,11 +87,12 @@ public:
 	void	setCrpix (int i, float val) {crpix[i] = val;};
 	void	setCrval (int i, float val) {crval[i] = val;};
 	void	setCdelt (int i, float val) {cdelt[i] = val;};
+    void    setCrota (double val) {crota=val;};
     void    setDrval3 (double val) {drval3=val;};
     void    setDunit3 (std::string s) {dunit3=s;};
 	void	setBmaj  (float val) {bmaj = val;};
 	void	setBmin  (float val) {bmin = val;};
-	void	setBpa   (float val) {bpa = val;};
+    void	setBpa   (float val) {bpa = val;};
 	void	setBzero (float val) {bzero = val;};
 	void	setBscale(float val) {bscale = val;};
 	void	setBlank (float val) {blank = val;};
@@ -108,8 +109,8 @@ public:
 	void	setTelesc(std::string s) {telescope = s;};
     void	setPointAllocated (bool b) {pointAllocated=b;};
     void    setWarning (bool b) {warning=b;};
-    void setWave0 (double w) {wave0=w;}
-    void setRedshift (double r) {redshift=r;}
+    void    setWave0 (double w) {wave0=w;}
+    void    setRedshift (double r) {redshift=r;}
 
     void    Warning(std::string s) {if (warning) std::cout << s << std::endl;};
 
@@ -119,6 +120,7 @@ public:
 	void	setNumAx (int n);
 	void	calcArea ();										/// Calculate beam area from bmaj & bmin.
 	bool 	header_read (std::string fname);					/// Read from header of a Fits file.
+    bool    saveWCSStruct(wcsprm* wcstemp);
 	void 	headwrite_3d (fitsfile *fptr, bool fullHead);		/// Write header of a Fits cube.
 	void 	headwrite_2d (fitsfile *fptr, bool fullHead);		///	Write header of a Fits image.
 
@@ -126,7 +128,7 @@ public:
 	bool read_keyword(std::string keyword, T &key, bool err=false);	
 	
 private:
-        int	numAxes;				///< Number of axes.
+    int	    numAxes;				///< Number of axes.
 	int 	bitpix;					///< Image type.
 	long	*dimAxes;				///< Dimensions of axes.
 	double	*crpix;					///< Central pixels.
@@ -141,13 +143,13 @@ private:
 	float	bscale;					///< Scale for physical values.
 	float	blank;					///< Value for blank pixel.
 	float	beamArea;				///< The area of the beam.
-        float   epoch;					///< Epoch for coordinates.
+    float   epoch;					///< Epoch for coordinates.
 	double	freq0;					///< Frequency at rest.
-        double  wave0;                                  ///< Wavelength at rest
+    double  wave0;                  ///< Wavelength at rest
 	double	crota;					///< Rotation angle.
 	double	datamin;				///< Minimum pixel value.
 	double  datamax;				///< Maximum data value.
-        double  redshift;
+    double  redshift;
 	std::string fitsname;			///< The name of the fitsfile.
 	std::string	btype;				///< Beam type.
 	std::string bunit;				///< Units of pixel value.
@@ -158,15 +160,10 @@ private:
 	std::string telescope;			///< Instrument.
 	std::vector<std::string> keys;	///< Whole header as strings.
 
-        struct wcsprm *wcs;             ///< The WCS parameters in a struct from the wcslib library.
-        int    nwcs;                    ///< The number of WCS parameters
-        bool   wcsIsGood;               ///< A flag indicating whether there is a valid WCS
-
-
-    bool    warning;               ///< Write warning on std::cout.
+    struct wcsprm *wcs;             ///< The WCS parameters in a struct from the wcslib library.
+    int    nwcs;                    ///< The number of WCS parameters
+    bool   wcsIsGood;               ///< A flag indicating whether there is a valid WCS
+    bool   warning;                 ///< Write warning on std::cout.
 };
-
-
-//#include "header.cpp"
 
 #endif
