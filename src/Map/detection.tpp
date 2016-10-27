@@ -29,8 +29,8 @@
 #include "voxel.hh"
 #include "object3D.hh"
 #include "detection.hh"
-#include "../Utilities/utils.hh"
-#include "../Arrays/header.hh"
+#include "utils.hh"
+#include "header.hh"
 
 
 using namespace PixelInfo;
@@ -235,7 +235,6 @@ void Detection<T>::addOffsets() {
     xpeak+=xSubOffset; ypeak+=ySubOffset; zpeak+=zSubOffset;
     xCentroid+=xSubOffset; yCentroid+=ySubOffset; zCentroid+=zSubOffset;
 }
-
 
 template <class T>
 void Detection<T>::addPixel(PixelInfo::Voxel<T> point) {

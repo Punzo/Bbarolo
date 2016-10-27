@@ -27,10 +27,10 @@
 #include <iostream>
 #include <fitsio.h>
 
-#include "../Arrays/cube.hh"
-#include "../Arrays/image.hh"
-#include "../Utilities/utils.hh"
-#include "../Utilities/progressbar.hh"
+#include "cube.hh"
+#include "image.hh"
+#include "utils.hh"
+#include "progressbar.hh"
 
 
 template <class T> 

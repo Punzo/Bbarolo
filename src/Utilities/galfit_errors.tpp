@@ -26,7 +26,7 @@
 //#include <random>
 #include "galfit.hh"
 #include "galmod.hh"
-#include "../Arrays/cube.hh"
+#include "cube.hh"
 #include "utils.hh"
 #include "lsqfit.hh"
 #include "progressbar.hh"
@@ -66,21 +66,12 @@ void Galfit<T>::getErrors (Rings<T> *dr, T **err, int ir, T minimum) {
 	}
 			
 	int free_var[nfree];
-	float maxval[nfree],minval[nfree],midval[nfree];
+    float maxval[nfree],minval[nfree];
 	for (int nm=0, k=0; nm<MAXPAR; nm++) {
 		if (mpar[nm]) {
 			free_var[k]=nm;
 			maxval[k]= -1.E04;
 			minval[k]= 1.E04;
-			if(nm==VROT) 		midval[k]=outr->vrot[ir];
-			else if(nm==VDISP) 	midval[k]=outr->vdisp[ir];
-			else if(nm==DENS) 	midval[k]=outr->dens[ir];
-			else if(nm==Z0) 	midval[k]=outr->z0[ir];
-			else if(nm==INC) 	midval[k]=outr->inc[ir];
-			else if(nm==PA) 	midval[k]=outr->phi[ir];
-			else if(nm==XPOS) 	midval[k]=outr->xpos[ir];
-			else if(nm==YPOS) 	midval[k]=outr->ypos[ir];
-			else if(nm==VSYS) 	midval[k]=outr->vsys[ir];
 			k++;
 		}
 	}
@@ -107,7 +98,7 @@ void Galfit<T>::getErrors (Rings<T> *dr, T **err, int ir, T minimum) {
 					
 
 			//var_val[nm][nf] = unifrand(maxs[free_var[nf]], mins[free_var[nf]]);
-			float stddev = min(maxv-midval[nf],midval[nf]-minv)/(1.386*2*sqrt(2));
+            float stddev = min(maxv-[nf],midval[nf]-minv)/(1.386*2*sqrt(2));
 			//normal_distribution<double> distribution(midval[nf],stddev);
 			uniform_real_distribution<double> distribution(minv,maxv);
 			var_val[nm][nf] = distribution(generator);
@@ -196,7 +187,7 @@ void Galfit<T>::getErrors (Rings<T> *dr, T **err, int ir, T minimum) {
 						
 				}
 				//bin_value/=nmod_inbin;
-				if (nmod_inbin==0) bin_value=0;
+                if (nmod_inbin==0) bin_value=0;
 				errout << xcounter+bin_range/2. <<  "          " << bin_value << "  " << nmod_inbin << endl;
 				xcounter+=bin_range;
 			}
@@ -255,7 +246,7 @@ void Galfit<T>::getErrors (Rings<T> *dr, T **err, int ir, T minimum) {
 		for (int nm=n_models;nm--;) {
 			if (verb) bar.update(cc++);
 			var_val[nm] = unifrand(maxv, minv);
-			float stddev = 0.25509*min(maxv-midval[nf],midval[nf]-minv);    /// Read: 0.25509=1/(1.386*2*sqrt(2));
+            //float stddev = 0.25509*min(maxv-midval[nf],midval[nf]-minv);    /// Read: 0.25509=1/(1.386*2*sqrt(2));
 			//normal_distribution<double> distribution(midval[nf],stddev);
 			//uniform_real_distribution<double> distribution(minv,maxv);
 			//var_val[nm] = distribution(generator);

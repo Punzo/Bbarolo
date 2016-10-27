@@ -28,13 +28,13 @@
 #include <cmath>
 #include <ctime>
 #include <string>
-#include "../Arrays/cube.hh"
-#include "../Arrays/image.hh"
+#include "cube.hh"
+#include "image.hh"
 #include "galfit.hh"
 #include "galmod.hh"
 #include "utils.hh"
 #include "lsqfit.hh"
-#include "../Map/detection.hh"
+#include "detection.hh"
 #include "progressbar.hh"
 #include "smooth3D.hh"
 #include "paramguess.hh"
@@ -82,9 +82,24 @@ template Galfit<float>::Galfit();
 template Galfit<double>::Galfit();
 
 
+//----------------------------------------------------------------------------
+template <typename T> std::string NumberToString(T V)
+{
+  std::string stringValue;
+  std::stringstream strstream;
+  strstream << V;
+  strstream >> stringValue;
+  return stringValue;
+}
+
+//----------------------------------------------------------------------------
+std::string DoubleToString(double Value)
+{
+  return NumberToString<double>(Value);
+}
+
 template <class T>
 Galfit<T>::Galfit(Cube<T> *c) {
-	
 	defaults();
     in = c;
     Param *p = &c->pars();
@@ -119,7 +134,7 @@ Galfit<T>::Galfit(Cube<T> *c) {
     dens_b  = getDataColumn(file_rings.dens,p->getDENS());
     inc_b   = getDataColumn(file_rings.inc,p->getINC());
     pa_b 	= getDataColumn(file_rings.phi,p->getPHI());
-    bool onefile = radii_b||xpos_b||ypos_b||vsys_b||vrot_b||vdisp_b||z0_b||dens_b||inc_b||pa_b;
+    //bool onefile = radii_b||xpos_b||ypos_b||vsys_b||vrot_b||vdisp_b||z0_b||dens_b||inc_b||pa_b;
 
     size_t size[10] = {file_rings.radii.size(),file_rings.xpos.size(),
                        file_rings.ypos.size(), file_rings.vsys.size(),
@@ -128,14 +143,16 @@ Galfit<T>::Galfit(Cube<T> *c) {
                        file_rings.inc.size(),file_rings.phi.size()};
 
     int max_size=INT_MAX;
-    for (int i=0; i<10; i++) if (size[i]!=0 && size[i]<max_size) max_size=size[i];
+    for (int i=0; i<10; i++) if (size[i]!=0 && size[i]< (size_t)max_size) max_size=size[i];
 
     int nr=0;
-    T radsep, xpos, ypos, vsys, vrot, vdisp, z0, dens, inc, pa;
+    double radsep, xpos, ypos, vsys, vrot, vdisp, z0, dens, inc, pa;
 
     bool toEstimate =  (p->getRADII()=="-1" && (p->getNRADII()==-1 || p->getRADSEP()==-1)) ||
                         p->getXPOS()=="-1" || p->getYPOS()=="-1" || p->getVSYS()=="-1" ||
-                        p->getVROT()=="-1" || p->getPHI()=="-1"  || p->getINC()=="-1";
+                        p->getVROT()=="-1" || p->getPHI()=="-1"  || p->getINC()=="-1" ||
+                        p->getZ0() == "-1" || p->getDistance() == -1 || p->getVDISP() == "-1" ||
+                        p->getDENS() == "-1";
 
 
     // Creating mask if does not exist and write it in a fitsfile.
@@ -147,7 +164,7 @@ Galfit<T>::Galfit(Cube<T> *c) {
     m->saveParam(in->pars());
     m->Head().setMinMax(0.,0);
     for (size_t i=in->NumPix(); i--;) m->Array()[i] = short(mask[i]);
-    m->fitswrite_3d((in->pars().getOutfolder()+"mask.fits").c_str());
+    //m->fitswrite_3d((in->pars().getOutfolder()+"mask.fits").c_str());
     delete m;
 
     if (toEstimate) {
@@ -164,8 +181,8 @@ Galfit<T>::Galfit(Cube<T> *c) {
         ParamGuess<T> *init_par = new ParamGuess<T>(in,largest);
         init_par->findInitial();
 
-		if (p->getXPOS()!="-1")	init_par->setXcentre(getCenterCoord(p->getXPOS(),in->Head().Ctype(0)));
-		if (p->getYPOS()!="-1") init_par->setYcentre(getCenterCoord(p->getYPOS(),in->Head().Ctype(1)));
+        if (p->getXPOS()!="-1")	init_par->setXcentre(getCenterCoord(p->getXPOS(),in->Head().Ctype(0)));
+        if (p->getYPOS()!="-1") init_par->setYcentre(getCenterCoord(p->getYPOS(),in->Head().Ctype(1)));
 		if (p->getPHI()!="-1")  init_par->setPosang(atof(p->getPHI().c_str()));
 
         init_par->fitEllipse();
@@ -186,6 +203,19 @@ Galfit<T>::Galfit(Cube<T> *c) {
         inc   = p->getINC()!="-1" ? atof(p->getINC().c_str()) : init_par->inclin;
         pa    = p->getPHI()!="-1" ? atof(p->getPHI().c_str()) : init_par->posang;
         delete init_par;
+
+        p->setNRADII(nr);
+        p->setRADSEP(radsep);
+        p->setXPOS(DoubleToString(xpos));
+        p->setYPOS(DoubleToString(ypos));
+        p->setVSYS(DoubleToString(vsys));
+        p->setVROT(DoubleToString(vrot));
+        p->setPHI(DoubleToString(pa));
+        p->setINC(DoubleToString(inc));
+        p->setZ0(DoubleToString(z0));
+        p->setDistance(distance);
+        p->setVDISP(DoubleToString(vdisp));
+        p->setDENS(DoubleToString(dens));
     }
     else {
         nr 	  = p->getNRADII();
@@ -252,8 +282,8 @@ Galfit<T>::Galfit(Cube<T> *c) {
     flagErrors = p->getflagErrors();
 	
 	if (!in->pars().getflagGalMod()) {
-		if (!onefile) showInitial(inr, std::cout);
-        else printInitial(inr);
+        //if (!onefile) showInitial(inr, std::cout);
+        //else printInitial(inr);
         input(c, inr, mpar, tol);
 	}
 
@@ -426,11 +456,10 @@ template void Galfit<double>::input(Cube<double>*,Rings<double>*,bool*,double);
 
 
 template <class T>
-void Galfit<T>::galfit() {
+bool Galfit<T>::galfit(int *status) {
 
 	using namespace std;
 	verb = in->pars().isVerbose();
-	
 	static int n=0;
 	n++;
     std::string fileo = in->pars().getOutfolder()+"ringlog"+to_string(n)+".txt";
@@ -438,7 +467,6 @@ void Galfit<T>::galfit() {
 
     std::ofstream fileout;
     fileout.open(fileo.c_str(), std::ios_base::app);
-	
 	int m=10;
     fileout	<< left << setw(m) << "#RAD(Kpc)"
             << setw(m+1)   << "RAD(arcs)"
@@ -467,7 +495,6 @@ void Galfit<T>::galfit() {
 		
 	fileout << endl; 
 	
-		
 	if (verb) {	
 		in->pars().setVerbosity(false);
 		cout << showpoint << fixed << setprecision(2) << endl ;
@@ -516,8 +543,14 @@ void Galfit<T>::galfit() {
 //        }
 //    }
 //    else {
+
         int start_rad = in->pars().getStartRad()<inr->nr ? in->pars().getStartRad() : 0;
         for (int ir=start_rad; ir<inr->nr; ir++) {
+
+           if (*status == -1)
+           {
+           return false;
+           }
             w_r = ir;
             double toKpc = KpcPerArc(distance);
             if (verb) {
@@ -819,15 +852,17 @@ void Galfit<T>::galfit() {
 		cout << fixed << setprecision(2) << setfill(' ');
 		in->pars().setVerbosity(true);
 	}
+
+    return true;
 	
 	
 }
-template void Galfit<float>::galfit();
-template void Galfit<double>::galfit();
+template bool Galfit<float>::galfit(int *status);
+template bool Galfit<double>::galfit(int *status);
 
 
 template <class T> 
-bool Galfit<T>::SecondStage() {
+bool Galfit<T>::SecondStage(int *status) {
 	
 	bool isNeeded = mpar[INC] || mpar[PA]   || mpar[Z0] ||
 					mpar[XPOS]|| mpar[YPOS] || mpar[VSYS];
@@ -1038,15 +1073,18 @@ bool Galfit<T>::SecondStage() {
 	mpar[VSYS]= mpar[Z0] = false;
     nfree = mpar[VROT]+mpar[VDISP];
 
-    galfit();
+    if(!galfit(status))
+      {
+      return false;
+      }
 	
 	for (int i=MAXPAR; i--;) mpar[i]=oldmpar[i];
 	nfree = oldnfree;
 
     return isNeeded;
 }
-template bool Galfit<float>::SecondStage();
-template bool Galfit<double>::SecondStage();
+template bool Galfit<float>::SecondStage(int *status);
+template bool Galfit<double>::SecondStage(int *status);
 
 
 template <class T> 
@@ -1257,19 +1295,20 @@ T Galfit<T>::getCenterCoord(std::string pos, std::string type) {
     //      +000.00d         for degrees values
 
     T pos_grid=0;
+    (void) pos;
     double crval_deg, cdelt_deg, crpix_deg;
     bool isRA = false;
     std::string coord_str;
 
     type = makelower(type);
-    if (type.find("ra")!=-1) {
+    if (type.find("ra")!=std::string::npos) {
         crval_deg = in->Head().Crval(0)*degconv(in->Head().Cunit(0));
         cdelt_deg = in->Head().Cdelt(0)*degconv(in->Head().Cunit(0));
         crpix_deg = in->Head().Crpix(0);
         coord_str = in->pars().getXPOS();
         isRA = true;
     }
-    else if (type.find("dec")!=-1) {
+    else if (type.find("dec")!=std::string::npos) {
         crval_deg = in->Head().Crval(1)*degconv(in->Head().Cunit(1));
         cdelt_deg = in->Head().Cdelt(1)*degconv(in->Head().Cunit(1));
         crpix_deg = in->Head().Crpix(1);
@@ -1281,11 +1320,11 @@ T Galfit<T>::getCenterCoord(std::string pos, std::string type) {
         std::terminate();
     }
 
-    if (coord_str.find('d')!=-1) {                              // Found degrees
+    if (coord_str.find('d')!=std::string::npos) {                              // Found degrees
         std::string substr = coord_str.erase(coord_str.find('d'),coord_str.size()-1);
         pos_grid = (atof(substr.c_str())-crval_deg)/cdelt_deg+crpix_deg-1;
     }
-    else if (coord_str.find(':')!=-1) {                         // Found sexagesimal
+    else if (coord_str.find(':')!=std::string::npos) {                         // Found sexagesimal
         double pos_deg = dmsToDec(coord_str);
         if (isRA) pos_deg*=15;
         pos_grid = (pos_deg-crval_deg)/cdelt_deg+crpix_deg-1;
@@ -1307,13 +1346,13 @@ double* Galfit<T>::getCenterCoordinates(std::string *pos, std::string *type) {
     for (int i=0; i<2; i++) {
         std::string coord_str = pos[i];
         std::string coord_typ = makelower(type[i]);
-        if (coord_str.find('d')!=-1) {
+        if (coord_str.find('d')!=std::string::npos) {
             std::string substr = coord_str.erase(coord_str.find('d'),coord_str.size()-1);
             world[i] = atof(substr.c_str());
         }
-        else if (coord_str.find(':')!=-1) {                         // Found sexagesimal
+        else if (coord_str.find(':')!=std::string::npos) {                         // Found sexagesimal
             double pos_deg = dmsToDec(coord_str);
-            if (coord_typ.find("ra")!=-1) pos_deg*=15;
+            if (coord_typ.find("ra")!=std::string::npos) pos_deg*=15;
             world[i] = pos_deg;
         }
         else isPOS[i]=true;
@@ -1343,7 +1382,8 @@ template long polyn(long*,long*,int);
 template float polyn(float*,float*,int);
 template double polyn(double*,double*,int);
 
-template <class T> void polynd (T *c, T *p, T *d, int npar) {
+template <class T> void polynd (T *c, T *d, T *f, int npar) {
+    (void)f;
 	for (int i=0; i<npar; i++) d[i]=std::pow(double(c[0]),double(i));
 }
 template void polynd(short*,short*,short*,int);

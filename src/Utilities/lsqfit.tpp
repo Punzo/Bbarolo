@@ -36,7 +36,7 @@
 template <class T>
 Lsqfit<T>::Lsqfit (T *x, int xd, T *y, T *w, int n, T *par, T *errpar,
 		      bool *maskpar, int numpar,  T (*funk)(T *, T *, int), 
-		      void (*deriv)(T *, T *, T *, int), double tol, int numiter, double lab) :
+              void (*deriv)(T *, T *, T *, int), double tol, int numiter, double lab) :
 		        
 		      xdat(x), xdim(xd), ydat(y), wdat(w), ndat(n), fpar(par), epar(errpar),
 		      mpar(maskpar), npar(numpar), its(numiter), func(funk), derv(deriv) 

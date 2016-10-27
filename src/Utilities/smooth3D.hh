@@ -43,8 +43,8 @@
 #define SMOOTH3D_HH_
 
 #include <iostream>
-#include "../Arrays/cube.hh"
-
+#include "cube.hh"
+#include "BbaroloConfigure.h"
 
 struct Beam {
 	double bmaj;					//< Major axis of gaussian beam.
@@ -114,7 +114,9 @@ private:
 	
 	bool defineBeam(Beam Oldbeam, Beam Newbeam);
 	bool calculate(T *OldArray, T *NewArray);	
+#ifdef BBAROLO_SUPPORT_FFTW3
 	bool calculatefft(T *OldArray, T *NewArray);
+#endif
 	bool Convpars();			 	
 	bool Fillgauss2d(Beam varbeam, float ampl, bool norm, int &NconX, 
 					 int &NconY, double *cfie);
@@ -123,20 +125,6 @@ private:
 
 };
 
-//#include "smooth3D.cpp"
+#include "smooth3D.tpp"
 
 #endif
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	

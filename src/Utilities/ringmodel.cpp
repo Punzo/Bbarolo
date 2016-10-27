@@ -27,8 +27,8 @@
 #include <cfloat>
 #include <iomanip>
 #include "ringmodel.hh"
-#include "../Arrays/cube.hh"
-#include "../Arrays/param.hh"
+#include "cube.hh"
+#include "param.hh"
 #include "moment.hh"
 #include "lsqfit.hh"
 #include "utils.hh"
@@ -945,7 +945,7 @@ float func (float *c, float *p, int npar) {
   ///
   /// \return 		The radial velocity in requested point.
   
-
+    (void) npar;
 	float	vs, vc, vr;						// Parameters of velocity field. 
 	float	x, y;							// Sky coordinates.
 	float	cost1, sint1; 

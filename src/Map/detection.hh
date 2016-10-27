@@ -29,8 +29,8 @@
 #include <vector>
 #include "voxel.hh"
 #include "object3D.hh"
-#include "../Arrays/param.hh"
-#include "../Arrays/header.hh"
+#include "param.hh"
+#include "header.hh"
 
 
 using namespace PixelInfo;
@@ -79,12 +79,12 @@ public:
 	void   addOffsets(long xoff, long yoff, long zoff){Object3D<T>::addOffsets(xoff,yoff,zoff);};
     void   addOffsets();
     
-    void   addDetection(Detection &other);
+    void   addDetection(Detection<T> &other);
     
     /// Detection related functions
-    bool   canMerge (Detection &other, Param &par);
-    bool   isNear (Detection &other, Param &par);
-    bool   isClose (Detection &other, Param &par);
+    bool   canMerge (Detection<T> &other, Param &par);
+    bool   isNear (Detection<T> &other, Param &par);
+    bool   isClose (Detection<T> &other, Param &par);
     
 
     /// Test whether voxel lists match 
@@ -95,7 +95,7 @@ public:
 
     /// Calculate flux-related parameters of the Detection. 
     void   calcFluxes(T *fluxArray, long *dim); 
-    void   calcFluxes(std::vector<PixelInfo::Voxel<T> > voxelList); 
+    void   calcFluxes(std::vector<PixelInfo::Voxel<T> > voxelList);
 
     /// Calculate parameters related to the World Coordinate System. 
    	void   calcWCSparams(Header &head); 
@@ -103,14 +103,14 @@ public:
     /// Calculate the integrated flux over the entire Detection. 
    	void   calcIntegFlux(T *fluxArray, long *dim, Header &head); 
     /// Calculate the integrated flux over the entire Detection. 
-	void   calcIntegFlux(long zdim, std::vector<PixelInfo::Voxel<T> > voxelList, Header &head); 
+    void   calcIntegFlux(long zdim, std::vector<PixelInfo::Voxel<T> > voxelList, Header &head);
 
     /// Calculate the 20%-/50%-peak-flux widths in a general fashion
     void calcVelWidths(long zdim, T *intSpec, Header &head);
     /// Calculate the 20%/50% peak flux widths 
   	void calcVelWidths(T *fluxArray, long *dim, Header &head);
     /// Calculate the 20%/50% peak flux widths 
-   	void calcVelWidths(long zdim, std::vector<PixelInfo::Voxel<T> > voxelList, Header &head);
+    void calcVelWidths(long zdim, std::vector<PixelInfo::Voxel<T> > voxelList, Header &head);
 
 	/// Get the location of the spatial borders. 
     std::vector<int> getVertexSet();
@@ -304,5 +304,6 @@ public:
   //void SortDetections(std::vector <Detection> &inputList, std::string parameter);
 
 
-#include "detection.cpp"
+#include "detection.tpp"
+
 #endif

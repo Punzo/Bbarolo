@@ -29,26 +29,26 @@
 
 namespace PixelInfo
 {
-  
+
   template <class T>
   class Voxel							/// A class to describe 3-dimensional pixel, 
   {										/// with x,y,z position + flux.
   public:
      
     Voxel(){};								 /// Default constructor.
-    Voxel(long x, long y, long z, T f); 	 /// Default constructor.										 
-    Voxel(long x, long y, long z);		 /// Specific constructor with flux=0. 
+    Voxel(long x, long y, long z, T f); 	 /// Default constructor.
+    Voxel(long x, long y, long z);		 /// Specific constructor with flux=0.
    
-    Voxel(const Voxel& v);					 /// Copy constructor. 
-    Voxel& operator= (const Voxel& v);		 /// Assignment operator. 
+    Voxel(const Voxel& v);					 /// Copy constructor.
+    Voxel& operator= (const Voxel& v);		 /// Assignment operator.
     virtual ~Voxel(){};						 /// Default destructor.
 
 	
 	/// Overloaded operators: print out << and equality ==.
-	template <class Type>	
+    template <class Type>
     friend std::ostream& operator<<( std::ostream& theStream, Voxel<T>& vox);
     template <class Type>
-    friend bool operator== (Voxel<T> lhs, Voxel<T> rhs);	 
+    friend bool operator== (Voxel<T> lhs, Voxel<T> rhs);
     
     
     /// Accessor functions to private class members.
@@ -66,8 +66,8 @@ namespace PixelInfo
     long   getZ(){return itsZ;};
     T	   getF(){return itsF;};
     									
-    long   arrayIndex(long *dim);					/// Return an index value for an array 	
-	bool   match(Voxel other);						/// Function to test for equality of positions only.
+    long   arrayIndex(long *dim);					/// Return an index value for an array
+    bool   match(Voxel<T> other);						/// Function to test for equality of positions only.
 	  
 
   protected:
@@ -98,6 +98,6 @@ namespace PixelInfo
 
 }
 
-#include "voxel.cpp"
+#include "voxel.tpp"
 
 #endif 

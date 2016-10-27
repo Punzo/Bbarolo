@@ -22,7 +22,7 @@
 
 #include <iostream> 
 #include <cfloat> 
-#include "../Arrays/cube.hh"
+#include "cube.hh"
 #include "galfit.hh"
 #include "utils.hh"
 #include "gnuplot.hh"

@@ -29,10 +29,10 @@
 #include <algorithm>
 #include <cmath>
 #include "utils.hh"
-#include "../Arrays/header.hh"
-#include "../Map/voxel.hh"
+#include "header.hh"
+#include "voxel.hh"
 #include <fitsio.h>
-#include <wcslib/wcs.h>
+#include <wcs.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include <sys/types.h>
@@ -677,7 +677,7 @@ template double Pbcor (PixelInfo::Voxel<double>&, Header&);
 template <class T> 
 void Pbcor (long x, long y, long z, T &flux, Header &h) {
 	
-	PixelInfo::Voxel<T> vox (x, y, z, flux);
+    PixelInfo::Voxel<T> vox (x, y, z, flux);
 	flux = Pbcor<T>(vox, h);
 	
 } 
@@ -808,3 +808,19 @@ template <> int selectDatatype<int>() {return TINT;}
 template <> int selectDatatype<long>() {return TLONG;}
 template <> int selectDatatype<float>() {return TFLOAT;}
 template <> int selectDatatype<double>() {return TDOUBLE;}
+
+
+double *cp_binomial(int points) {
+
+  int e = points;
+  int n = points-1;
+  double *coeff = new double[e];
+  e = n/2;
+  coeff[0] = 0.0;
+  for (int k = 0; k<e; k++)
+    coeff[k+1] = coeff[k] + log(((double)(n-k))/((double)(k+1)));
+
+  for (int k=n; k>=e; k--) coeff[k] = coeff[n-k];
+
+  return (coeff);
+}

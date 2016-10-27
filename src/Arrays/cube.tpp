@@ -21,14 +21,15 @@
     Internet email: enrico.diteodoro@unibo.it
 -----------------------------------------------------------------------*/
 
+#include <iomanip>
 #include <iostream>
 #include <fstream>
 #include "cube.hh"
 #include "stats.hh"
-#include "../Map/detection.hh"
-#include "../Utilities/utils.hh"
-#include "../Utilities/progressbar.hh"
-#include "../Utilities/smooth3D.hh"
+#include "detection.hh"
+#include "utils.hh"
+#include "progressbar.hh"
+#include "smooth3D.hh"
 
 
 template <class T>
@@ -43,8 +44,9 @@ void Cube<T>::defaults() {
     mapAllocated  = false;
     isSearched = false;
 	objectList = new std::vector<Detection<T> >; 
-	
+
 }
+
 template void Cube<short>::defaults(); 
 template void Cube<int>::defaults(); 
 template void Cube<long>::defaults(); 
@@ -250,8 +252,6 @@ template void Cube<int>::setCube (int*, int*);
 template void Cube<long>::setCube (long*, int*);
 template void Cube<float>::setCube (float*, int*);
 template void Cube<double>::setCube (double*, int*);
-
-
 
 template <class T>
 bool Cube<T>::readCube (std::string fname) {
@@ -468,6 +468,7 @@ void Cube<T>::BlankMask (float *channel_noise){
      *
      /////////////////////////////////////////////////////////////////////////////////*/
 
+
     if (maskAllocated) delete [] mask;
     mask = new bool[numPix];
 
@@ -498,7 +499,7 @@ void Cube<T>::BlankMask (float *channel_noise){
     }
     else if (par.getMASK()=="THRESHOLD") {
         float thresh = par.getThreshold();
-        for (uint i=numPix; i--;) {
+        for (uint i=(uint)numPix; i--;) {
             if (array[i]>thresh) mask[i] = 1;
         }
     }
@@ -516,12 +517,12 @@ void Cube<T>::BlankMask (float *channel_noise){
         Smooth3D<T> *sm = new Smooth3D<T>;
         sm->smooth(this, oldbeam, newbeam);
         bool *blanks = new bool[numPix];
-        for (int i=0; i<numPix; i++) blanks[i] = isBlank(sm->Array(i)) ? false : true;
+        for (int i=0; i<(int)numPix; i++) blanks[i] = isBlank(sm->Array(i)) ? false : true;
         st->calculate(sm->Array(),numPix,blanks);
         st->setThresholdSNR(par.getBlankCut());
 
         ///* Without three consecutive channels requirement
-        for (size_t i=0; i<numPix; i++) {
+        for (size_t i=0; i<(size_t)numPix; i++) {
             if (sm->Array(i)>st->getThreshold()) mask[i] = 1;
         }
         //*/
@@ -569,11 +570,11 @@ void Cube<T>::BlankMask (float *channel_noise){
             if (channel_noise!=NULL) channel_noise[z]=st->getSpread();
         }
     }
-    else if (par.getMASK().find("FILE(")!=-1) {
+    else if (par.getMASK().find("FILE(")!=std::string::npos) {
         std::string str = par.getMASK();
         size_t first = str.find_first_of("(");
         size_t last = str.find_last_of(")");
-        if (first==-1 || last==-1) {
+        if (first!=std::string::npos || last!=std::string::npos) {
             std::cerr << "\n  ERROR: MASK parameter is not correct. Provide file(Maskfitsfile)\n";
             std::terminate();
         }
@@ -593,7 +594,7 @@ void Cube<T>::BlankMask (float *channel_noise){
             std::terminate();
         }
 
-        for (size_t i=0; i<numPix; i++) mask[i] = ma->Array(i);
+        for (size_t i=0; i< (size_t)numPix; i++) mask[i] = ma->Array(i);
 
         delete ma;
 
@@ -605,7 +606,6 @@ void Cube<T>::BlankMask (float *channel_noise){
     }
 
     delete st;
-
 
     if (verb) {
         std::cout << " Done." << std::endl;

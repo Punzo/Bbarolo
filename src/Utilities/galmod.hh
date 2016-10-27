@@ -65,7 +65,7 @@
 
 #include <iostream>
 #include <vector>
-#include "../Arrays/cube.hh"
+#include "cube.hh"
 
 template <class Type>
 struct Rings {
@@ -187,6 +187,6 @@ protected:
 
 }
 
-//#include "galmod.cpp"
+#include "galmod.tpp"
 
 #endif

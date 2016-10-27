@@ -74,9 +74,9 @@ namespace PixelInfo
     /// @brief Test whether a given Scan overlaps with any pixels in the Object. 
     bool  scanOverlaps(Scan<T> &scan);
 
-    bool canMerge(Object2D &other, float threshS, bool flagAdj);
-    bool isNear(Object2D &other, long gap);
-    bool isClose(Object2D &other, float threshS, bool flagAdj);   
+    bool canMerge(Object2D<T> &other, float threshS, bool flagAdj);
+    bool isNear(Object2D<T> &other, long gap);
+    bool isClose(Object2D<T> &other, float threshS, bool flagAdj);
 
     /// @brief Return the number of pixels in the Object. 
     unsigned long  getSize(){return numPix;};
@@ -84,14 +84,23 @@ namespace PixelInfo
     /// @brief Return the number of Scans in the Object. 
     long  getNumScan(){return scanlist.size();};
 
+    /// @brief Return the ScanList in the Object.
+    std::vector<Scan<T> >  getScanList(){return scanlist;};
+
     /// @brief Order the Scans in the list, using the < operator for Scans. 
-     void  order(){std::stable_sort(scanlist.begin(),scanlist.end());};
+    void  order(){std::stable_sort(scanlist.begin(),scanlist.end());};
 
     /// @brief Add values to the x- and y-axes, making sure to add the offsets to the sums and min/max values. 
     void  addOffsets(long xoff, long yoff);
 
     /// @brief Calculate the sums, mins, maxs for x&y -- should not be necessary as these are done when pixels & Scans are added. 
     void  calcParams();
+
+    /// @brief Return the x-value.
+    float getXsum(){return xSum;};
+
+    /// @brief Return the y-value.
+    float getYsum(){return ySum;};
 
     /// @brief Return the average x-value. 
     float getXaverage(){return xSum/float(numPix);};
@@ -125,8 +134,9 @@ namespace PixelInfo
     template <class Type> friend class Object3D; 
     template <class Type> friend class Detection;
 
-  protected:
+
     std::vector<Scan<T> > scanlist;       ///< The list of Scans
+  protected:
     unsigned long     numPix;         ///< Number of pixels in the Object
     float             xSum;           ///< Sum of x values
     float             ySum;           ///< Sum of y values
@@ -135,5 +145,7 @@ namespace PixelInfo
   };
 
 }
-//#include "object2D.cpp"
+
+#include "object2D.tpp"
+
 #endif //OBJECT2D_H

@@ -29,7 +29,7 @@
 #include "header.hh"
 #include "stats.hh"
 #include "param.hh"
-#include "../Map/detection.hh"
+#include "detection.hh"
 
 using namespace Statistics;
 
@@ -73,14 +73,20 @@ public:
 	void	setYsize (int i) {axisDim[1] = i;};
 	void	setZsize (int i) {axisDim[2] = i;};
 	void	setDimAx (long *ax) {axisDim=ax;};
-	Header&	Head	 () {Header &h = head; return h;};
+    Header&	Head	 () {Header &h = head; return h;};
 	void	setHeadDef (bool b) {headDefined = b;};
 	bool	HeadDef (){return headDefined;};
 	void	saveHead (Header &h) {head = h; headDefined=true;};
 	
     bool*	Mask 	() {return mask;};
     bool	Mask	(long npix) {return mask[npix];};
+    void        setMask (bool *inputMask){  if(maskAllocated) delete [] mask;
+                                            mask = new bool[numPix];
+                                            for(int i=0;i<numPix;i++) mask[i] = inputMask[i];
+                                            maskAllocated = true;};
     bool	MaskAll	() {return maskAllocated;};
+    void        SetMaskAll (bool flag) {maskAllocated=flag;};
+
 	
 	T 	printStats() {std::cout << stats << std::endl;}; 
 	Stats<T>  getStats(){ return stats;};
@@ -100,9 +106,8 @@ public:
     std::vector <Detection<T> >  *pObjectList(){return objectList;};
     std::vector <Detection<T> >  &ObjectList(){std::vector<Detection<T> > &rlist=*objectList; return rlist;};
     bool getIsSearched () {return isSearched;};
+    void setIsSearched (bool flag) {isSearched=flag;};
 
-
-	
 	/// Functions for Fitsfile I/O:
 	
 	void	setCube  (T *input, int *dim);
@@ -200,8 +205,7 @@ public:
 	Object2D<T> info; 			///< Collection of detected pixels.
 };
 
-
-//#include "cube.cpp"
-//#include "search.cpp"
+#include "cube.tpp"
+#include "search.tpp"
 
 #endif

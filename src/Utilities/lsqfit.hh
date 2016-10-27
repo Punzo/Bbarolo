@@ -31,7 +31,7 @@ public:
 
 	Lsqfit (T *x, int xd, T *y, T *w, int n, T *par, T *errpar,
 		    bool *maskpar, int numpar, T (*funk)(T*,T*, int), 
-		    void (*deriv)(T*, T*, T*, int), double tol=1.E-03, 
+            void (*deriv)(T*, T*, T*, int), double tol=1.E-03,
 		    int numiter=1000, double lab=1.E-03);
 	
 	~Lsqfit ();
@@ -73,6 +73,6 @@ private:
 	
 };
 
-#include "lsqfit.cpp"
+#include "lsqfit.tpp"
 
 #endif

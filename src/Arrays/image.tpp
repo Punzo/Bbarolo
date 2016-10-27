@@ -28,10 +28,10 @@
 #include "stats.hh"
 #include "header.hh"
 #include "image.hh"
-#include "../Map/object2D.hh"
-#include "../Map/voxel.hh"
-#include "../Map/scan.hh"
-#include "../Utilities/utils.hh"
+#include "object2D.hh"
+#include "voxel.hh"
+#include "scan.hh"
+#include "utils.hh"
 
 template <class Type>
 void Image2D<Type>::defaults() {
@@ -40,7 +40,8 @@ void Image2D<Type>::defaults() {
 	numAxes = 2;
 	arrayAllocated = false;
 	headDefined = false;
-	statsDefined= false;
+    statsDefined = false;
+    maskAllocated = false;
 }
 template void Image2D<short>::defaults();
 template void Image2D<int>::defaults();
@@ -66,6 +67,7 @@ template <class Type>
 Image2D<Type>::~Image2D () {
 	
 	if (arrayAllocated) delete [] array;
+    if (maskAllocated) delete [] mask;
 }
 template Image2D<short>::~Image2D();
 template Image2D<int>::~Image2D();
@@ -80,6 +82,7 @@ Image2D<Type>::Image2D(int *dim)  {
     defaults();
     int size = dim[0]*dim[1];
     arrayAllocated = false;
+    maskAllocated = false;
     numPix = numAxes = 0;
     if(size<0)
 		std::cout << "Error [Image2D(dimArray)]: Negative size -- could not define Image"<<std::endl;
@@ -130,6 +133,13 @@ Image2D<Type>& Image2D<Type>::operator=(const Image2D<Type> &i) {
 		this->array = new Type[this->numPix];
 		for(int j=0; j<numPix; j++) this->array[j] = i.array[j];
     }
+
+    if(this->maskAllocated) delete [] mask;
+    this->maskAllocated = i.maskAllocated;
+    if(this->maskAllocated) {
+        this->mask = new bool[this->numPix];
+        for(int j=0; j<numPix; j++) this->mask[j] = i.mask[j];
+    }
     
     this->headDefined = i.headDefined;
 	if (this->headDefined) this->head = i.head;
@@ -168,6 +178,27 @@ template void Image2D<long>::setImage(long*,int*);
 template void Image2D<float>::setImage(float*,int*);
 template void Image2D<double>::setImage(double*,int*);
 
+template <class Type>
+void Image2D<Type>::setMask(bool *input, int *dim) {
+
+    if (maskAllocated) delete [] mask;
+    numAxes = 2;
+    for (int i=0; i<numAxes; i++) axisDim[i] = dim[i];
+    numPix = axisDim[0]*axisDim[1];
+    mask = new bool [numPix];
+    maskAllocated=true;
+    for (int y=0; y<axisDim[1]; y++)
+        for (int x=0; x<axisDim[0]; x++) {
+                long nPix = x+y*axisDim[0];
+                mask[nPix]=input[nPix];
+            }
+
+}
+template void Image2D<short>::setMask(bool*,int*);
+template void Image2D<int>::setMask(bool*,int*);
+template void Image2D<long>::setMask(bool*,int*);
+template void Image2D<float>::setMask(bool*,int*);
+template void Image2D<double>::setMask(bool*,int*);
 
 template <class Type>
 bool Image2D<Type>::readImage(std::string fname) {
@@ -523,6 +554,149 @@ template void Image2D<double>::extractImage(Cube<double>&,long);
 
 
 template <class Type>
+void Image2D<Type>::extractMaskSpectrum(bool *MaskArray, int *dim, long pixel) {
+
+  ///  A function to extract a 1-D mask spectrum from a 3-D array.
+  ///  The array is assumed to be 3-D with the third dimension the spectral one.
+  ///  The spectrum extracted is the one lying in the spatial pixel referenced
+  ///  by the third argument.
+  ///  The extracted spectrum is stored in the pixel array Image::array.
+  ///
+  ///  \param Array 		The array containing the pixel values, from which
+  ///               		the spectrum is extracted.
+  ///  \param dim 			The array of dimension values.
+  ///  \param pixel			The spatial pixel that contains the desired spectrum.
+
+    if((pixel<0)||(pixel>=dim[0]*dim[1]))
+        std::cout << "Image::extractMaskSpectrum: Requested spatial pixel outside allowed range. Cannot save."<<std::endl;
+    else if(dim[2] != numPix)
+        std::cout << "Image::extractMaskSpectrum: Input array different size to existing array. Cannot save."<<std::endl;
+    else {
+        if(numPix>0 && maskAllocated) delete [] mask;
+        numPix = dim[2];
+        if(numPix>0){
+            mask = new bool[dim[2]];
+            maskAllocated = true;
+            for(int z=0;z<dim[2];z++) mask[z] = MaskArray[z*dim[0]*dim[1] + pixel];
+        }
+    }
+}
+template void Image2D<short>::extractMaskSpectrum(bool*,int*,long);
+template void Image2D<int>::extractMaskSpectrum(bool*,int*,long);
+template void Image2D<long>::extractMaskSpectrum(bool*,int*,long);
+template void Image2D<float>::extractMaskSpectrum(bool*,int*,long);
+template void Image2D<double>::extractMaskSpectrum(bool*,int*,long);
+
+
+template <class Type>
+void Image2D<Type>::extractMaskSpectrum(Cube<Type> &cube, long pixel)  {
+
+  ///  A function to extract a 1-D mask spectrum from a Cube class
+  ///  The spectrum extracted is the one lying in the spatial pixel referenced
+  ///  by the second argument.
+  ///  The extracted spectrum is stored in the pixel array Image::array.
+  ///
+  ///  \param cube 		The Cube containing the pixel values,
+  ///					from which the spectrum is extracted.
+  ///  \param pixel 	The spatial pixel that contains the desired spectrum.
+
+    long zdim = cube.DimZ();
+    long spatSize = cube.DimX()*cube.DimY();
+    if((pixel<0)||(pixel>=spatSize))
+        std::cout << "Image::extractMaskSpectrum: Requested spatial pixel outside allowed range. Cannot save."<< std::endl;
+    else if(zdim != numPix)
+        std::cout << "Image::extractMaskSpectrum: Input array different size to existing array. Cannot save."<< std::endl;
+    else {
+        if(numPix>0 && maskAllocated) delete [] mask;
+        numPix = zdim;
+        if(numPix>0){
+            mask = new bool[zdim];
+            maskAllocated = true;
+        for(int z=0;z<zdim;z++)
+            mask[z] = cube.Mask(z*spatSize + pixel);
+        }
+    }
+}
+template void Image2D<short>::extractMaskSpectrum(Cube<short>&,long);
+template void Image2D<int>::extractMaskSpectrum(Cube<int>&,long);
+template void Image2D<long>::extractMaskSpectrum(Cube<long>&,long);
+template void Image2D<float>::extractMaskSpectrum(Cube<float>&,long);
+template void Image2D<double>::extractMaskSpectrum(Cube<double>&,long);
+
+
+template <class Type>
+void Image2D<Type>::extractMaskImage(bool *MaskArray, int *dim, long channel) {
+
+  ///  A function to extract a 2-D mask image from a 3-D array.
+  ///  The array is assumed to be 3-D with the third dimension the spectral one.
+  ///  The dimensions of the array are in the dim[] array.
+  ///  The image extracted is the one lying in the channel referenced
+  ///  by the third argument.
+  ///  The extracted image is stored in the pixel array Image::array.
+  ///
+  ///  \param 			Array The array containing the pixel values,
+  ///					from which the image is extracted.
+  ///  \param dim 		The array of dimension values.
+  ///  \param channel 	The spectral channel that contains the desired image.
+
+    long spatSize = dim[0]*dim[1];
+    if((channel<0)||(channel>=dim[2]))
+        std::cout<<"Image::extractMaskImage: Requested channel outside allowed range. Cannot save."<<std::endl;
+    else if(spatSize != numPix)
+        std::cout<<"Image::extractMaskImage: Input array different size to existing array. Cannot save."<<std::endl;
+    else {
+        if(numPix>0 && maskAllocated) delete [] mask;
+        numPix = spatSize;
+        if(numPix>0){
+            mask = new bool[spatSize];
+            maskAllocated = true;
+            for(int npix=0; npix<spatSize; npix++)
+                mask[npix] = MaskArray[channel*spatSize + npix];
+        }
+    }
+}
+template void Image2D<short>::extractMaskImage(bool*,int*,long);
+template void Image2D<int>::extractMaskImage(bool*,int*,long);
+template void Image2D<long>::extractMaskImage(bool*,int*,long);
+template void Image2D<float>::extractMaskImage(bool*,int*,long);
+template void Image2D<double>::extractMaskImage(bool*,int*,long);
+
+
+template <class Type>
+void Image2D<Type>::extractMaskImage(Cube<Type> &cube, long channel) {
+
+  ///  A function to extract a 2-D mask image from Cube class.
+  ///  The image extracted is the one lying in the channel referenced
+  ///  by the second argument.
+  ///  The extracted image is stored in the pixel array Image::array.
+  ///
+  ///  \param cube 		The Cube containing the pixel values,
+  ///					from which the image is extracted.
+  ///  \param channel 	The spectral channel that contains the desired image.
+
+    long spatSize = cube.DimX()*cube.DimY();
+    if((channel<0)||(channel>=cube.DimZ()))
+        std::cout<<"Image::extractMaskImage: Requested channel outside allowed range. Cannot save."<<std::endl;
+    else if(spatSize != numPix)
+        std::cout<<"Image::extractMaskImage: Input array different size to existing array. Cannot save."<<std::endl;
+    else {
+        if(numPix>0 && maskAllocated) delete [] mask;
+        numPix = spatSize;
+        if(numPix>0){
+            mask = new bool[spatSize];
+            maskAllocated = true;
+        for(int npix=0; npix<spatSize; npix++)
+            mask[npix] = cube.Mask(channel*spatSize + npix);
+        }
+    }
+}
+template void Image2D<short>::extractMaskImage(Cube<short>&,long);
+template void Image2D<int>::extractMaskImage(Cube<int>&,long);
+template void Image2D<long>::extractMaskImage(Cube<long>&,long);
+template void Image2D<float>::extractMaskImage(Cube<float>&,long);
+template void Image2D<double>::extractMaskImage(Cube<double>&,long);
+
+template <class Type>
 std::vector<PixelInfo::Scan<Type> > Image2D<Type>::findSources1D() {
     
     std::vector<bool> thresholdedArray(axisDim[0]);
@@ -565,6 +739,7 @@ bool Image2D<Type>::isDetection(long x, long y) {
       /// the local Stats object.
 
       long voxel = y*axisDim[0] + x;
+      if(maskAllocated) return mask[voxel];
 	  return stats.isDetection(array[voxel]);
 }
 template bool Image2D<short>::isDetection(long,long);

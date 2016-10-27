@@ -26,9 +26,10 @@
 
 
 #include <iostream>
-#include "../Arrays/cube.hh"
-#include "../Arrays/image.hh"
+#include "cube.hh"
+#include "image.hh"
 #include "galmod.hh"
+#include "BbaroloConfigure.h"
 
 namespace Model {
 
@@ -46,18 +47,20 @@ public:
     Rings<T> *Inrings  () {return inr;}
     Rings<T> *Outrings () {return outr;}
 
-    /// Functions defined in galfit.cpp
+    /// Functions defined in galfit.tpp
 	void input (Cube<T> *c, Rings<T> *inrings, bool *maskpar, double TOL=1E-03);
-    void galfit();
+    bool galfit(int *status);
 	Galmod<T>* getModel();
-    bool SecondStage();
+    bool SecondStage(int *status);
 
-    /// Functions defined in galfit_out.cpp
+    /// Functions defined in galfit_out.tpp
     void writeModel(std::string normtype);
     void writePVs(Cube<T> *mod, std::string suffix="");
 
+    /// Functions defined in galfit_min.tpp
+    T* getFinalRingsRegion ();
 
-    /// Functions defined in slitfit.cpp
+    /// Functions defined in slitfit.tpp
     void slit_init(Cube<T> *c);
     void writeModel_slit();
 
@@ -74,7 +77,7 @@ protected:
 	double	 tol;				//< Tolerance criterium for minimization.
 	double	 arcconv;			//< Conversion factor to arcsec.
 	int 	 nfree;				//< Number of free parameters.
-	float	 distance;			//< Distance of the galaxy in Mpc.	
+    double	 distance;			//< Distance of the galaxy in Mpc.
 	T		 maxs[9];			//< Maximum values allowed for parameters.
 	T		 mins[9];			//< Minimum values allowed for parameters.
 	double	 *cfield;			//< Convolution field.	
@@ -112,7 +115,9 @@ protected:
     T  	   func3D(Rings<T> *dring, T *zpar);
 	T  	   model(Rings<T> *dring);
 	void   Convolve(T *array, int *bsize);
+#ifdef BBAROLO_SUPPORT_FFTW3
 	void   Convolve_fft(T *array, int *bsize);
+#endif
     double norm_local(Rings<T> *dring, T *array, int *bhi, int *blo);
     double norm_azim (Rings<T> *dring, T *array, int *bhi, int *blo);
     double norm_none (Rings<T> *dring, T *array, int *bhi, int *blo);
@@ -122,7 +127,6 @@ protected:
     inline bool getSide (double theta);
     inline double getFuncValue(T obs, T mod, double weight, double noise_weight);
 	std::vector<Pixel<T> >* getRingRegion (Rings<T> *dring, int *bhi, int *blo);
-	T* getFinalRingsRegion ();
 
     /// Functions defined in galfit_out.cpp
     void printDetails  (Rings<T> *dr, T fmin, long pix, std::ostream& str=std::cout);
@@ -145,5 +149,11 @@ protected:
 template <class T> T polyn (T*, T*, int);
 template <class T> void polynd (T*, T*, T*, int);
 template <class T> void fpolyn (T , T*, int, T&, T*);
+
+#include "galfit.tpp"
+#include "galfit_errors.tpp"
+#include "galfit_min.tpp"
+#include "galfit_out.tpp"
+#include "slitfit.tpp"
 
 #endif
