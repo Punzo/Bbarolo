@@ -306,6 +306,7 @@ void Cube<T>::updateDetectMap(PixelInfo::Detection<T> obj) {
     std::vector<PixelInfo::Voxel<T> > vlist = obj.getPixelSet();
 
     typename std::vector<PixelInfo::Voxel<T> >::iterator vox;
+
     for(vox=vlist.begin();vox<vlist.end();vox++)
     {
        detectMap[vox->getX()+vox->getY()*axisDim[0]]++;

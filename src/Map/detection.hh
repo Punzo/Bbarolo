@@ -82,7 +82,6 @@ public:
     bool   canMerge (PixelInfo::Detection<T> &other, Param &par);
     bool   isNear (PixelInfo::Detection<T> &other, Param &par);
     bool   isClose (PixelInfo::Detection<T> &other, Param &par);
-    
 
     /// Test whether voxel lists match 
     bool voxelListsMatch(std::vector<PixelInfo::Voxel<T> > voxelList);
