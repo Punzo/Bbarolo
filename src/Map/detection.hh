@@ -32,6 +32,8 @@
 #include "param.hh"
 #include "header.hh"
 
+namespace PixelInfo
+{
   /// Class to represent a contiguous set of detected voxels.
   /// This is a detected object, which features:
   /// a vector of voxels, average and centroid positions, total & peak fluxes,
@@ -40,7 +42,7 @@
   /// Also many functions with which to manipulate the Detections.
 
 template <class T>
-class PixelInfo::Detection : public PixelInfo::Object3D<T>
+class Detection : public PixelInfo::Object3D<T>
 {
 public:
 	Detection();
@@ -299,6 +301,7 @@ public:
   /// @brief Sort a list of Detections by a nominated parameter
   //void SortDetections(std::vector <Detection> &inputList, std::string parameter);
 
+}
 
 #include "detection.tpp"
 
