@@ -100,11 +100,11 @@ public:
 	void    saveParam(Param &newpar){par = newpar;};
 	long    getNumObj(){return objectList->size();};
 	short*	DetectMap () {return detectMap;};
-	Detection<T>  getObject(long number){return objectList->at(number);};
-    Detection<T>* pObject(long number){return &(objectList->at(number));};
-    std::vector <Detection<T> >  getObjectList(){return *objectList;};
-    std::vector <Detection<T> >  *pObjectList(){return objectList;};
-    std::vector <Detection<T> >  &ObjectList(){std::vector<Detection<T> > &rlist=*objectList; return rlist;};
+    PixelInfo::Detection<T>  getObject(long number){return objectList->at(number);};
+    PixelInfo::Detection<T>* pObject(long number){return &(objectList->at(number));};
+    std::vector <PixelInfo::Detection<T> >  getObjectList(){return *objectList;};
+    std::vector <PixelInfo::Detection<T> >  *pObjectList(){return objectList;};
+    std::vector <PixelInfo::Detection<T> >  &ObjectList(){std::vector<PixelInfo::Detection<T> > &rlist=*objectList; return rlist;};
     bool getIsSearched () {return isSearched;};
     void setIsSearched (bool flag) {isSearched=flag;};
 
@@ -124,21 +124,21 @@ public:
 	
 	void  	Search();									 /// Front-end function to search in a 3-D cube.
 	void  	CubicSearch();								 /// Front-end to next functions. 
-	std::vector <Detection<T> > search3DArray();			 /// Switch functions for spectral or spatial.
-	std::vector <Detection<T> > search3DArraySpectral();	 /// Research objects in the 1-D spectra.
-	std::vector <Detection<T> > search3DArraySpatial();	 	 /// Research objects in the 2-D channels maps.
+    std::vector <PixelInfo::Detection<T> > search3DArray();			 /// Switch functions for spectral or spatial.
+    std::vector <PixelInfo::Detection<T> > search3DArraySpectral();	 /// Research objects in the 1-D spectra.
+    std::vector <PixelInfo::Detection<T> > search3DArraySpatial();	 	 /// Research objects in the 2-D channels maps.
     void  	updateDetectMap();							 /// Update the map of detected pixels.  
-    void  	updateDetectMap(Detection<T> obj);				 /// Update the map of detected pixels for a Detection. 
+    void  	updateDetectMap(PixelInfo::Detection<T> obj);				 /// Update the map of detected pixels for a Detection.
 	void  	ObjectMerger();								 /// Front-end function to mergeList & finaliseList.
 	void  	ObjectMergerSimple();						 /// Front-end function to mergeList & finaliseList.
-	void  	mergeList(std::vector<Detection<T> > &objList);  /// Merge a list of pixel in a single object.
-	void  	finaliseList(std::vector<Detection<T> > &objList);/// Verify if a detection can be considered an object.
-    void  	rejectObjects(std::vector<Detection<T> > &objList);/// Verify if a detection can be considered an object.
-	void  	mergeIntoList(Detection<T> &object, 			 /// Add an object in a detection list.
-			std::vector <Detection<T> > &objList); 
+    void  	mergeList(std::vector<PixelInfo::Detection<T> > &objList);  /// Merge a list of pixel in a single object.
+    void  	finaliseList(std::vector<PixelInfo::Detection<T> > &objList);/// Verify if a detection can be considered an object.
+    void  	rejectObjects(std::vector<PixelInfo::Detection<T> > &objList);/// Verify if a detection can be considered an object.
+    void  	mergeIntoList(PixelInfo::Detection<T> &object, 			 /// Add an object in a detection list.
+            std::vector <PixelInfo::Detection<T> > &objList);
 	void  	printDetections (std::ostream& Stream);		 /// An easy way to print the detection list.
 	void 	plotDetections();
-    Detection<T>* LargestDetection ();
+    PixelInfo::Detection<T>* LargestDetection ();
 
 	/// Blanking and Maps functions, defined in mmaps.cpp.
 	
@@ -163,7 +163,7 @@ protected:
 	Stats<T>	stats; 						///< The statistics for the data array.
 	bool		statsDefined;				///< Have been statistics defined?
 	Param		par;				        ///< A parameter list.
-	std::vector <Detection<T> > *objectList; 	///< The list of detected objects.
+    std::vector <PixelInfo::Detection<T> > *objectList; 	///< The list of detected objects.
 	
 
 private:
@@ -202,7 +202,7 @@ public:
 	FoundObject(){start=NULLSTART; end=NULLSTART;};		
 	int start; 				///< Pixel on the current row where the detection starts.
 	int end;   				///< Pixel on the current row where the detection finishes.
-	Object2D<T> info; 			///< Collection of detected pixels.
+    PixelInfo::Object2D<T> info; 			///< Collection of detected pixels.
 };
 
 #include "cube.tpp"

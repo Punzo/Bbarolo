@@ -38,7 +38,7 @@ class ParamGuess
 {
 public:
 	Cube<T>	*in;
-	Detection<T> *obj;
+    PixelInfo::Detection<T> *obj;
 	T		xcentre;
 	T		ycentre;
 	T		vsystem;
@@ -53,7 +53,7 @@ public:
 	T*		Intmap;
 	T*		Vemap;
 	
-	ParamGuess(Cube<T> *c, Detection<T> *object);
+    ParamGuess(Cube<T> *c, PixelInfo::Detection<T> *object);
 	~ParamGuess();
 	
     void setPosang (T v) {posang=v;}
@@ -95,7 +95,7 @@ private:
 
 
 template <class T>
-ParamGuess<T>::ParamGuess(Cube<T> *c, Detection<T> *object) {
+ParamGuess<T>::ParamGuess(Cube<T> *c, PixelInfo::Detection<T> *object) {
 	
 	in	= c;
 	obj	= object;
@@ -116,12 +116,12 @@ ParamGuess<T>::ParamGuess(Cube<T> *c, Detection<T> *object) {
 	/// Extracting intensity and velocity field
 	Vemap = new T[in->DimX()*in->DimY()];
 	Intmap = new T[in->DimX()*in->DimY()];
-	std::vector<Voxel<T> > voxelList = obj->getPixelSet(in->Array(), in->AxisDim());
+    std::vector<PixelInfo::Voxel<T> > voxelList = obj->getPixelSet(in->Array(), in->AxisDim());
 	float *fluxint = new float[in->DimX()*in->DimY()];
 	float *fluxsum = new float[in->DimX()*in->DimY()];
 	for (int i=0; i<in->DimX()*in->DimY();i++) fluxint[i] = fluxsum[i] = Intmap[i]= 0;
 	
-	for(typename std::vector<Voxel<T> >::iterator vox=voxelList.begin();vox<voxelList.end();vox++){
+    for(typename std::vector<PixelInfo::Voxel<T> >::iterator vox=voxelList.begin();vox<voxelList.end();vox++){
 		int x = vox->getX();
 		int y = vox->getY();
 		int z = vox->getZ();

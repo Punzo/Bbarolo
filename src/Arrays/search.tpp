@@ -124,7 +124,7 @@ template void Cube<double>::CubicSearch();
 
 
 template <class T> 
-std::vector <Detection<T> > Cube<T>::search3DArray() {
+std::vector <PixelInfo::Detection<T> > Cube<T>::search3DArray() {
 	
   /// A simple front end functions to choose spatial
   /// or spectral research. If [searchType] parameter
@@ -137,18 +137,18 @@ std::vector <Detection<T> > Cube<T>::search3DArray() {
 		return search3DArraySpatial();
 	else {
 		std::cout << "Unknown search type : " << par.getSearchType()<< std::endl;
-    return std::vector<Detection<T> >(0);
+    return std::vector<PixelInfo::Detection<T> >(0);
 	}
 }
-template std::vector <Detection<short> > Cube<short>::search3DArray();
-template std::vector <Detection<int> > Cube<int>::search3DArray();
-template std::vector <Detection<long> > Cube<long>::search3DArray();
-template std::vector <Detection<float> > Cube<float>::search3DArray();
-template std::vector <Detection<double> > Cube<double>::search3DArray();
+template std::vector <PixelInfo::Detection<short> > Cube<short>::search3DArray();
+template std::vector <PixelInfo::Detection<int> > Cube<int>::search3DArray();
+template std::vector <PixelInfo::Detection<long> > Cube<long>::search3DArray();
+template std::vector <PixelInfo::Detection<float> > Cube<float>::search3DArray();
+template std::vector <PixelInfo::Detection<double> > Cube<double>::search3DArray();
 
 
 template <class T>
-std::vector <Detection<T> > Cube<T>::search3DArraySpectral() {
+std::vector <PixelInfo::Detection<T> > Cube<T>::search3DArraySpectral() {
 	
   /// The function searches for detections in just 
   /// the 1D spectra.
@@ -156,7 +156,7 @@ std::vector <Detection<T> > Cube<T>::search3DArraySpectral() {
   ///
   /// \return 		Vector of detected objects.
 
-	std::vector <Detection<T> > outputList;
+    std::vector <PixelInfo::Detection<T> > outputList;
 	long zdim = axisDim[2];
 	long xySize = axisDim[0] * axisDim[1];
 	int num = 0;
@@ -182,12 +182,12 @@ std::vector <Detection<T> > Cube<T>::search3DArraySpectral() {
                 if(par.isVerbose()) bar.update(npix+1);
                 if(maskAllocated) spectrum->extractMaskSpectrum(mask,axisDim,npix);
                 else spectrum->extractSpectrum(array,axisDim,npix);
-				std::vector<Scan<T> > objlist = spectrum->findSources1D();
-				typename std::vector<Scan<T> >::iterator obj;
+                std::vector<PixelInfo::Scan<T> > objlist = spectrum->findSources1D();
+                typename std::vector<PixelInfo::Scan<T> >::iterator obj;
 				num += objlist.size();
 				
 				for(obj=objlist.begin();obj<objlist.end();obj++){
-					Detection<T> newObject;
+                    PixelInfo::Detection<T> newObject;
                     for(int z=obj->getX();z<=obj->getXmax();z++){
 						newObject.addPixel(x,y,z);
 					}
@@ -209,22 +209,22 @@ std::vector <Detection<T> > Cube<T>::search3DArraySpectral() {
 	
 	return outputList;
 }
-template std::vector <Detection<short> > Cube<short>::search3DArraySpectral();
-template std::vector <Detection<int> > Cube<int>::search3DArraySpectral();
-template std::vector <Detection<long> > Cube<long>::search3DArraySpectral();
-template std::vector <Detection<float> > Cube<float>::search3DArraySpectral();
-template std::vector <Detection<double> > Cube<double>::search3DArraySpectral();
+template std::vector <PixelInfo::Detection<short> > Cube<short>::search3DArraySpectral();
+template std::vector <PixelInfo::Detection<int> > Cube<int>::search3DArraySpectral();
+template std::vector <PixelInfo::Detection<long> > Cube<long>::search3DArraySpectral();
+template std::vector <PixelInfo::Detection<float> > Cube<float>::search3DArraySpectral();
+template std::vector <PixelInfo::Detection<double> > Cube<double>::search3DArraySpectral();
 
 
 template <class T>
-std::vector <Detection<T> > Cube<T>::search3DArraySpatial() {
+std::vector <PixelInfo::Detection<T> > Cube<T>::search3DArraySpatial() {
 	
   ///  The function searches for detections just in the channel maps.
   ///  Returns a vector list of Detections.
   ///
   ///  \return A std::vector of detected objects.
 
-    std::vector <Detection<T> > outputList;
+    std::vector <PixelInfo::Detection<T> > outputList;
     long zdim = axisDim[2];
 
     int num = 0;
@@ -245,11 +245,11 @@ std::vector <Detection<T> > Cube<T>::search3DArraySpatial() {
         if(par.isVerbose() && useBar) bar.update(z+1);
         if(maskAllocated) channelImage->extractMaskImage(mask,axisDim,z);
         else channelImage->extractImage(array,axisDim,z);
-        std::vector<Object2D<T> > objlist = channelImage->findSources2D();
-        typename std::vector<Object2D<T> >::iterator obj;
+        std::vector<PixelInfo::Object2D<T> > objlist = channelImage->findSources2D();
+        typename std::vector<PixelInfo::Object2D<T> >::iterator obj;
 		num += objlist.size();
         for(obj=objlist.begin();obj!=objlist.end();obj++){
-			Detection<T> newObject;
+            PixelInfo::Detection<T> newObject;
 			newObject.addChannel(z,*obj);
 			newObject.setOffsets();
 //#pragma omp critical
@@ -268,11 +268,11 @@ std::vector <Detection<T> > Cube<T>::search3DArraySpatial() {
     return outputList;
 
 }
-template std::vector <Detection<short> > Cube<short>::search3DArraySpatial();
-template std::vector <Detection<int> > Cube<int>::search3DArraySpatial();
-template std::vector <Detection<long> > Cube<long>::search3DArraySpatial();
-template std::vector <Detection<float> > Cube<float>::search3DArraySpatial();
-template std::vector <Detection<double> > Cube<double>::search3DArraySpatial();
+template std::vector <PixelInfo::Detection<short> > Cube<short>::search3DArraySpatial();
+template std::vector <PixelInfo::Detection<int> > Cube<int>::search3DArraySpatial();
+template std::vector <PixelInfo::Detection<long> > Cube<long>::search3DArraySpatial();
+template std::vector <PixelInfo::Detection<float> > Cube<float>::search3DArraySpatial();
+template std::vector <PixelInfo::Detection<double> > Cube<double>::search3DArraySpatial();
 
 
 template <class T>
@@ -282,7 +282,7 @@ void Cube<T>::updateDetectMap() {
   ///  cube's list, increments the cube's detection map by the
   ///  required amount at each pixel.
 
-    typename std::vector<Detection<T> >::iterator obj;
+    typename std::vector<PixelInfo::Detection<T> >::iterator obj;
     for(obj=objectList->begin();obj<objectList->end();obj++)
         updateDetectMap(*obj);
 
@@ -295,7 +295,7 @@ template void Cube<double>::updateDetectMap();
 
 
 template <class T>
-void Cube<T>::updateDetectMap(Detection<T> obj) {
+void Cube<T>::updateDetectMap(PixelInfo::Detection<T> obj) {
     
     ///  A function that, for the given object, increments the cube's
     ///  detection map by the required amount at each pixel.
@@ -303,19 +303,19 @@ void Cube<T>::updateDetectMap(Detection<T> obj) {
     ///  \param obj 	A Detection object that is being 
     ///					incorporated into the map.
 
-    std::vector<Voxel<T> > vlist = obj.getPixelSet();
+    std::vector<PixelInfo::Voxel<T> > vlist = obj.getPixelSet();
 
-    typename std::vector<Voxel<T> >::iterator vox;
+    typename std::vector<PixelInfo::Voxel<T> >::iterator vox;
     for(vox=vlist.begin();vox<vlist.end();vox++)
     {
        detectMap[vox->getX()+vox->getY()*axisDim[0]]++;
     }
 }
-template void Cube<short>::updateDetectMap(Detection<short>);
-template void Cube<int>::updateDetectMap(Detection<int>);
-template void Cube<long>::updateDetectMap(Detection<long>);
-template void Cube<float>::updateDetectMap(Detection<float>);
-template void Cube<double>::updateDetectMap(Detection<double>);
+template void Cube<short>::updateDetectMap(PixelInfo::Detection<short>);
+template void Cube<int>::updateDetectMap(PixelInfo::Detection<int>);
+template void Cube<long>::updateDetectMap(PixelInfo::Detection<long>);
+template void Cube<float>::updateDetectMap(PixelInfo::Detection<float>);
+template void Cube<double>::updateDetectMap(PixelInfo::Detection<double>);
 
 
 template <class T>
@@ -332,7 +332,7 @@ void Cube<T>::ObjectMerger() {
 
     if(startSize > 0){
 		
-		std::vector <Detection<T> > currentList(startSize);
+        std::vector <PixelInfo::Detection<T> > currentList(startSize);
 		for(int i=0;i<startSize;i++) currentList[i] = objectList->at(i);
 		objectList->clear();
 
@@ -399,7 +399,7 @@ template void Cube<double>::ObjectMergerSimple();
 
 
 template <class T>
-void Cube<T>::mergeList(std::vector<Detection<T> > &objList) {
+void Cube<T>::mergeList(std::vector<PixelInfo::Detection<T> > &objList) {
 
     /// A function that merges any objects in the list of 
     /// Detections that are within stated threshold distances.
@@ -409,7 +409,7 @@ void Cube<T>::mergeList(std::vector<Detection<T> > &objList) {
     if(objList.size() > 0){      
       
       bool isVerb = par.isVerbose();
-      typename std::vector <Detection<T> >::iterator iter;
+      typename std::vector <PixelInfo::Detection<T> >::iterator iter;
       std::vector<bool> isValid(objList.size(),true);
       int numRemoved=0;
       size_t counter=0, compCounter,goodCounter=0;
@@ -459,7 +459,7 @@ void Cube<T>::mergeList(std::vector<Detection<T> > &objList) {
 		if(isValid[counter]) goodCounter++;
     }  
 
-    std::vector<Detection<T> > newlist(objList.size()-numRemoved);
+    std::vector<PixelInfo::Detection<T> > newlist(objList.size()-numRemoved);
     size_t ct=0;
     for(size_t i=0;i<objList.size();i++){
 		if(isValid[i]) newlist[ct++]=objList[i];
@@ -469,15 +469,15 @@ void Cube<T>::mergeList(std::vector<Detection<T> > &objList) {
 
     }
 }
-template void Cube<short>::mergeList(std::vector<Detection<short> >&);
-template void Cube<int>::mergeList(std::vector<Detection<int> >&);
-template void Cube<long>::mergeList(std::vector<Detection<long> >&);
-template void Cube<float>::mergeList(std::vector<Detection<float> >&);
-template void Cube<double>::mergeList(std::vector<Detection<double> >&);
+template void Cube<short>::mergeList(std::vector<PixelInfo::Detection<short> >&);
+template void Cube<int>::mergeList(std::vector<PixelInfo::Detection<int> >&);
+template void Cube<long>::mergeList(std::vector<PixelInfo::Detection<long> >&);
+template void Cube<float>::mergeList(std::vector<PixelInfo::Detection<float> >&);
+template void Cube<double>::mergeList(std::vector<PixelInfo::Detection<double> >&);
 
 
 template <class T>
-void Cube<T>::finaliseList(std::vector<Detection<T> > &objList) {
+void Cube<T>::finaliseList(std::vector<PixelInfo::Detection<T> > &objList) {
 
     ///  A function that looks at each object in the Detection vector
     ///  and determines whether is passes the requirements for the
@@ -493,9 +493,9 @@ void Cube<T>::finaliseList(std::vector<Detection<T> > &objList) {
         std::cout << std::flush;
     }
 
-    std::vector<Detection<T> > newlist;
+    std::vector<PixelInfo::Detection<T> > newlist;
     
-    typename std::vector<Detection<T> >::iterator obj = objList.begin();
+    typename std::vector<PixelInfo::Detection<T> >::iterator obj = objList.begin();
     int numRej=0;
     for(;obj<objList.end();obj++){
 		obj->setOffsets();
@@ -523,16 +523,16 @@ void Cube<T>::finaliseList(std::vector<Detection<T> > &objList) {
     objList = newlist;
 
 }
-template void Cube<short>::finaliseList(std::vector<Detection<short> >&);
-template void Cube<int>::finaliseList(std::vector<Detection<int> >&);
-template void Cube<long>::finaliseList(std::vector<Detection<long> >&);
-template void Cube<float>::finaliseList(std::vector<Detection<float> >&);
-template void Cube<double>::finaliseList(std::vector<Detection<double> >&);
+template void Cube<short>::finaliseList(std::vector<PixelInfo::Detection<short> >&);
+template void Cube<int>::finaliseList(std::vector<PixelInfo::Detection<int> >&);
+template void Cube<long>::finaliseList(std::vector<PixelInfo::Detection<long> >&);
+template void Cube<float>::finaliseList(std::vector<PixelInfo::Detection<float> >&);
+template void Cube<double>::finaliseList(std::vector<PixelInfo::Detection<double> >&);
 
 
 
 template <class T>
-void Cube<T>::rejectObjects(std::vector<Detection<T> > &objList) {
+void Cube<T>::rejectObjects(std::vector<PixelInfo::Detection<T> > &objList) {
 
     if(par.isVerbose() && par.getShowbar()){
         std::cout << "Rejecting:" << std::setw(6) << objList.size();
@@ -544,9 +544,9 @@ void Cube<T>::rejectObjects(std::vector<Detection<T> > &objList) {
     int maxchan = par.getMaxChannels();
     float maxsize = par.getMaxAngSize()/(head.PixScale()*arcsconv(head.Cunit(0))/60.);
 
-    std::vector<Detection<T> > newlist;
+    std::vector<PixelInfo::Detection<T> > newlist;
 
-    typename std::vector<Detection<T> >::iterator obj = objList.begin();
+    typename std::vector<PixelInfo::Detection<T> >::iterator obj = objList.begin();
     int numRej=0;
     for(;obj<objList.end();obj++){
         obj->setOffsets();
@@ -570,16 +570,16 @@ void Cube<T>::rejectObjects(std::vector<Detection<T> > &objList) {
     objList = newlist;
 
 }
-template void Cube<short>::rejectObjects(std::vector<Detection<short> >&);
-template void Cube<int>::rejectObjects(std::vector<Detection<int> >&);
-template void Cube<long>::rejectObjects(std::vector<Detection<long> >&);
-template void Cube<float>::rejectObjects(std::vector<Detection<float> >&);
-template void Cube<double>::rejectObjects(std::vector<Detection<double> >&);
+template void Cube<short>::rejectObjects(std::vector<PixelInfo::Detection<short> >&);
+template void Cube<int>::rejectObjects(std::vector<PixelInfo::Detection<int> >&);
+template void Cube<long>::rejectObjects(std::vector<PixelInfo::Detection<long> >&);
+template void Cube<float>::rejectObjects(std::vector<PixelInfo::Detection<float> >&);
+template void Cube<double>::rejectObjects(std::vector<PixelInfo::Detection<double> >&);
 
 
 
 template <class T>
-void Cube<T>::mergeIntoList(Detection<T> &object, std::vector <Detection<T> > &objList) {
+void Cube<T>::mergeIntoList(PixelInfo::Detection<T> &object, std::vector <PixelInfo::Detection<T> > &objList) {
 
     /// A function to add a detection to a list of detections, checking
     /// first to see if it can be combined with existing members of the
@@ -593,7 +593,7 @@ void Cube<T>::mergeIntoList(Detection<T> &object, std::vector <Detection<T> > &o
     /// \param par The Param set, used for testing if merging needs to be done.
 
     bool haveMerged = false;
-    typename std::vector<Detection<T> >::iterator iter;
+    typename std::vector<PixelInfo::Detection<T> >::iterator iter;
 	
     for(iter=objList.begin(); (!haveMerged && iter<objList.end()); iter++) {
 		if(iter->canMerge(object, par)){
@@ -605,11 +605,11 @@ void Cube<T>::mergeIntoList(Detection<T> &object, std::vector <Detection<T> > &o
     if(!haveMerged) objList.push_back(object);
 
 }
-template void Cube<short>::mergeIntoList(Detection<short>&,std::vector<Detection<short> >&);
-template void Cube<int>::mergeIntoList(Detection<int>&,std::vector<Detection<int> >&);
-template void Cube<long>::mergeIntoList(Detection<long>&,std::vector<Detection<long> >&);
-template void Cube<float>::mergeIntoList(Detection<float>&,std::vector<Detection<float> >&);
-template void Cube<double>::mergeIntoList(Detection<double>&,std::vector<Detection<double> >&);
+template void Cube<short>::mergeIntoList(PixelInfo::Detection<short>&,std::vector<PixelInfo::Detection<short> >&);
+template void Cube<int>::mergeIntoList(PixelInfo::Detection<int>&,std::vector<PixelInfo::Detection<int> >&);
+template void Cube<long>::mergeIntoList(PixelInfo::Detection<long>&,std::vector<PixelInfo::Detection<long> >&);
+template void Cube<float>::mergeIntoList(PixelInfo::Detection<float>&,std::vector<PixelInfo::Detection<float> >&);
+template void Cube<double>::mergeIntoList(PixelInfo::Detection<double>&,std::vector<PixelInfo::Detection<double> >&);
 
 
 template <class T>
@@ -678,7 +678,7 @@ void Cube<T>::printDetections (std::ostream& Stream) {
 	Stream 	<< setfill(' ');
 		
 	for (int i=0; i<numObj; i++){
-		Detection<T> *obj = new Detection<T>;
+        PixelInfo::Detection<T> *obj = new PixelInfo::Detection<T>;
         *obj = objectList->at(i);
 
         obj->calcFluxes(obj->getPixelSet(array, axisDim));
@@ -773,7 +773,7 @@ void Cube<T>::plotDetections() {
 		float highflux=0;
 		int numO = 0;
 		for (int i=0; i<numObj; i++) {
-			Detection<T> *obj = pObject(i);
+            PixelInfo::Detection<T> *obj = pObject(i);
 			obj->calcFluxes(obj->getPixelSet(array, axisDim));
 			obj->calcWCSparams(head);
 			obj->calcIntegFlux(DimZ(), obj->getPixelSet(array, axisDim), head);
@@ -785,7 +785,7 @@ void Cube<T>::plotDetections() {
 		int num=1;
 		for (int i=0; i<numObj; i++) {
 			if (i!=numO) {
-				Detection<T> *obj = pObject(i); 
+                PixelInfo::Detection<T> *obj = pObject(i);
 				float ramain = (pObject(numO)->getXcentre()+1-head.Crpix(0))*head.Cdelt(0)+head.Crval(0);
 				float ra  = (pObject(i)->getXcentre()+1-head.Crpix(0))*head.Cdelt(0)+head.Crval(0);
 				float demain = (pObject(numO)->getYcentre()+1-head.Crpix(1))*head.Cdelt(1)+head.Crval(1);
@@ -819,8 +819,8 @@ void Cube<T>::plotDetections() {
 	std::vector<bool> isObj(numPix,false);
 	
 	for (int i=0; i<numObj; i++) {
-		typename std::vector<Voxel<T> > voxelList = objectList->at(i).getPixelSet(array, axisDim);
-		typename std::vector<Voxel<T> >::iterator vox;
+        typename std::vector<PixelInfo::Voxel<T> > voxelList = objectList->at(i).getPixelSet(array, axisDim);
+        typename std::vector<PixelInfo::Voxel<T> >::iterator vox;
 		for(vox=voxelList.begin();vox<voxelList.end();vox++){
 			//if(objectList->at(i).isInObject(*vox)){
 				long pos = vox->getX()+vox->getY()*axisDim[0]+vox->getZ()*axisDim[0]*axisDim[1];
@@ -917,7 +917,7 @@ void Cube<T>::plotDetections() {
 	std::ofstream fileo;
 
 	for (int i=0; i<numObj; i++) {
-		Detection<T> *obj = pObject(i);
+        PixelInfo::Detection<T> *obj = pObject(i);
 		float *intSpec = new float[axisDim[2]];
 		obj->calcWCSparams(head);
 		for(int z=0; z<axisDim[2]; z++) intSpec[z]=0;      
@@ -1016,18 +1016,18 @@ template bool Cube<double>::isDetection(long,long,long);
 
 
 template <class Type>
-Detection<Type>* Cube<Type>::LargestDetection () {
+PixelInfo::Detection<Type>* Cube<Type>::LargestDetection () {
     int numObj = objectList->size();
     if (numObj==0) return NULL;
     uint n=0, size=0;
     for (int i=0; i<numObj; i++) {
-        Detection<Type> *obj = pObject(i);
+        PixelInfo::Detection<Type> *obj = pObject(i);
         if (obj->getSize()>size) {n=i;size=obj->getSize();}
     }
     return pObject(n);
 }
-template Detection<short>* Cube<short>::LargestDetection ();
-template Detection<int>* Cube<int>::LargestDetection ();
-template Detection<long>* Cube<long>::LargestDetection ();
-template Detection<float>* Cube<float>::LargestDetection ();
-template Detection<double>* Cube<double>::LargestDetection ();
+template PixelInfo::Detection<short>* Cube<short>::LargestDetection ();
+template PixelInfo::Detection<int>* Cube<int>::LargestDetection ();
+template PixelInfo::Detection<long>* Cube<long>::LargestDetection ();
+template PixelInfo::Detection<float>* Cube<float>::LargestDetection ();
+template PixelInfo::Detection<double>* Cube<double>::LargestDetection ();

@@ -54,9 +54,9 @@ public:
     /// Update a Cube's detectMap based on the flag array
     void updateDetectMap(short *map);
     /// Grow an object
-    virtual void grow(Detection<T> *theObject);
+    virtual void grow(PixelInfo::Detection<T> *theObject);
     /// Grow out from a single voxel, returning the list of new voxels.
-    std::vector<Voxel<T> > growFromPixel(Voxel<T> &vox);
+    std::vector<PixelInfo::Voxel<T> > growFromPixel(PixelInfo::Voxel<T> &vox);
 
 protected:
     std::vector<STATE> itsFlagArray;                   	///< The array of pixel flags

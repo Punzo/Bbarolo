@@ -32,9 +32,6 @@
 #include "param.hh"
 #include "header.hh"
 
-
-using namespace PixelInfo;
-
   /// Class to represent a contiguous set of detected voxels.
   /// This is a detected object, which features:
   /// a vector of voxels, average and centroid positions, total & peak fluxes,
@@ -43,18 +40,18 @@ using namespace PixelInfo;
   /// Also many functions with which to manipulate the Detections.
 
 template <class T>
-class Detection : public PixelInfo::Object3D<T>
+class PixelInfo::Detection : public PixelInfo::Object3D<T>
 {
 public:
 	Detection();
-    Detection(const Object3D<T>& o);
-    Detection(const Detection& d);
-    Detection& operator= (const Detection& d);
+    Detection(const PixelInfo::Object3D<T>& o);
+    Detection(const PixelInfo::Detection<T>& d);
+    PixelInfo::Detection<T>& operator= (const Detection<T>& d);
     virtual ~Detection(){};
     void defaultDetection();
 	
 	template <class Type>
-    friend Detection operator+ (Detection<T> &lhs, Detection<T> &rhs);
+    friend PixelInfo::Detection<T> operator+ (PixelInfo::Detection<T> &lhs, PixelInfo::Detection<T> &rhs);
     
     /// Utility functions;
     
@@ -63,11 +60,11 @@ public:
     float       getZcentre();
     
     /// Add a single voxel to the pixel list.
-    void   addPixel(long x, long y, long z){Object3D<T>::addPixel(x,y,z);};
+    void   addPixel(long x, long y, long z){PixelInfo::Object3D<T>::addPixel(x,y,z);};
     void   addPixel(PixelInfo::Voxel<T> point);
 
     /// How many channels does the Detection have? 
-    long   getNumChannels(){return Object3D<T>::getNumChanMap();};
+    long   getNumChannels(){return PixelInfo::Object3D<T>::getNumChanMap();};
 
     /// Is there at least the acceptable minimum number of channels in the Detection?  
     bool   hasEnoughChannels(int minNumber);
@@ -76,15 +73,15 @@ public:
 	void   setOffsets(long Xoffset=0, long Yoffset=0, long Zoffset=0); 
 
     /// Add the offset values to the pixel locations 
-	void   addOffsets(long xoff, long yoff, long zoff){Object3D<T>::addOffsets(xoff,yoff,zoff);};
+    void   addOffsets(long xoff, long yoff, long zoff){PixelInfo::Object3D<T>::addOffsets(xoff,yoff,zoff);};
     void   addOffsets();
     
-    void   addDetection(Detection<T> &other);
+    void   addDetection(PixelInfo::Detection<T> &other);
     
     /// Detection related functions
-    bool   canMerge (Detection<T> &other, Param &par);
-    bool   isNear (Detection<T> &other, Param &par);
-    bool   isClose (Detection<T> &other, Param &par);
+    bool   canMerge (PixelInfo::Detection<T> &other, Param &par);
+    bool   isNear (PixelInfo::Detection<T> &other, Param &par);
+    bool   isClose (PixelInfo::Detection<T> &other, Param &par);
     
 
     /// Test whether voxel lists match 

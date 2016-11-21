@@ -103,7 +103,7 @@ void ObjectGrower<T>::define(Cube<T> *theCube) {
     itsFlagArray = std::vector<STATE>(fullsize,AVAILABLE);
 
     for(int o=0;o<theCube->getNumObj();o++){
-		std::vector<Voxel<T> > voxlist = theCube->getObject(o).getPixelSet();
+        std::vector<PixelInfo::Voxel<T> > voxlist = theCube->getObject(o).getPixelSet();
 		for(size_t i=0; i<voxlist.size(); i++){
 			size_t pos=voxlist[i].getX()+voxlist[i].getY()*itsArrayDim[0]+voxlist[i].getZ()*spatsize;
 			itsFlagArray[pos] = DETECTED;
@@ -149,7 +149,7 @@ template void ObjectGrower<double>::updateDetectMap(short*);
 
 
 template <class T>
-void ObjectGrower<T>::grow(Detection<T> *theObject) {
+void ObjectGrower<T>::grow(PixelInfo::Detection<T> *theObject) {
 	
     /// @details This function grows the provided object out to the
     /// secondary threshold provided in itsGrowthStats. For each pixel
@@ -164,7 +164,7 @@ void ObjectGrower<T>::grow(Detection<T> *theObject) {
 
     size_t spatsize=itsArrayDim[0]*itsArrayDim[1];
     long zero = 0;
-    std::vector<Voxel<T> > voxlist = theObject->getPixelSet();
+    std::vector<PixelInfo::Voxel<T> > voxlist = theObject->getPixelSet();
     size_t origSize = voxlist.size();
     long xpt,ypt,zpt;
     long xmin,xmax,ymin,ymax,zmin,zmax,x,y,z;
@@ -191,7 +191,7 @@ void ObjectGrower<T>::grow(Detection<T> *theObject) {
 						&& itsFlagArray[pos]==AVAILABLE ) {
 							if(itsGrowthStats.isDetection(itsFluxArray[pos])){
 								itsFlagArray[pos]=DETECTED;
-								voxlist.push_back(Voxel<T>(x,y,z));
+                                voxlist.push_back(PixelInfo::Voxel<T>(x,y,z));
 							}
 					}
 
@@ -207,17 +207,17 @@ void ObjectGrower<T>::grow(Detection<T> *theObject) {
    
 
 }
-template void ObjectGrower<short>::grow(Detection<short>*);
-template void ObjectGrower<int>::grow(Detection<int>*);
-template void ObjectGrower<long>::grow(Detection<long>*);
-template void ObjectGrower<float>::grow(Detection<float>*);
-template void ObjectGrower<double>::grow(Detection<double>*);
+template void ObjectGrower<short>::grow(PixelInfo::Detection<short>*);
+template void ObjectGrower<int>::grow(PixelInfo::Detection<int>*);
+template void ObjectGrower<long>::grow(PixelInfo::Detection<long>*);
+template void ObjectGrower<float>::grow(PixelInfo::Detection<float>*);
+template void ObjectGrower<double>::grow(PixelInfo::Detection<double>*);
 
 
 template <class T>
-std::vector<Voxel<T> > ObjectGrower<T>::growFromPixel(Voxel<T> &vox) {
+std::vector<PixelInfo::Voxel<T> > ObjectGrower<T>::growFromPixel(PixelInfo::Voxel<T> &vox) {
 
-    std::vector<Voxel<T> > newVoxels;
+    std::vector<PixelInfo::Voxel<T> > newVoxels;
 
     long xpt=vox.getX();
     long ypt=vox.getY();
@@ -233,8 +233,8 @@ std::vector<Voxel<T> > ObjectGrower<T>::growFromPixel(Voxel<T> &vox) {
     int zmax = min(zpt + itsVelocityThresh, long(itsArrayDim[2])-1);
       
     size_t pos;
-    Voxel<T> nvox;
-    std::vector<Voxel<T> > morevox;
+    PixelInfo::Voxel<T> nvox;
+    std::vector<PixelInfo::Voxel<T> > morevox;
     for(int x=xmin; x<=xmax; x++){
 		for(int y=ymin; y<=ymax; y++){
 			for(int z=zmin; z<=zmax; z++){
@@ -251,9 +251,9 @@ std::vector<Voxel<T> > ObjectGrower<T>::growFromPixel(Voxel<T> &vox) {
 		}
     } 
 
-    typename std::vector<Voxel<T> >::iterator v,v2;
+    typename std::vector<PixelInfo::Voxel<T> >::iterator v,v2;
     for(v=newVoxels.begin();v<newVoxels.end();v++) {
-		std::vector<Voxel<T> > morevox = growFromPixel(*v);
+        std::vector<PixelInfo::Voxel<T> > morevox = growFromPixel(*v);
 		for(v2=morevox.begin();v2<morevox.end();v2++) 
 			newVoxels.push_back(*v2);
     }
@@ -261,10 +261,10 @@ std::vector<Voxel<T> > ObjectGrower<T>::growFromPixel(Voxel<T> &vox) {
     return newVoxels;
 
 }
-template std::vector<Voxel<short> > ObjectGrower<short>::growFromPixel(Voxel<short>&);
-template std::vector<Voxel<int> > ObjectGrower<int>::growFromPixel(Voxel<int>&);
-template std::vector<Voxel<long> > ObjectGrower<long>::growFromPixel(Voxel<long>&);
-template std::vector<Voxel<float> > ObjectGrower<float>::growFromPixel(Voxel<float>&);
-template std::vector<Voxel<double> > ObjectGrower<double>::growFromPixel(Voxel<double>&);
+template std::vector<PixelInfo::Voxel<short> > ObjectGrower<short>::growFromPixel(PixelInfo::Voxel<short>&);
+template std::vector<PixelInfo::Voxel<int> > ObjectGrower<int>::growFromPixel(PixelInfo::Voxel<int>&);
+template std::vector<PixelInfo::Voxel<long> > ObjectGrower<long>::growFromPixel(PixelInfo::Voxel<long>&);
+template std::vector<PixelInfo::Voxel<float> > ObjectGrower<float>::growFromPixel(PixelInfo::Voxel<float>&);
+template std::vector<PixelInfo::Voxel<double> > ObjectGrower<double>::growFromPixel(PixelInfo::Voxel<double>&);
 
 

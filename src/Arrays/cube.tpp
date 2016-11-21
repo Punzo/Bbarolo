@@ -43,7 +43,7 @@ void Cube<T>::defaults() {
 	maskAllocated = false;
     mapAllocated  = false;
     isSearched = false;
-	objectList = new std::vector<Detection<T> >; 
+    objectList = new std::vector<PixelInfo::Detection<T> >;
 
 }
 
@@ -272,7 +272,7 @@ bool Cube<T>::readCube (std::string fname) {
     if (head.NumAx()<2) axisDim[1] = 1;
 	numPix = axisDim[0]*axisDim[1]*axisDim[2];
 	if (!fitsread_3d()) return false;	
-	objectList = new std::vector<Detection<T> >; 
+    objectList = new std::vector<PixelInfo::Detection<T> >;
 	detectMap = new short [axisDim[0]*axisDim[1]];
 	mapAllocated = true;
 	for (int i=0; i<axisDim[0]*axisDim[1]; i++) detectMap[i] = 0;
@@ -486,13 +486,13 @@ void Cube<T>::BlankMask (float *channel_noise){
     if (par.getMASK()=="SEARCH") {
         // Masking using the search algorithm and mask the largest of object.
         if (!isSearched) Search();
-        Detection<T> *larg = LargestDetection();
+        PixelInfo::Detection<T> *larg = LargestDetection();
         if (larg==NULL) {
             std::cout << "3DFIT error: No sources detected in the datacube. Cannot build mask!!! \n";
             std::terminate();
         }
-        std::vector<Voxel<T> > voxlist = larg->getPixelSet();
-        typename std::vector<Voxel<T> >::iterator vox;
+        std::vector<PixelInfo::Voxel<T> > voxlist = larg->getPixelSet();
+        typename std::vector<PixelInfo::Voxel<T> >::iterator vox;
         for(vox=voxlist.begin();vox<voxlist.end();vox++) {
             mask[nPix(vox->getX(),vox->getY(),vox->getZ())]=1;
         }

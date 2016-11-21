@@ -126,7 +126,7 @@ protected:
 	inline bool IsIn (int x, int y, int *blo, Rings<T> *dr, double &th);
     inline bool getSide (double theta);
     inline double getFuncValue(T obs, T mod, double weight, double noise_weight);
-	std::vector<Pixel<T> >* getRingRegion (Rings<T> *dring, int *bhi, int *blo);
+    std::vector<PixelInfo::Pixel<T> >* getRingRegion (Rings<T> *dring, int *bhi, int *blo);
 
     /// Functions defined in galfit_out.cpp
     void printDetails  (Rings<T> *dr, T fmin, long pix, std::ostream& str=std::cout);

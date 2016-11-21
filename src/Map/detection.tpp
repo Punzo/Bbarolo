@@ -32,15 +32,12 @@
 #include "utils.hh"
 #include "header.hh"
 
-
-using namespace PixelInfo;
-
 template <class T>
-void getIntSpec(Detection<T> &object, float *fluxArray, long *dimArray, std::vector<bool> mask, 
+void getIntSpec(PixelInfo::Detection<T> &object, float *fluxArray, long *dimArray, std::vector<bool> mask,
 				float beamCorrection, float *spec);
 
 template <class T>
-void Detection<T>::defaultDetection() {
+void PixelInfo::Detection<T>::defaultDetection() {
 	
 	xSubOffset = 0;
 	ySubOffset = 0;
@@ -93,28 +90,28 @@ void Detection<T>::defaultDetection() {
 
 
 template <class T>
-Detection<T>::Detection(): Object3D<T>() {
+PixelInfo::Detection<T>::Detection(): Object3D<T>() {
 	
     defaultDetection();
 }
 
 
 template <class T>  
-Detection<T>::Detection(const Object3D<T>& o): Object3D<T>(o) {
+PixelInfo::Detection<T>::Detection(const Object3D<T>& o): Object3D<T>(o) {
 	
     defaultDetection();
 }
 
 
 template <class T>  
-Detection<T>::Detection(const Detection<T>& d): Object3D<T>(d) {
+PixelInfo::Detection<T>::Detection(const PixelInfo::Detection<T>& d): Object3D<T>(d) {
 	
     operator=(d);
 }
 
 
 template <class T>  
-Detection<T>& Detection<T>::operator= (const Detection<T>& d) {
+PixelInfo::Detection<T>& PixelInfo::Detection<T>::operator= (const PixelInfo::Detection<T>& d) {
     
     ((Object3D<T> &) *this) = d;
     this->xSubOffset   = d.xSubOffset;
@@ -174,10 +171,10 @@ Detection<T>& Detection<T>::operator= (const Detection<T>& d) {
 
 
 template <class T>
-Detection<T> operator+ (Detection<T> &lhs, Detection<T> &rhs) {
+PixelInfo::Detection<T> operator+ (PixelInfo::Detection<T> &lhs, PixelInfo::Detection<T> &rhs) {
 	
-    Detection<T> output = lhs;
-    for(typename std::map<long, Object2D<T> >::iterator it = rhs.chanlist.begin(); it!=rhs.chanlist.end();it++)
+    PixelInfo::Detection<T> output = lhs;
+    for(typename std::map<long, PixelInfo::Object2D<T> >::iterator it = rhs.chanlist.begin(); it!=rhs.chanlist.end();it++)
 		output.addChannel(it->first, it->second);
     output.haveParams = false; 
     return output;
@@ -188,7 +185,7 @@ Detection<T> operator+ (Detection<T> &lhs, Detection<T> &rhs) {
 
 
 template <class T>  
-float Detection<T>::getXcentre() {
+float PixelInfo::Detection<T>::getXcentre() {
 	
     if(centreType=="peak") return xpeak;
     else if(centreType=="average") return this->getXaverage();
@@ -197,7 +194,7 @@ float Detection<T>::getXcentre() {
 
 
 template <class T>  
-float Detection<T>::getYcentre() {
+float PixelInfo::Detection<T>::getYcentre() {
 	
     if(centreType=="peak") return ypeak;
     else if(centreType=="average") return this->getYaverage();
@@ -206,7 +203,7 @@ float Detection<T>::getYcentre() {
 
 
 template <class T>
-float Detection<T>::getZcentre() {
+float PixelInfo::Detection<T>::getZcentre() {
 	
     if(centreType=="peak") return zpeak;
     else if(centreType=="average") return this->getZaverage();
@@ -215,7 +212,7 @@ float Detection<T>::getZcentre() {
 
 
 template <class T>
-void Detection<T>::setOffsets(long Xoffset, long Yoffset, long Zoffset) {
+void PixelInfo::Detection<T>::setOffsets(long Xoffset, long Yoffset, long Zoffset) {
 
     /// This function stores the values of the offsets for each cube axis.
     /// The offsets are the starting values of the cube axes that may differ from
@@ -229,7 +226,7 @@ void Detection<T>::setOffsets(long Xoffset, long Yoffset, long Zoffset) {
 
 
 template <class T>
-void Detection<T>::addOffsets() {
+void PixelInfo::Detection<T>::addOffsets() {
       
     Object3D<T>::addOffsets(xSubOffset,ySubOffset,zSubOffset);
     xpeak+=xSubOffset; ypeak+=ySubOffset; zpeak+=zSubOffset;
@@ -237,7 +234,7 @@ void Detection<T>::addOffsets() {
 }
 
 template <class T>
-void Detection<T>::addPixel(PixelInfo::Voxel<T> point) {
+void PixelInfo::Detection<T>::addPixel(PixelInfo::Voxel<T> point) {
 		
 	Object3D<T>::addPixel(point.getX(),point.getY(),point.getZ());
 	totalFlux += point.getF();
@@ -252,7 +249,7 @@ void Detection<T>::addPixel(PixelInfo::Voxel<T> point) {
 
 
 template <class T>
-void Detection<T>::addDetection(Detection<T> &other) {
+void PixelInfo::Detection<T>::addDetection(PixelInfo::Detection<T> &other) {
     
     for(typename std::map<long, Object2D<T> >::iterator it = other.chanlist.begin(); it!=other.chanlist.end();it++)
 		this->addChannel(it->first, it->second);
@@ -261,7 +258,7 @@ void Detection<T>::addDetection(Detection<T> &other) {
 
 
 template <class T>
-bool Detection<T>::hasEnoughChannels(int minNumber) {
+bool PixelInfo::Detection<T>::hasEnoughChannels(int minNumber) {
 	
   /// A function to determine if the Detection has enough contiguous channels 
   /// to meet the minimum requirement given as the argument.
@@ -281,7 +278,7 @@ bool Detection<T>::hasEnoughChannels(int minNumber) {
 
 
 template <class T>
-bool Detection<T>::canMerge(Detection<T> &other, Param &par) {
+bool PixelInfo::Detection<T>::canMerge(PixelInfo::Detection<T> &other, Param &par) {
 	
     bool near = isNear(other, par);
     if(near) return isClose(other, par);
@@ -290,7 +287,7 @@ bool Detection<T>::canMerge(Detection<T> &other, Param &par) {
 
 
 template <class T>
-bool Detection<T>::isNear(Detection<T> &other, Param &par) {
+bool PixelInfo::Detection<T>::isNear(PixelInfo::Detection<T> &other, Param &par) {
 
     bool flagAdj = par.getFlagAdjacent();
 	float threshS = par.getThreshS();
@@ -323,7 +320,7 @@ bool Detection<T>::isNear(Detection<T> &other, Param &par) {
 
 
 template <class T>
-bool Detection<T>::isClose(Detection<T> &other, Param &par)  {
+bool PixelInfo::Detection<T>::isClose(PixelInfo::Detection<T> &other, Param &par)  {
    
     bool close = false;   
     
@@ -359,7 +356,7 @@ bool Detection<T>::isClose(Detection<T> &other, Param &par)  {
 
 
 template <class T>
-bool Detection<T>::voxelListsMatch(std::vector<Voxel<T> > voxelList) {
+bool PixelInfo::Detection<T>::voxelListsMatch(std::vector<Voxel<T> > voxelList) {
     
   ///  A test to see whether there is a 1-1 correspondence between
   ///  the given list of Voxels and the voxel positions contained in
@@ -381,7 +378,7 @@ bool Detection<T>::voxelListsMatch(std::vector<Voxel<T> > voxelList) {
 
 
 template <class T>
-bool Detection<T>::voxelListCovered(std::vector<Voxel<T> > voxelList) {
+bool PixelInfo::Detection<T>::voxelListCovered(std::vector<Voxel<T> > voxelList) {
 
   ///  A test to see whether the given list of Voxels contains each
   ///  position in this Detection's pixel list. It does not look for
@@ -410,7 +407,7 @@ bool Detection<T>::voxelListCovered(std::vector<Voxel<T> > voxelList) {
   
 
 template <class T>
-void Detection<T>::calcFluxes(std::vector<Voxel<T> > voxelList) {
+void PixelInfo::Detection<T>::calcFluxes(std::vector<Voxel<T> > voxelList) {
     
   ///  A function that calculates total & peak fluxes (and 
   ///  the location  of the peak flux) for a Detection.
@@ -461,7 +458,7 @@ void Detection<T>::calcFluxes(std::vector<Voxel<T> > voxelList) {
 
 
 template <class T>
-void Detection<T>::calcFluxes(T *fluxArray, long *dim) {
+void PixelInfo::Detection<T>::calcFluxes(T *fluxArray, long *dim) {
     
   /// A function that calculates total & peak fluxes (and the
   /// location of the peak flux) for a Detection.
@@ -507,7 +504,7 @@ void Detection<T>::calcFluxes(T *fluxArray, long *dim) {
 
 
 template <class T>
-void Detection<T>::calcWCSparams(Header &head) {
+void PixelInfo::Detection<T>::calcWCSparams(Header &head) {
     ///  @details
     ///  Use the input wcs to calculate the position and velocity 
     ///    information for the Detection.
@@ -594,7 +591,7 @@ void Detection<T>::calcWCSparams(Header &head) {
   //--------------------------------------------------------------------
 
 template <class T>
-void Detection<T>::calcIntegFlux(long zdim, std::vector<Voxel<T> > voxelList, Header &head) {
+void PixelInfo::Detection<T>::calcIntegFlux(long zdim, std::vector<Voxel<T> > voxelList, Header &head) {
    
  	///  @details
     ///  Uses the input WCS to calculate the velocity-integrated flux, 
@@ -683,7 +680,7 @@ void Detection<T>::calcIntegFlux(long zdim, std::vector<Voxel<T> > voxelList, He
   //--------------------------------------------------------------------
 
 template <class T>
-void Detection<T>::calcIntegFlux(T *fluxArray, long *dim, Header &head) {
+void PixelInfo::Detection<T>::calcIntegFlux(T *fluxArray, long *dim, Header &head) {
     
 	///  @details
     ///  Uses the input WCS to calculate the velocity-integrated flux, 
@@ -757,7 +754,7 @@ void Detection<T>::calcIntegFlux(T *fluxArray, long *dim, Header &head) {
   //--------------------------------------------------------------------
 
 template <class T>
-void Detection<T>::calcVelWidths(long zdim, std::vector<Voxel<T> > voxelList, Header &head) {
+void PixelInfo::Detection<T>::calcVelWidths(long zdim, std::vector<Voxel<T> > voxelList, Header &head) {
     ///  @details
     /// Calculates the widths of the detection at 20% and 50% of the
     /// peak integrated flux. The procedure is as follows: first
@@ -794,7 +791,7 @@ void Detection<T>::calcVelWidths(long zdim, std::vector<Voxel<T> > voxelList, He
   //--------------------------------------------------------------------
 
 template <class T>
-void Detection<T>::calcVelWidths(long zdim, T *intSpec, Header &head) {
+void PixelInfo::Detection<T>::calcVelWidths(long zdim, T *intSpec, Header &head) {
 
       // finding the 20% & 50% points.  Start at the velmin & velmax
       //  points. Then, if the int flux there is above the 20%/50%
@@ -874,7 +871,7 @@ void Detection<T>::calcVelWidths(long zdim, T *intSpec, Header &head) {
   //--------------------------------------------------------------------
 
 template <class T>
-void Detection<T>::calcVelWidths(T *fluxArray, long *dim, Header &head) {
+void PixelInfo::Detection<T>::calcVelWidths(T *fluxArray, long *dim, Header &head) {
     ///  @details
     /// Calculates the widths of the detection at 20% and 50% of the
     /// peak integrated flux. The procedure is as follows: first
@@ -919,7 +916,7 @@ void Detection<T>::calcVelWidths(T *fluxArray, long *dim, Header &head) {
   //--------------------------------------------------------------------
 
 template <class T>
-std::vector<int> Detection<T>::getVertexSet() {
+std::vector<int> PixelInfo::Detection<T>::getVertexSet() {
 
   /// Gets a list of points being the end-points of 1-pixel long
   /// segments drawing a border around the spatial extend of a
@@ -978,7 +975,7 @@ std::vector<int> Detection<T>::getVertexSet() {
 
 
 template <class T> 
-void getIntSpec(Detection<T> &object, float *fluxArray, long *dimArray, std::vector<bool> mask, 
+void getIntSpec(PixelInfo::Detection<T> &object, float *fluxArray, long *dimArray, std::vector<bool> mask,
 				float beamCorrection, float *spec) {
 					
     /// @details
@@ -998,8 +995,8 @@ void getIntSpec(Detection<T> &object, float *fluxArray, long *dimArray, std::vec
     long xySize = dimArray[0]*dimArray[1];
     bool *done = new bool[xySize]; 
     for(int i=0;i<xySize;i++) done[i]=false;
-    std::vector<Voxel<float> > voxlist = object.getPixelSet();
-    std::vector<Voxel<float> >::iterator vox;
+    std::vector<PixelInfo::Voxel<float> > voxlist = object.getPixelSet();
+    std::vector<PixelInfo::Voxel<float> >::iterator vox;
     for(vox=voxlist.begin();vox<voxlist.end();vox++){
 		long pos = vox->getX()+dimArray[0]*vox->getY();
 		if(!done[pos]){

@@ -170,7 +170,7 @@ Galfit<T>::Galfit(Cube<T> *c) {
     if (toEstimate) {
 
         if (!in->getIsSearched()) in->Search();
-        Detection<T> *largest = in->LargestDetection();
+        PixelInfo::Detection<T> *largest = in->LargestDetection();
 
         if (largest==NULL) {
             std::cout << "3DFIT error: No sources detected in the datacube. Cannot fit!!! \n";

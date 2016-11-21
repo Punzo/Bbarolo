@@ -713,7 +713,7 @@ template std::vector<PixelInfo::Scan<double> > Image2D<double>::findSources1D();
 
 
 template <class Type>
-std::vector<Object2D<Type> > Image2D<Type>::findSources2D() {
+std::vector<PixelInfo::Object2D<Type> > Image2D<Type>::findSources2D() {
 	
     std::vector<bool> thresholdedArray(axisDim[0]*axisDim[1]);
     for(int posY=0;posY<axisDim[1];posY++) {
@@ -724,11 +724,11 @@ std::vector<Object2D<Type> > Image2D<Type>::findSources2D() {
     }
     return imageDetect(thresholdedArray);
 }
-template std::vector<Object2D<short> > Image2D<short>::findSources2D();
-template std::vector<Object2D<int> > Image2D<int>::findSources2D();
-template std::vector<Object2D<long> > Image2D<long>::findSources2D();
-template std::vector<Object2D<float> > Image2D<float>::findSources2D();
-template std::vector<Object2D<double> > Image2D<double>::findSources2D(); 
+template std::vector<PixelInfo::Object2D<short> > Image2D<short>::findSources2D();
+template std::vector<PixelInfo::Object2D<int> > Image2D<int>::findSources2D();
+template std::vector<PixelInfo::Object2D<long> > Image2D<long>::findSources2D();
+template std::vector<PixelInfo::Object2D<float> > Image2D<float>::findSources2D();
+template std::vector<PixelInfo::Object2D<double> > Image2D<double>::findSources2D();
 
 
 template <class Type>  
@@ -802,7 +802,7 @@ template std::vector<PixelInfo::Scan<double> > Image2D<double>::spectrumDetect(s
 
 
 template <class Type>
-std::vector<Object2D<Type> > Image2D<Type>::imageDetect(std::vector<bool> &arraybool) {
+std::vector<PixelInfo::Object2D<Type> > Image2D<Type>::imageDetect(std::vector<bool> &arraybool) {
 
     ///  A detection algorithm for 2-dimensional images based on that of
     ///  Lutz (1980).
@@ -816,16 +816,16 @@ std::vector<Object2D<Type> > Image2D<Type>::imageDetect(std::vector<bool> &array
 	
 	long xdim = axisDim[0];
     long ydim = axisDim[1];
-    std::vector<Object2D<Type> > outputlist;
+    std::vector<PixelInfo::Object2D<Type> > outputlist;
     STATUS *status  = new STATUS[2];
-    Object2D<Type> *store = new Object2D<Type>[xdim+1];
+    PixelInfo::Object2D<Type> *store = new PixelInfo::Object2D<Type>[xdim+1];
     char *marker    = new char[xdim+1];
     for(int i=0; i<(xdim+1); i++) marker[i] = NULLMARKER;
     std::vector<FoundObject<Type> > oS;
     std::vector<STATUS>      psS;
     
 
-    Pixel<Type> pix;
+    PixelInfo::Pixel<Type> pix;
     size_t loc=0;
 
     for (long posY=0; posY<(ydim+1); posY++) {			// Loop over each row.  
@@ -970,10 +970,10 @@ std::vector<Object2D<Type> > Image2D<Type>::imageDetect(std::vector<bool> &array
     return outputlist;
 
 }
-template std::vector<Object2D<short> > Image2D<short>::imageDetect(std::vector<bool>&);
-template std::vector<Object2D<int> > Image2D<int>::imageDetect(std::vector<bool>&);
-template std::vector<Object2D<long> > Image2D<long>::imageDetect(std::vector<bool>&);
-template std::vector<Object2D<float> > Image2D<float>::imageDetect(std::vector<bool>&);
-template std::vector<Object2D<double> > Image2D<double>::imageDetect(std::vector<bool>&); 
+template std::vector<PixelInfo::Object2D<short> > Image2D<short>::imageDetect(std::vector<bool>&);
+template std::vector<PixelInfo::Object2D<int> > Image2D<int>::imageDetect(std::vector<bool>&);
+template std::vector<PixelInfo::Object2D<long> > Image2D<long>::imageDetect(std::vector<bool>&);
+template std::vector<PixelInfo::Object2D<float> > Image2D<float>::imageDetect(std::vector<bool>&);
+template std::vector<PixelInfo::Object2D<double> > Image2D<double>::imageDetect(std::vector<bool>&);
 
 
