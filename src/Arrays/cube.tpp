@@ -35,7 +35,7 @@
 template <class T>
 void Cube<T>::defaults() {
 	
-	numAxes = 3;
+    numAxes = 3;
 	arrayAllocated = false;
 	headDefined = false; 
 	axisDimAllocated = false; 

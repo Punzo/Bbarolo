@@ -38,11 +38,11 @@ class Cube
 {	
 public:
 	
-	Cube();												/// Default constructor.
-	Cube(std::string fname);							/// Basic constructor.
-	Cube(int *dimensions);								/// Alternative constructor.
-	virtual ~Cube();									/// Destructor.	
-	Cube(const Cube &c);   								/// Copy constructor.
+    Cube();												/// Default constructor.
+    Cube(std::string fname);							/// Basic constructor.
+    Cube(int *dimensions);								/// Alternative constructor.
+    virtual ~Cube();									/// Destructor.
+    Cube(const Cube &c);   								/// Copy constructor.
     Cube& operator=(const Cube &c);						/// Copy operator.
     void defaults();
 
@@ -52,54 +52,54 @@ public:
 	
 	/// Obvious inline functions to access a private member of class:	
 	
-	int 	NumAx () {return numAxes;};
-	long 	NumPix() {return numPix;};
-	int*	AxisDim () {return axisDim;};
-	int		AxesDim (int i) {return axisDim[i];};
-	int     DimX(){return axisDim[0];}; 
-    int     DimY(){return axisDim[1];};
-    int     DimZ(){return axisDim[2];};
-    long 	nPix  (int x,int y,int z) {return x+y*axisDim[0]+z*axisDim[0]*axisDim[1];};
-	T*	Array () {return array;};
-    T 	Array (long npix) {return array[npix];};
-    T	Array (int x,int y,int z) {return array[nPix(x,y,z)];};
-    void	setArray (T *ar) {array = ar;};
-    double	getZphys (double z) {return (z+1-head.Crpix(2))*head.Cdelt(2)+head.Crval(2);};
-    double	getXphys (double x) {return (x+1-head.Crpix(0))*head.Cdelt(0)+head.Crval(0);};
-    double	getYphys (double y) {return (y+1-head.Crpix(1))*head.Cdelt(1)+head.Crval(1);};
+    int     NumAx () {return numAxes;};
+    long    NumPix () {return numPix;};
+    int*    AxisDim () {return axisDim;};
+    int	    AxesDim (int i) {return axisDim[i];};
+    int     DimX () {return axisDim[0];};
+    int     DimY () {return axisDim[1];};
+    int     DimZ () {return axisDim[2];};
+    long    nPix  (int x,int y,int z) {return x+y*axisDim[0]+z*axisDim[0]*axisDim[1];};
+    T*      Array () {return array;};
+    T       Array (long npix) {return array[npix];};
+    T       Array (int x,int y,int z) {return array[nPix(x,y,z)];};
+    void    setArray (T *ar) {array = ar;};
+    double  getZphys (double z) {return (z+1-head.Crpix(2))*head.Cdelt(2)+head.Crval(2);};
+    double  getXphys (double x) {return (x+1-head.Crpix(0))*head.Cdelt(0)+head.Crval(0);};
+    double  getYphys (double y) {return (y+1-head.Crpix(1))*head.Cdelt(1)+head.Crval(1);};
     double  getZgrid (double v) {return (v-head.Crval(2))/head.Cdelt(2)+head.Crpix(2)-1;};
     
-    void	setXsize (int i) {axisDim[0] = i;};
-	void	setYsize (int i) {axisDim[1] = i;};
-	void	setZsize (int i) {axisDim[2] = i;};
-	void	setDimAx (long *ax) {axisDim=ax;};
-    Header&	Head	 () {Header &h = head; return h;};
-	void	setHeadDef (bool b) {headDefined = b;};
-	bool	HeadDef (){return headDefined;};
-	void	saveHead (Header &h) {head = h; headDefined=true;};
+    void    setXsize (int i) {axisDim[0] = i;};
+    void    setYsize (int i) {axisDim[1] = i;};
+    void    setZsize (int i) {axisDim[2] = i;};
+    void    setDimAx (long *ax) {axisDim=ax;};
+    Header& Head () {Header &h = head; return h;};
+    void    setHeadDef (bool b) {headDefined = b;};
+    bool    HeadDef (){return headDefined;};
+    void    saveHead (Header &h) {head = h; headDefined=true;};
 	
-    bool*	Mask 	() {return mask;};
-    bool	Mask	(long npix) {return mask[npix];};
-    void        setMask (bool *inputMask){  if(maskAllocated) delete [] mask;
+    bool*   Mask () {return mask;};
+    bool	Mask (long npix) {return mask[npix];};
+    void    setMask (bool *inputMask){  if(maskAllocated) delete [] mask;
                                             mask = new bool[numPix];
                                             for(int i=0;i<numPix;i++) mask[i] = inputMask[i];
                                             maskAllocated = true;};
-    bool	MaskAll	() {return maskAllocated;};
-    void        SetMaskAll (bool flag) {maskAllocated=flag;};
+    bool    MaskAll	() {return maskAllocated;};
+    void    SetMaskAll (bool flag) {maskAllocated=flag;};
 
 	
-	T 	printStats() {std::cout << stats << std::endl;}; 
-	Stats<T>  getStats(){ return stats;};
-	Stats<T>& stat(){Stats<T> &rstats = stats; return rstats;};
-	void 	saveStats(Stats<T> newStats){stats = newStats;};
-	bool	StatsDef () {return statsDefined;};	
-	int     getopts(int argc, char **argv){return par.getopts(argc,argv);};
-	Param   getParam(){return par;}; 
-	Param&  pars(){ Param &rpar = par; return rpar;};
-	void    showParam(std::ostream &stream){stream << par;};
-	void    saveParam(Param &newpar){par = newpar;};
-	long    getNumObj(){return objectList->size();};
-	short*	DetectMap () {return detectMap;};
+    T       printStats() {std::cout << stats << std::endl;};
+    Stats<T>  getStats(){ return stats;};
+    Stats<T>& stat(){Stats<T> &rstats = stats; return rstats;};
+    void    saveStats(Stats<T> newStats){stats = newStats;};
+    bool    StatsDef () {return statsDefined;};
+    int     getopts(int argc, char **argv){return par.getopts(argc,argv);};
+    Param   getParam(){return par;};
+    Param&  pars(){ Param &rpar = par; return rpar;};
+    void    showParam(std::ostream &stream){stream << par;};
+    void    saveParam(Param &newpar){par = newpar;};
+    long    getNumObj(){return objectList->size();};
+    short*  DetectMap () {return detectMap;};
     PixelInfo::Detection<T>  getObject(long number){return objectList->at(number);};
     PixelInfo::Detection<T>* pObject(long number){return &(objectList->at(number));};
     std::vector <PixelInfo::Detection<T> >  getObjectList(){return *objectList;};
@@ -108,71 +108,71 @@ public:
     bool getIsSearched () {return isSearched;};
     void setIsSearched (bool flag) {isSearched=flag;};
 
-	/// Functions for Fitsfile I/O:
+    /// Functions for Fitsfile I/O:
 	
-	void	setCube  (T *input, int *dim);
-	bool	readCube (std::string fname);									/// Front-end to read array from Fits.
-	bool 	fitsread_3d ();													/// Read data array from Fits file.												
-	bool 	fitswrite_3d (const char *outfile, bool fullHead=false);		/// Write a Fits cube.										
+    void    setCube (T *input, int *dim);
+    bool    readCube (std::string fname);									/// Front-end to read array from Fits.
+    bool    fitsread_3d ();													/// Read data array from Fits file.
+    bool    fitswrite_3d (const char *outfile, bool fullHead=false);		/// Write a Fits cube.
 	
-	/// Statistics functions:
+    /// Statistics functions:
 	
-	void 	setCubeStats();								 /// Calculate statistical parameters for cube.	
-	bool    isDetection(long x, long y, long z);		 /// Can be a voxel considered a detection ?
+    void    setCubeStats();								 /// Calculate statistical parameters for cube.
+    bool    isDetection(long x, long y, long z);		 /// Can be a voxel considered a detection ?
 
-	/// Searching functions, defined in search.cpp.
+    /// Searching functions, defined in search.cpp.
 	
-	void  	Search();									 /// Front-end function to search in a 3-D cube.
-	void  	CubicSearch();								 /// Front-end to next functions. 
+    void    Search();									 /// Front-end function to search in a 3-D cube.
+    void    CubicSearch();								 /// Front-end to next functions.
     std::vector <PixelInfo::Detection<T> > search3DArray();			 /// Switch functions for spectral or spatial.
     std::vector <PixelInfo::Detection<T> > search3DArraySpectral();	 /// Research objects in the 1-D spectra.
     std::vector <PixelInfo::Detection<T> > search3DArraySpatial();	 	 /// Research objects in the 2-D channels maps.
-    void  	updateDetectMap();							 /// Update the map of detected pixels.  
-    void  	updateDetectMap(PixelInfo::Detection<T> obj);				 /// Update the map of detected pixels for a Detection.
-	void  	ObjectMerger();								 /// Front-end function to mergeList & finaliseList.
-	void  	ObjectMergerSimple();						 /// Front-end function to mergeList & finaliseList.
-    void  	mergeList(std::vector<PixelInfo::Detection<T> > &objList);  /// Merge a list of pixel in a single object.
-    void  	finaliseList(std::vector<PixelInfo::Detection<T> > &objList);/// Verify if a detection can be considered an object.
-    void  	rejectObjects(std::vector<PixelInfo::Detection<T> > &objList);/// Verify if a detection can be considered an object.
-    void  	mergeIntoList(PixelInfo::Detection<T> &object, 			 /// Add an object in a detection list.
+    void    updateDetectMap();							 /// Update the map of detected pixels.
+    void    updateDetectMap(PixelInfo::Detection<T> obj);				 /// Update the map of detected pixels for a Detection.
+    void    ObjectMerger();								 /// Front-end function to mergeList & finaliseList.
+    void    ObjectMergerSimple();						 /// Front-end function to mergeList & finaliseList.
+    void    mergeList(std::vector<PixelInfo::Detection<T> > &objList);  /// Merge a list of pixel in a single object.
+    void    finaliseList(std::vector<PixelInfo::Detection<T> > &objList);/// Verify if a detection can be considered an object.
+    void    rejectObjects(std::vector<PixelInfo::Detection<T> > &objList);/// Verify if a detection can be considered an object.
+    void    mergeIntoList(PixelInfo::Detection<T> &object, 			 /// Add an object in a detection list.
             std::vector <PixelInfo::Detection<T> > &objList);
-	void  	printDetections (std::ostream& Stream);		 /// An easy way to print the detection list.
-	void 	plotDetections();
+    void    printDetections (std::ostream& Stream);		 /// An easy way to print the detection list.
+    void    plotDetections();
     PixelInfo::Detection<T>* LargestDetection ();
 
-	/// Blanking and Maps functions, defined in mmaps.cpp.
+    /// Blanking and Maps functions, defined in mmaps.cpp.
 	
-	void 	BlankCube (T *Array, long size);			 /// Blank a input array using Cube::mask.
-    void 	BlankMask(float *channel_noise=NULL);									 /// Define Cube::mask;
-	void 	MomentMaps ();									 /// Front-end to write moment maps.
+    void    BlankCube (T *Array, long size);			 /// Blank a input array using Cube::mask.
+    void    BlankMask(float *channel_noise=NULL);									 /// Define Cube::mask;
+    void    MomentMaps ();									 /// Front-end to write moment maps.
 
-	//void 	WriteFITSMap (T *Array, int T);			 /// Write a map in a FITS file.
+    //void 	WriteFITSMap (T *Array, int T);			 /// Write a map in a FITS file.
 	
-	Cube<T>*	Reduce (int fac);
-	void 	CheckChannels ();
+    Cube<T>*  Reduce (int fac);
+    void      CheckChannels ();
 	
 protected:
-	T 			*array;						///< The cube data array.
-	bool		arrayAllocated;				///< Is array allocated?
-	int			numAxes;					///< Number of axis.
-	long		numPix;						///< Total number of pixel.
-	int         *axisDim;    				///< Array of axis dimensions of cube
+    T           *array;						///< The cube data array.
+    bool        arrayAllocated;				///< Is array allocated?
+    int         numAxes;					///< Number of axis.
+    long        numPix;						///< Total number of pixel.
+    int         *axisDim;    				///< Array of axis dimensions of cube
     bool        axisDimAllocated; 			///< has axisDim been allocated?
-	Header		head;						///< Fits header information.
-	bool		headDefined;				///< Has been an header defined?			
-	Stats<T>	stats; 						///< The statistics for the data array.
-	bool		statsDefined;				///< Have been statistics defined?
-	Param		par;				        ///< A parameter list.
+    Header      head;						///< Fits header information.
+    bool        headDefined;				///< Has been an header defined?
+    Stats<T>    stats; 						///< The statistics for the data array.
+    bool        statsDefined;				///< Have been statistics defined?
+    Param       par;				        ///< A parameter list.
     std::vector <PixelInfo::Detection<T> > *objectList; 	///< The list of detected objects.
 	
 
 private:
-	int			bitpix;						///< Data type code values for FITS images.
-	int			datatype;					///< Data type when reading or writing data.
-	bool 		*mask;						///< A mask for blanked cube.
-	bool 		maskAllocated;				///< Has mask been allocated?
-	short      	*detectMap;			        ///< X,Y locations of detected pixels.
-	bool	   	mapAllocated;				///< Has the detection map been allocated?
+    int	        bitpix;						///< Data type code values for FITS images.
+    int         datatype;					///< Data type when reading or writing data.
+    bool        *mask;						///< A mask for blanked cube.
+    bool        maskAllocated;				///< Has mask been allocated?
+    short       *detectMap;			        ///< X,Y locations of detected pixels.
+    bool        mapAllocated;				///< Has the detection map been allocated?
     bool        isSearched;                 ///< Already searched?
 
 };

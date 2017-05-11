@@ -232,11 +232,11 @@ Param& Param::operator= (const Param& p) {
 	this->SM				= p.SM;
 	this->WFUNC				= p.WFUNC;
 	this->BWEIGHT			= p.BWEIGHT;
-        this->NORM              = p.NORM;
-        this->startRAD          = p.startRAD;
-        this->redshift          = p.redshift;
-        this->nlines            = p.nlines;
-        this->restwave          = p.restwave;
+    this->NORM              = p.NORM;
+    this->startRAD          = p.startRAD;
+    this->redshift          = p.redshift;
+    this->nlines            = p.nlines;
+    this->restwave          = p.restwave;
 	
 	this->flagSpace		= p.flagSpace;
 	this->P1				= p.P1;
@@ -267,7 +267,6 @@ Param& Param::operator= (const Param& p) {
     this->ivarfile          = p.ivarfile;
     this->linetofit         = p.linetofit;
 
-       
     this->flagPV            = p.flagPV;
     this->XPOS_PV           = p.XPOS_PV;
     this->YPOS_PV           = p.YPOS_PV;
@@ -450,43 +449,43 @@ int Param::readParams(std::string paramfile) {
             if (arg=="polyn")           POLYN = readFilename(ss);
             if (arg=="sm")				SM = readFlag(ss);
             if (arg=="startrad")        startRAD = readIval(ss);
-            if (arg=="redshift")            redshift = readDval(ss);
-            if (arg=="nlines")              nlines = readIval(ss);
-            if (arg=="restwave")            restwave = readDval(ss);
+            if (arg=="redshift")        redshift = readDval(ss);
+            if (arg=="nlines")          nlines = readIval(ss);
+            if (arg=="restwave")        restwave = readDval(ss);
 
             if (arg=="p1")				P1 = readFilename(ss);
             if (arg=="p1par")			readVec<float>(ss,P1p,3);
             if (arg=="p2")				P2 = readFilename(ss);
             if (arg=="p2par")			readVec<float>(ss,P2p,3);
 			
-			if (arg=="smooth")				flagSmooth = readFlag(ss);
-			if (arg=="box")					readVec<int>(ss,BOX,6);
-			if (arg=="bmaj")				bmaj = readDval(ss);
-			if (arg=="bmin")				bmin = readDval(ss);
-			if (arg=="bpa")					bpa = readDval(ss);
-            if (arg=="obmaj")				obmaj = readDval(ss);
-            if (arg=="obmin")				obmin = readDval(ss);
-            if (arg=="obpa")				obpa = readDval(ss);
-			if (arg=="linear")				linear = readDval(ss);
-			if (arg=="factor")				factor = readDval(ss);
-            if (arg=="scalefactor")			scalefactor = readDval(ss);
-			if (arg=="fft")					flagFFT = readFlag(ss);
-			if (arg=="reduce")				flagReduce = readFlag(ss);
-            if (arg=="smoothoutput")        smo_out = readFilename(ss);
+            if (arg=="smooth")		    flagSmooth = readFlag(ss);
+            if (arg=="box")				readVec<int>(ss,BOX,6);
+            if (arg=="bmaj")			bmaj = readDval(ss);
+            if (arg=="bmin")			bmin = readDval(ss);
+            if (arg=="bpa")				bpa = readDval(ss);
+            if (arg=="obmaj")			obmaj = readDval(ss);
+            if (arg=="obmin")			obmin = readDval(ss);
+            if (arg=="obpa")			obpa = readDval(ss);
+            if (arg=="linear")			linear = readDval(ss);
+            if (arg=="factor")			factor = readDval(ss);
+            if (arg=="scalefactor")		scalefactor = readDval(ss);
+            if (arg=="fft")				lagFFT = readFlag(ss);
+            if (arg=="reduce")			flagReduce = readFlag(ss);
+            if (arg=="smoothoutput")    smo_out = readFilename(ss);
 
-            if (arg=="slitfit")             flagSlitfit = readFlag(ss);
-            if (arg=="wavefile")            wavefile = readFilename(ss);
-            if (arg=="ivarfile")            ivarfile = readFilename(ss);
-            if (arg=="linetofit")           linetofit = readFilename(ss);
+            if (arg=="slitfit")         flagSlitfit = readFlag(ss);
+            if (arg=="wavefile")        wavefile = readFilename(ss);
+            if (arg=="ivarfile")        ivarfile = readFilename(ss);
+            if (arg=="linetofit")       linetofit = readFilename(ss);
 
 
-            if (arg=="flagpv")              flagPV = readFlag(ss);
-            if (arg=="xpos_pv")             XPOS_PV = readFval(ss);
-            if (arg=="ypos_pv")             YPOS_PV = readFval(ss);
-            if (arg=="pa_pv")               PA_PV = readFval(ss);
+            if (arg=="flagpv")          flagPV = readFlag(ss);
+            if (arg=="xpos_pv")         XPOS_PV = readFval(ss);
+            if (arg=="ypos_pv")         YPOS_PV = readFval(ss);
+            if (arg=="pa_pv")           PA_PV = readFval(ss);
 
-            if (arg=="threads")             threads = readIval(ss);
-            if (arg=="debug")               debug = readFlag(ss);
+            if (arg=="threads")         threads = readIval(ss);
+            if (arg=="debug")           debug = readFlag(ss);
 
 		}
     }
