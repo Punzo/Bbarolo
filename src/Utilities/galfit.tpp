@@ -153,12 +153,13 @@ Galfit<T>::Galfit(Cube<T> *c) {
 
     int nr=0;
     T radsep, xpos, ypos, vsys, vrot, vdisp, z0, dens, inc, pa, vrad;
+    int nv;
 
     bool toEstimate =  (p->getRADII()=="-1" && (p->getNRADII()==-1 || p->getRADSEP()==-1)) ||
                         p->getXPOS()=="-1" || p->getYPOS()=="-1" || p->getVSYS()=="-1" ||
                         p->getVROT()=="-1" || p->getPHI()=="-1"  || p->getINC()=="-1" ||
                         p->getZ0() == "-1" || p->getDistance() == -1 || p->getVDISP() == "-1" ||
-                        p->getDENS() == "-1";
+                        p->getDENS() == "-1" || p->getNV() == -1;
 
 
     // Creating mask if does not exist and write it in a fitsfile.
@@ -209,6 +210,7 @@ Galfit<T>::Galfit(Cube<T> *c) {
         inc   = p->getINC()!="-1" ? atof(p->getINC().c_str()) : init_par->inclin;
         pa    = p->getPHI()!="-1" ? atof(p->getPHI().c_str()) : init_par->posang;
         vrad  = p->getVRAD()!="-1" ? atof(p->getVRAD().c_str()) : 0.;
+        nv    = p->getNV()!=-1 ? p->getNV() : in->DimZ();
         delete init_par;
 
         p->setNRADII(nr);
@@ -223,6 +225,7 @@ Galfit<T>::Galfit(Cube<T> *c) {
         p->setDistance(distance);
         p->setVDISP(DoubleToString(vdisp));
         p->setDENS(DoubleToString(dens));
+        p->setNV(nv);
     }
     else {
         nr 	  = p->getNRADII();
