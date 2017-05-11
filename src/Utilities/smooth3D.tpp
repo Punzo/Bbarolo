@@ -538,16 +538,10 @@ bool Smooth3D<T>::calculate(T *OldArray, T *NewArray) {
 	long size = (NdatX+NconX-1)*(NdatY+NconY-1);
 	T *beforeCON = new T[size];
 	T *afterCON  = new T[size];
-		
-	bool verb = in->pars().isVerbose();
-    ProgressBar bar("Smoothing... ",true);
-    bar.setShowbar(in->pars().getShowbar());
-    if (verb) bar.init(NdatZ);
 
 	if (!usescalefac) scalefac=1.0;
 
 	for (int z=0; z<NdatZ; z++) {
-		if (verb) bar.update(z+1);	
 		for (int x=0; x<(NdatX+NconX-1); x++) {
 			for (int y=0; y<(NdatY+NconY-1); y++) {
 				long nPix = x+y*(NdatX+NconX-1);
@@ -584,8 +578,6 @@ bool Smooth3D<T>::calculate(T *OldArray, T *NewArray) {
 		
 	}	
 
-	if (verb) bar.fillSpace("OK.\n");
-
 	delete [] beforeCON;
 	delete [] afterCON;
 	
@@ -607,19 +599,13 @@ bool Smooth3D<T>::calculatefft(T *OldArray, T *NewArray) {
 	}
 	
 	double *beforeCON = new double[NdatX*NdatY];
-		
-	bool verb = in->pars().isVerbose();
-    ProgressBar bar(" Smoothing... ",false);
-    bar.setShowbar(in->pars().getShowbar());
-    if (verb) bar.init(NdatZ);
 	
 	Conv2D conv_fft;
 	init_Conv2D (conv_fft, LINEAR_SAME, NdatX, NdatY, NconX, NconY);
 	
 	if (!usescalefac) scalefac=1.0;
 
-	for (int z=0; z<NdatZ; z++) {
-		if (verb) bar.update(z+1);	
+	for (int z=0; z<NdatZ; z++) {	
 		for (int x=0; x<NdatX; x++) {
 			for (int y=0; y<NdatY; y++) {
 				long nPix = x+y*NdatX;
@@ -639,8 +625,6 @@ bool Smooth3D<T>::calculatefft(T *OldArray, T *NewArray) {
 		}
 		
 	}
-
-	if (verb) bar.fillSpace(" OK.\n");
 
 	clear_Conv2D(conv_fft);
 	

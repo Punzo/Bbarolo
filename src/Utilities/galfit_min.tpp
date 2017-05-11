@@ -46,7 +46,8 @@ using namespace PixelInfo;
 #define XPOS  6
 #define YPOS  7
 #define VSYS  8
-#define MAXPAR 9
+#define VRAD  9
+#define MAXPAR 10
 
 namespace Model {
 
@@ -79,6 +80,7 @@ bool Galfit<T>::minimize(Rings<T> *dring, T &minimum, T *pmin) {
     if (mpar[XPOS])  point[k++]=dring->xpos.front();
     if (mpar[YPOS])  point[k++]=dring->ypos.front();
     if (mpar[VSYS])  point[k++]=dring->vsys.front();
+    if (mpar[VRAD])  point[k++]=dring->vrad.front();
 
     /// Determine the initial simplex.
 	for (int i=0; i<ndim; i++) {
@@ -99,6 +101,7 @@ bool Galfit<T>::minimize(Rings<T> *dring, T &minimum, T *pmin) {
 //        if (mpar[XPOS])  for (int j=0;j<n;j++) {dels[k]=(maxs[XPOS]-mins[XPOS])/4.; point[k++]=dring->xpos[j];}
 //        if (mpar[YPOS])  for (int j=0;j<n;j++) {dels[k]=(maxs[YPOS]-mins[YPOS])/4.; point[k++]=dring->ypos[j];}
 //        if (mpar[VSYS])  for (int j=0;j<n;j++) {dels[k]=(maxs[VSYS]-mins[VSYS])/4.; point[k++]=dring->vsys[j];}
+//        if (mpar[VRAD])  for (int j=0;j<n;j++) {dels[k]=(maxs[VRAD]-mins[VRAD])/4.; point[k++]=dring->vrad[j];}
 //    }
 //    else {
 //        int k=0;
@@ -111,6 +114,7 @@ bool Galfit<T>::minimize(Rings<T> *dring, T &minimum, T *pmin) {
 //        if (mpar[XPOS])  {dels[k]=(maxs[XPOS]-mins[XPOS])/4.;point[k++]= dring->xpos.front();}
 //        if (mpar[YPOS])  {dels[k]=(maxs[YPOS]-mins[YPOS])/4.;point[k++]= dring->ypos.front();}
 //        if (mpar[VSYS])  {dels[k]=(maxs[VSYS]-mins[VSYS])/4.;point[k++]= dring->vsys.front();}
+//        if (mpar[VRAD])  {dels[k]=(maxs[VRAD]-mins[VRAD])/4.;point[k++]= dring->vrad.front();}
 //    }
     int n=1, k=0;
     if (global) n=dring->nr;
@@ -135,6 +139,7 @@ bool Galfit<T>::minimize(Rings<T> *dring, T &minimum, T *pmin) {
     if (mpar[XPOS])  for (int j=0;j<n;j++) {dels[k]=(maxs[XPOS]-mins[XPOS])/4.; point[k++]=dring->xpos[j];}
     if (mpar[YPOS])  for (int j=0;j<n;j++) {dels[k]=(maxs[YPOS]-mins[YPOS])/4.; point[k++]=dring->ypos[j];}
     if (mpar[VSYS])  for (int j=0;j<n;j++) {dels[k]=(maxs[VSYS]-mins[VSYS])/4.; point[k++]=dring->vsys[j];}
+    if (mpar[VRAD])  for (int j=0;j<n;j++) {dels[k]=10.; point[k++]=dring->vrad[j];}
 
     // Build the initial matrix.
 	for (int i=0; i<mpts; i++) {
@@ -292,10 +297,11 @@ T Galfit<T>::func3D(Rings<T> *dring, T *zpar) {
 //    T xpos  = dring->xpos.front();
 //    T ypos  = dring->ypos.front();
 //    T vsys  = dring->vsys.front();
+//    T vrad  = dring->vrad.front();
 
     int n=1, np=0;
     if (global) {n=dring->nr; w_r=0;}
-    T vrot[n],vdisp[n],dens[n],z0[n],inc[n],phi[n],xpos[n],ypos[n],vsys[n];
+    T vrot[n],vdisp[n],dens[n],z0[n],inc[n],phi[n],xpos[n],ypos[n],vsys[n],vrad[n];
 
     for (int j=0; j<n; j++) {
       vrot[j]  = dring->vrot[j];
@@ -307,7 +313,7 @@ T Galfit<T>::func3D(Rings<T> *dring, T *zpar) {
       xpos[j]  = dring->xpos[j];
       ypos[j]  = dring->ypos[j];
       vsys[j]  = dring->vsys[j];
-
+      vrad[j]  = dring->vrad[j];
     }
 
     for (int i=0; i<MAXPAR; i++) {
@@ -375,6 +381,13 @@ T Galfit<T>::func3D(Rings<T> *dring, T *zpar) {
                 }
                 break;
 
+            case VRAD:
+                for (int j=0; j<n; j++) {
+                    vrad[j] = (zpar[np]<mins[VRAD] || zpar[np]>maxs[VRAD]) ? inr->vrad[w_r] : zpar[np];
+                    zpar[np] = vrad[j];
+                }
+                break;
+
             default:
                 break;
             }
@@ -439,6 +452,12 @@ T Galfit<T>::func3D(Rings<T> *dring, T *zpar) {
                     npar++;
                     break;
 
+                case VRAD:
+                    vrad = zpar[npar];
+                    if (vrad<mins[VRAD] || vrad>maxs[VRAD]) out_of_boundaries = true;
+                    npar++;
+                    break;
+
                     default:
                     break;
             }
@@ -465,6 +484,7 @@ T Galfit<T>::func3D(Rings<T> *dring, T *zpar) {
         dring->xpos[i]	= xpos[j];
         dring->ypos[i]	= ypos[j];
         dring->vsys[i]	= vsys[j];
+        dring->vrad[i]	= vrad[j];
 	}
 
     return model(dring);
@@ -1045,4 +1065,5 @@ template double* Galfit<double>::getFinalRingsRegion ();
 #undef XPOS
 #undef YPOS
 #undef VSYS
+#undef VRAD
 #undef MAXPAR

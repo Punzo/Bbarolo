@@ -148,10 +148,7 @@ void MomentMap<T>::ZeroMoment (bool msk) {
 		std::cout << "Array not allocated. Call 'input' first!!\n";
 		std::terminate();
 	}
-		
-    if (!(this->headDefined=setHead(0)) && in->pars().isVerbose()) {
-		std::cout<< "MOMENT MAPS warning: cannot create new header.\n";
-	}
+
 	
 	bool isVerbose = in->pars().isVerbose();
 	
@@ -194,10 +191,6 @@ void MomentMap<T>::FirstMoment (bool msk) {
 		std::cout << "MOMENT MAPS error: ";
 		std::cout << "Array not allocated. Call 'input' first!!\n";
 		std::terminate();
-	}
-		
-	if (!(this->headDefined=setHead(1))) {
-		std::cout<< "MOMENT MAPS warning: cannot create new header.\n";
 	}
 	
 	bool isVerbose = in->pars().isVerbose();
@@ -251,10 +244,6 @@ void MomentMap<T>::SecondMoment (bool msk) {
 		std::cout << "MOMENT MAPS error: ";
 		std::cout << "Array not allocated. Call 'input' first!!\n";
 		std::terminate();
-	}
-		
-	if (!(this->headDefined=setHead(2))) {
-		std::cout<< "MOMENT MAPS warning: cannot create new header.\n";
 	}
 	
 	bool isVerbose = in->pars().isVerbose();

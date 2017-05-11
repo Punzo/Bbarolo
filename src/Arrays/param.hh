@@ -145,6 +145,8 @@ public:
     void    setVSYS (string vSysString) {VSYS=vSysString;};
     string	getVROT () {return VROT;};
     void    setVROT (string vRotString) {VROT=vRotString;};
+    string	getVRAD () {return VRAD;};
+    void    setVRAD (string vRadString) {VRAD=vRadString;};
     string	getVDISP () {return VDISP;};
     void    setVDISP (string vDispString) {VDISP=vDispString;};
     string	getINC () {return INC;};
@@ -320,6 +322,7 @@ private:
     double          RADSEP;             ///< Separation between rings (arcs).
     string          VSYS;               ///< Systemic velocity (km/s).
     string          VROT;               ///< Circular velocity (km/s).
+    string          VRAD;               ///< Radial velocity (km/s).
     string          VDISP;              ///< Rotation velocity (km/s).
     string          INC;                ///< Inclination angle (degrees).
     float           DELTAINC;           ///< Inclination angle variation (degrees).

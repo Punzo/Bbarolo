@@ -290,13 +290,13 @@ public:
   //////////////////////////////////////////////////////
 
   //----------------
-  // These are in sorting.cc
+  // These are in detection.tpp
   //
   /// @brief Sort a list of Detections by Z-pixel value. 
-  //void SortByZ(std::vector <Detection> &inputList);
+  template <class T>  void SortByZ(std::vector <Detection<T> > *inputList);
 
   /// @brief Sort a list of Detections by Velocity.
-  //void SortByVel(std::vector <Detection> &inputList);
+  template <class T> void SortByVel(std::vector <Detection<T> > *inputList);
 
   /// @brief Sort a list of Detections by a nominated parameter
   //void SortDetections(std::vector <Detection> &inputList, std::string parameter);

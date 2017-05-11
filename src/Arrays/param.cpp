@@ -90,6 +90,7 @@ void Param::defaultValues() {
     RADSEP				= -1;
     VSYS				= "-1";
     VROT				= "-1";
+    VRAD                = "-1";
     VDISP				= "-1";
     INC					= "-1";
     DELTAINC			= 5;
@@ -210,7 +211,8 @@ Param& Param::operator= (const Param& p) {
 	this->YPOS				= p.YPOS;						
 	this->RADSEP			= p.RADSEP;						
 	this->VSYS				= p.VSYS;						
-	this->VROT				= p.VROT;						
+    this->VROT				= p.VROT;
+    this->VRAD				= p.VRAD;
 	this->VDISP				= p.VDISP;						
 	this->INC				= p.INC;						
 	this->DELTAINC			= p.DELTAINC;						
@@ -426,6 +428,7 @@ int Param::readParams(std::string paramfile) {
             if (arg=="radsep")          RADSEP = readDval(ss);
             if (arg=="vsys")			VSYS = readFilename(ss);
             if (arg=="vrot")			VROT = readFilename(ss);
+            if (arg=="vrad")			VRAD = readFilename(ss);
             if (arg=="vdisp")			VDISP = readFilename(ss);
             if (arg=="inc")             INC = readFilename(ss);
             if (arg=="deltainc")		DELTAINC = readFval(ss);
@@ -820,6 +823,7 @@ void Param::createTemplate() {
 	parf << "// anti-clockwise from north] (in degrees),\n";
 	parf << "// height scale of the disk (in arcsec).\n";
 	parf << setw(m) << left << "VROT"  << setw(m) << left << "100"<< endl;
+    parf << setw(m) << left << "VRAD"  << setw(m) << left << "0"<< endl;
 	parf << setw(m) << left << "VDISP" << setw(m) << left << "10" << endl;
 	parf << setw(m) << left << "INC"   << setw(m) << left << "60" << endl;
 	parf << setw(m) << left << "PA"    << setw(m) << left << "100"<< endl;
@@ -1019,6 +1023,7 @@ std::ostream& operator<< (std::ostream& theStream, Param& par) {
 		recordParam(theStream, "[YPOS]", "   Y center of the galaxy (pixel)", par.getYPOS());
 		recordParam(theStream, "[VSYS]", "   Systemic velocity of the galaxy (km/s)", par.getVSYS());
 		recordParam(theStream, "[VROT]", "   Initial global rotation velocity (km/s)", par.getVROT());
+        recordParam(theStream, "[VRAD]", "   Initial global radial velocity (km/s)", par.getVRAD());
 		recordParam(theStream, "[VDISP]", "   Initial global velocity dispersion (km/s)", par.getVDISP());
 		recordParam(theStream, "[INC]", "   Initial global inclination (degrees)", par.getINC());
 		recordParam(theStream, "[PA]", "   Initial global position angle (degrees)", par.getPHI());

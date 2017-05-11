@@ -24,6 +24,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <sstream>
 #include <string>
 #include <math.h>
 #include "voxel.hh"
@@ -995,8 +996,8 @@ void getIntSpec(PixelInfo::Detection<T> &object, float *fluxArray, long *dimArra
     long xySize = dimArray[0]*dimArray[1];
     bool *done = new bool[xySize]; 
     for(int i=0;i<xySize;i++) done[i]=false;
-    std::vector<PixelInfo::Voxel<float> > voxlist = object.getPixelSet();
-    std::vector<PixelInfo::Voxel<float> >::iterator vox;
+    std::vector<PixelInfo::Voxel<T> > voxlist = object.getPixelSet();
+    typename std::vector<PixelInfo::Voxel<T> >::iterator vox;
     for(vox=voxlist.begin();vox<voxlist.end();vox++){
 		long pos = vox->getX()+dimArray[0]*vox->getY();
 		if(!done[pos]){
@@ -1012,6 +1013,81 @@ void getIntSpec(PixelInfo::Detection<T> &object, float *fluxArray, long *dimArra
 
 }
 
+template <class T>
+void SortByZ(std::vector<Detection<T> > *inputList)
+{
+  /// A Function that takes a list of Detections and sorts them in
+  /// order of increasing z-pixel value.  Upon return, the inputList
+  /// is sorted.
+  ///
+  /// We use the std::stable_sort function, so that the order of
+  /// objects with the same z-value is preserved.
+  /// \param inputList List of Detections to be sorted.
+  /// \return The inputList is returned with the elements sorted.
+
+  std::multimap<T, size_t> complist;
+  std::vector<Detection<T> > sorted;
+  typename std::multimap<T, size_t>::iterator comp;
+  typename std::vector<Detection<T> >::iterator det;
+  size_t ct=0;
+  for (det=inputList->begin();det<inputList->end();det++){
+    complist.insert(std::pair<float, size_t>(det->getZcentre(), ct++));
+  }
+
+  for (comp = complist.begin(); comp != complist.end(); comp++)
+    sorted.push_back(inputList->at(comp->second));
+
+  inputList->clear();
+  for (det=sorted.begin();det<sorted.end();det++) inputList->push_back( *det );
+
+  sorted.clear();
+
+}
+
+//======================================================================
+
+template <class T>
+void SortByVel(std::vector <Detection<T> > *inputList) {
+  /// @details
+  /// A Function that takes a list of Detections and sorts them in
+  ///  order of increasing velocity.
+  /// Every member of the vector needs to have WCS defined, (and if so,
+  ///   then vel is assumed to be defined for all), otherwise no sorting
+  ///   is done.
+  ///
+  /// We use the std::stable_sort function, so that the order of
+  /// objects with the same z-value is preserved.
+  ///
+  /// \param inputList List of Detections to be sorted.
+  /// \return The inputList is returned with the elements sorted,
+  /// unless the WCS is not good for at least one element, in which
+  /// case it is returned unaltered.
+
+  bool isGood = true;
+  for(size_t i=0;i<inputList->size();i++) isGood = isGood && inputList->at(i).isWCS();
+
+  if(isGood){
+
+    std::multimap<double, size_t> complist;
+    std::vector<Detection<T> > sorted;
+    std::multimap<double, size_t>::iterator comp;
+    typename std::vector<Detection<T> >::iterator det;
+    size_t ct=0;
+    for (det=inputList->begin();det<inputList->end();det++){
+        complist.insert(std::pair<double, size_t>(det->getVel(), ct++));
+    }
+
+    for (comp = complist.begin(); comp != complist.end(); comp++)
+        sorted.push_back(inputList->at(comp->second));
+
+    inputList->clear();
+    for (det=sorted.begin();det<sorted.end();det++) inputList->push_back( *det );
+
+    sorted.clear();
 
 
+  }
 
+}
+
+//======================================================================

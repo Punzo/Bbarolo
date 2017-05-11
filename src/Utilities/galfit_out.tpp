@@ -48,7 +48,8 @@
 #define XPOS  6
 #define YPOS  7
 #define VSYS  8
-#define MAXPAR 9
+#define VRAD  9
+#define MAXPAR 10
 
 namespace Model {
 
@@ -232,6 +233,19 @@ void Galfit<T>::writeModel (std::string normtype) {
     }
 
     if (normtype=="NONE") {
+
+        // Calculate total flux of model within last ring
+        for (int i=0; i < in->DimX()*in->DimY(); i++) {
+            if (!isNaN(ringreg[i])) {
+                for (int z=0; z < in->DimZ(); z++)
+                    totflux_model += outarray[i+z*in->DimY()*in->DimX()];
+                }
+            }
+
+        double factor = totflux_data/totflux_model;
+        for (int i=0; i<in->NumPix(); i++) outarray[i] *= factor;
+        if (verb) std::cout << " Done." << std::endl;
+
         if (verb) std::cout << "    Writing model..." << std::flush;
         std::string mfile = outfold+object+"mod_nonorm.fits";
         mod->Out()->fitswrite_3d(mfile.c_str());
@@ -513,7 +527,7 @@ void Galfit<T>::plotPar_Gnuplot () {
     std::string mfile = outfold+"gnuscript.gnu";
     gnu.open(mfile.c_str());
 
-    float xtics = lround(outr->nr/5.);
+    float xtics = ceil(outr->nr/5.);
     xtics *= outr->radsep;
     while (outr->radii.back()/xtics>5) xtics*=2;
     while (outr->radii.back()/xtics<2) xtics/=2;
@@ -1364,6 +1378,12 @@ void Galfit<T>::showInitial (Rings<T> *inr, std::ostream& Stream) {
          << setw(m-1) << inr->vrot[0]
          << left << setw(m) << "  km/s" << endl;
 
+    s = "    Vrad";
+    if (in->pars().getVRAD()=="-1") s += " (d)";
+    else s += " (i)";
+    Stream << setw(n) << left << s << setw(3) << right << "= "
+           << setw(m) << inr->vrad[0] << left << setw(m) << "  km/s";
+
     s = "    Inc";
     if (in->pars().getINC()=="-1") s += " (e)";
     else s += " (i)";
@@ -1458,9 +1478,9 @@ void Galfit<T>::DensityProfile (T *surf_dens, int *count) {
         surf_bright_faceon[i] *= cos(outr->inc[i]*M_PI/180.)/count[i];
         surf_bright_tot += surf_dens[i];
         //surf_dens[i]/=count[i];
-        cout << surf_bright_tot << endl;
+        //cout << surf_bright_tot << endl;
     }
-    cout << scientific<< obj->getMass() << std::endl << surf_bright_tot;
+    //cout << scientific<< obj->getMass() << std::endl << surf_bright_tot;
 
     std::ofstream fileout((in->pars().getOutfolder()+"surface_dens.txt").c_str());
 
@@ -1491,4 +1511,5 @@ template void Galfit<double>::DensityProfile (double*, int *);
 #undef XPOS
 #undef YPOS
 #undef VSYS
+#undef VRAD
 #undef MAXPAR

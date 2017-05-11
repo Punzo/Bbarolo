@@ -110,7 +110,7 @@ SET(H_FILES
     ${CMAKE_UTILITIES_SOURCE_DIR}/allocator.tpp
     ${CMAKE_UTILITIES_SOURCE_DIR}/converter.hh
     ${CMAKE_UTILITIES_SOURCE_DIR}/ellprof.hh   ${CMAKE_UTILITIES_SOURCE_DIR}/ellprof.tpp
-    ${CMAKE_UTILITIES_SOURCE_DIR}/galfit.hh   ${CMAKE_UTILITIES_SOURCE_DIR}/galfit.tpp
+    ${CMAKE_UTILITIES_SOURCE_DIR}/galfit.hh    ${CMAKE_UTILITIES_SOURCE_DIR}/galfit.tpp
     ${CMAKE_UTILITIES_SOURCE_DIR}/galfit_errors.tpp   ${CMAKE_UTILITIES_SOURCE_DIR}/galfit_min.tpp
     ${CMAKE_UTILITIES_SOURCE_DIR}/galfit_out.tpp
     ${CMAKE_UTILITIES_SOURCE_DIR}/galmod.hh   ${CMAKE_UTILITIES_SOURCE_DIR}/galmod.tpp
