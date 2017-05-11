@@ -26,9 +26,9 @@
 #include <cmath>
 #include <algorithm>
 #include <iomanip>
-#include "ellprof.hh"
-#include "galmod.hh"
-#include "utils.hh"
+#include <ellprof.hh>
+#include <galmod.hh>
+#include <utils.hh>
 
 namespace Tasks {
 

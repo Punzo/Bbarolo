@@ -469,7 +469,7 @@ int Param::readParams(std::string paramfile) {
             if (arg=="linear")			linear = readDval(ss);
             if (arg=="factor")			factor = readDval(ss);
             if (arg=="scalefactor")		scalefactor = readDval(ss);
-            if (arg=="fft")				lagFFT = readFlag(ss);
+            if (arg=="fft")				flagFFT = readFlag(ss);
             if (arg=="reduce")			flagReduce = readFlag(ss);
             if (arg=="smoothoutput")    smo_out = readFilename(ss);
 

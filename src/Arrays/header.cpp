@@ -31,7 +31,7 @@
 #include <wcsunits.h>
 #include <wcshdr.h>
 #include <wcsfix.h>
-#include "header.hh"
+#include <header.hh>
 
 using namespace std;
 
@@ -126,6 +126,7 @@ Header& Header::operator=(const Header& h) {
 	this->epoch		= h.epoch;
 	this->freq0		= h.freq0;
     this->wave0		= h.wave0;
+    this->redshift  = h.redshift;
 	this->fitsname 	= h.fitsname;
 	this->bunit		= h.bunit;	
 	this->btype		= h.btype;
