@@ -1014,7 +1014,7 @@ void getIntSpec(PixelInfo::Detection<T> &object, float *fluxArray, long *dimArra
 }
 
 template <class T>
-void SortByZ(std::vector<Detection<T> > *inputList)
+void SortByZ(std::vector<PixelInfo::Detection<T> > *inputList)
 {
   /// A Function that takes a list of Detections and sorts them in
   /// order of increasing z-pixel value.  Upon return, the inputList
@@ -1026,9 +1026,9 @@ void SortByZ(std::vector<Detection<T> > *inputList)
   /// \return The inputList is returned with the elements sorted.
 
   std::multimap<T, size_t> complist;
-  std::vector<Detection<T> > sorted;
+  std::vector<PixelInfo::Detection<T> > sorted;
   typename std::multimap<T, size_t>::iterator comp;
-  typename std::vector<Detection<T> >::iterator det;
+  typename std::vector<PixelInfo::Detection<T> >::iterator det;
   size_t ct=0;
   for (det=inputList->begin();det<inputList->end();det++){
     complist.insert(std::pair<float, size_t>(det->getZcentre(), ct++));
@@ -1047,7 +1047,7 @@ void SortByZ(std::vector<Detection<T> > *inputList)
 //======================================================================
 
 template <class T>
-void SortByVel(std::vector <Detection<T> > *inputList) {
+void SortByVel(std::vector <PixelInfo::Detection<T> > *inputList) {
   /// @details
   /// A Function that takes a list of Detections and sorts them in
   ///  order of increasing velocity.
@@ -1069,9 +1069,9 @@ void SortByVel(std::vector <Detection<T> > *inputList) {
   if(isGood){
 
     std::multimap<double, size_t> complist;
-    std::vector<Detection<T> > sorted;
+    std::vector<PixelInfo::Detection<T> > sorted;
     std::multimap<double, size_t>::iterator comp;
-    typename std::vector<Detection<T> >::iterator det;
+    typename std::vector<PixelInfo::Detection<T> >::iterator det;
     size_t ct=0;
     for (det=inputList->begin();det<inputList->end();det++){
         complist.insert(std::pair<double, size_t>(det->getVel(), ct++));
