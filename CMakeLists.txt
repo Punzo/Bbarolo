@@ -37,12 +37,6 @@ CONFIGURE_FILE(
   )
 
 #-----------------------------------------------------------------------------
-# configurating compiler flags
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -ftree-vectorize -fPIC -Wuninitialized")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -ftree-vectorize -fPIC -Wuninitialized")
-SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O3 -ftree-vectorize -fPIC -Wuninitialized")
-
-#-----------------------------------------------------------------------------
 # configurating CFITSIO
 IF(NOT DEFINED CFITSIO_INCLUDE_DIR AND NOT DEFINED CFITSIO_LIBRARY_DIR)
   IF(DEFINED CFITSIO_DIR)
