@@ -144,6 +144,11 @@ template <class T>
 void MomentMap<T>::ZeroMoment (bool msk) {
 	
 	if (!this->arrayAllocated) {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
 		std::cout << "MOMENT MAPS error: ";
 		std::cout << "Array not allocated. Call 'input' first!!\n";
 		std::terminate();
@@ -188,6 +193,11 @@ void MomentMap<T>::FirstMoment (bool msk) {
 	
 	
 	if (!this->arrayAllocated) {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
 		std::cout << "MOMENT MAPS error: ";
 		std::cout << "Array not allocated. Call 'input' first!!\n";
 		std::terminate();
@@ -241,6 +251,11 @@ template <class T>
 void MomentMap<T>::SecondMoment (bool msk) {
 	
 	if (!this->arrayAllocated) {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
 		std::cout << "MOMENT MAPS error: ";
 		std::cout << "Array not allocated. Call 'input' first!!\n";
 		std::terminate();

@@ -128,6 +128,11 @@ Cube<T>::Cube(int *dimensions) {
     arrayAllocated = false;
     numPix = numAxes = 0;
     if((size<0) || (imsize<0) ) {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
         std::cout << "Error [Cube(dimArray)]: Negative size -- could not define Cube "<< std::endl;
         std::terminate();
     }
@@ -488,6 +493,11 @@ void Cube<T>::BlankMask (float *channel_noise){
         if (!isSearched) Search();
         PixelInfo::Detection<T> *larg = LargestDetection();
         if (larg==NULL) {
+            std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                         "due an unexpected error during the fitting. "
+                         "Unfortunately this will also terminate the SlicerAstro session. "
+                         "The SlicerAstro team is working on a better solution and "
+                         "apologizes for any eventual loss of work."<<std::endl;
             std::cout << "3DFIT error: No sources detected in the datacube. Cannot build mask!!! \n";
             std::terminate();
         }
@@ -575,6 +585,11 @@ void Cube<T>::BlankMask (float *channel_noise){
         size_t first = str.find_first_of("(");
         size_t last = str.find_last_of(")");
         if (first!=std::string::npos || last!=std::string::npos) {
+            std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                         "due an unexpected error during the fitting. "
+                         "Unfortunately this will also terminate the SlicerAstro session. "
+                         "The SlicerAstro team is working on a better solution and "
+                         "apologizes for any eventual loss of work."<<std::endl;
             std::cerr << "\n  ERROR: MASK parameter is not correct. Provide file(Maskfitsfile)\n";
             std::terminate();
         }
@@ -582,6 +597,11 @@ void Cube<T>::BlankMask (float *channel_noise){
         Cube<short> *ma = new Cube<short>;
 
         if (!fexists(filename) || !ma->readCube(filename)) {
+            std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                         "due an unexpected error during the fitting. "
+                         "Unfortunately this will also terminate the SlicerAstro session. "
+                         "The SlicerAstro team is working on a better solution and "
+                         "apologizes for any eventual loss of work."<<std::endl;
             std::cerr << "\n ERROR: Mask " << filename
                       << " is not a readable FITS image! Exiting ...\n";
             std::terminate();
@@ -589,6 +609,11 @@ void Cube<T>::BlankMask (float *channel_noise){
 
         if (ma->NumPix()!=numPix || ma->DimX()!=axisDim[0] ||
             ma->DimY()!=axisDim[1] || ma->DimZ()!=axisDim[2]) {
+            std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                         "due an unexpected error during the fitting. "
+                         "Unfortunately this will also terminate the SlicerAstro session. "
+                         "The SlicerAstro team is working on a better solution and "
+                         "apologizes for any eventual loss of work."<<std::endl;
             std::cerr << "\n ERROR: Mask file and data file have different dimensions." << filename
                       << " Exiting ...\n";
             std::terminate();

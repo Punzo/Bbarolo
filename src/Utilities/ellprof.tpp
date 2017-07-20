@@ -200,6 +200,11 @@ template <class T>
 void Ellprof<T>::init(MomentMap<T> *image, Rings<T> *rings, size_t nseg, float* segments) {
 
     if (!image->HeadDef()) {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
         std::cerr << "\n ELLPROF ERROR: Moment map has no proper header. Exiting ...\n";
         std::terminate();
     }

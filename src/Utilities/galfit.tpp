@@ -180,6 +180,11 @@ Galfit<T>::Galfit(Cube<T> *c) {
         PixelInfo::Detection<T> *largest = in->LargestDetection();
 
         if (largest==NULL) {
+            std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                         "due an unexpected error during the fitting. "
+                         "Unfortunately this will also terminate the SlicerAstro session. "
+                         "The SlicerAstro team is working on a better solution and "
+                         "apologizes for any eventual loss of work."<<std::endl;
             std::cout << "3DFIT error: No sources detected in the datacube. Cannot fit!!! \n";
             std::terminate();
         }
@@ -244,6 +249,11 @@ Galfit<T>::Galfit(Cube<T> *c) {
     }
 
     if (nr==0) {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
         std::cout << "\n 3DFIT ERROR: The number of radii must be > 0! " << std::endl;
         std::terminate();
     }
@@ -415,6 +425,11 @@ void Galfit<T>::input (Cube<T> *c, Rings<T> *inrings, bool *maskpar, double TOL)
 		nfixed += (1-mpar[i]);
 	}
     if (nfixed == MAXPAR) {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
         std::cout << "GALFIT error: NO free parameters!\n";
         std::terminate();
 	}
@@ -586,11 +601,21 @@ bool Galfit<T>::galfit(int *status) {
 
             if (ir!=inr->nr-1) {
                 if (inr->radii[ir+1]<=inr->radii[ir]) {
+                    std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                                 "due an unexpected error during the fitting. "
+                                 "Unfortunately this will also terminate the SlicerAstro session. "
+                                 "The SlicerAstro team is working on a better solution and "
+                                 "apologizes for any eventual loss of work."<<std::endl;
                     cout << "3DFIT error: Radii not in increasing order.\n";
                     std::terminate();
                 }
             }
             if (inr->radii[ir]<0) {
+                std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                             "due an unexpected error during the fitting. "
+                             "Unfortunately this will also terminate the SlicerAstro session. "
+                             "The SlicerAstro team is working on a better solution and "
+                             "apologizes for any eventual loss of work."<<std::endl;
                 cout << "3DFIT error: Negative radius!!!\n";
                 std::terminate();
             }
@@ -1215,6 +1240,11 @@ T Galfit<T>::getCenterCoord(std::string pos, std::string type) {
         coord_str = in->pars().getYPOS();
     }
     else {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
         std::cout << "3DFIT error: unknown coordinate type: " << type
                   << "\n             Cannot convert to grid. \n";
         std::terminate();

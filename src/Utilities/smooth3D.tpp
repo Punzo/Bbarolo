@@ -177,6 +177,11 @@ void Smooth3D<T>::cubesmooth(Cube<T> *c) {
 			 cunit=="arcmin" || cunit=="arcm") 
 			unittoarc = 60;
 	else {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
 		std::cout << "SMOOTH error (unknown CUNIT for RA-DEC): ";
 		std::cout << "cannot convert to ARCSEC.\n";
 		std::cout << cunit;
@@ -276,8 +281,14 @@ void Smooth3D<T>::smooth(Cube<T> *c, int *Bhi, int *Blo, Beam Oldbeam, Beam Newb
 	crota = c->Head().Crota();
 
 	beamDefined = defineBeam(Oldbeam, Newbeam);
-	if (!beamDefined) std::terminate();
-	
+    if (!beamDefined) {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
+        std::terminate();
+    }
     if (c->pars().isVerbose()) {
 
 		int m=20;
@@ -325,6 +336,11 @@ void Smooth3D<T>::smooth(Cube<T> *c, int *Bhi, int *Blo, Beam Oldbeam, Beam Newb
     allOK = calculate(c->Array(), array);
 #endif
 	if (!allOK) {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
 		std::cout << "SMOOTH error: cannot smooth data\n";
 		std::terminate();
 	}

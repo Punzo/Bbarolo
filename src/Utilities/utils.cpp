@@ -500,6 +500,11 @@ double arcsconv(std::string cunit) {
     else if (Cunit=="arcmin" || Cunit=="arcm") return 60.;
     else if (Cunit=="arcsec" || Cunit=="arcs") return 1.;
 	else {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
 		std::cout << "Conversion error (unknown CUNIT for RA-DEC): ";
 		std::cout << "cannot convert to ARCSEC.\n";
 		std::cout << cunit;
@@ -515,6 +520,11 @@ double degconv(std::string cunit) {
     else if (Cunit=="arcmin" || Cunit=="arcm") return 1./60.;
     else if (Cunit=="arcsec" || Cunit=="arcs") return 1./3600.;
     else {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
         std::cout << "Conversion error (unknown CUNIT for RA-DEC): ";
         std::cout << "cannot convert to DEGREE.\n";
         std::cout << cunit;

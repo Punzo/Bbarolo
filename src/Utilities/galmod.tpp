@@ -241,6 +241,11 @@ void Galmod<T>::calculate() {
 		galmod();
 	}
 	else {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
 		std::cout<< "GALMOD error: wrong or unknown input parameter.\n";
 		std::terminate();
 	}
@@ -369,6 +374,11 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
 				 cunit[i]=="arcmin" || cunit[i]=="arcm") 
 				arcmconv = 1;
 		else {
+            std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                         "due an unexpected error during the fitting. "
+                         "Unfortunately this will also terminate the SlicerAstro session. "
+                         "The SlicerAstro team is working on a better solution and "
+                         "apologizes for any eventual loss of work."<<std::endl;
 			std::cout << "GALMOD error (unknown CUNIT for RA-DEC): ";
 			std::cout << "cannot convert to ARCMIN.\n";
 			std::cout << cunit[i];
@@ -415,6 +425,11 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
 		axtyp = 4;
 	}
 	else {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
 		std::cout << "GALMOD error (unknown CUNIT for spectral axis): cannot convert.";
 		std::terminate(); 
 	}
@@ -425,6 +440,11 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
         else if (cunit3=="nm"||cunit3=="nanom") mconv = 1.0E-09;
         else if (cunit3=="a" ||cunit3=="ang"||cunit3=="angstrom") mconv = 1.0E-10;
         else {
+            std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                         "due an unexpected error during the fitting. "
+                         "Unfortunately this will also terminate the SlicerAstro session. "
+                         "The SlicerAstro team is working on a better solution and "
+                         "apologizes for any eventual loss of work."<<std::endl;
             std::cout << "GALMOD error (unknown CUNIT3): cannot convert to M.\n";
             std::cout << cunit3;
             std::terminate();
@@ -451,6 +471,11 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
         else if (cunit3=="mhz") hzconv = 1.0E06;
         else if (cunit3=="ghz") hzconv = 1.0E09;
 		else {
+            std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                         "due an unexpected error during the fitting. "
+                         "Unfortunately this will also terminate the SlicerAstro session. "
+                         "The SlicerAstro team is working on a better solution and "
+                         "apologizes for any eventual loss of work."<<std::endl;
 			std::cout << "GALMOD error (unknown CUNIT3): cannot convert to Hz.\n";
 			std::cout << cunit3;
 			std::terminate(); 
@@ -469,6 +494,11 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
         else if (cunit3=="km/s") msconv = 1.0E03;
         else if ("cm/s") msconv = 1.0E-03;
 		else {
+            std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                         "due an unexpected error during the fitting. "
+                         "Unfortunately this will also terminate the SlicerAstro session. "
+                         "The SlicerAstro team is working on a better solution and "
+                         "apologizes for any eventual loss of work."<<std::endl;
 			std::cout << "GALMOD error (unknown CUNIT3): cannot convert to M/S.\n";
 			std::cout << cunit3;
 			std::terminate(); 
@@ -481,7 +511,12 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
         //std::cout << "Give frequency at reference grid in HZ. DRVAL3= ";
         //std::cin >> drval3;
 	}
-    else { 
+    else {
+        std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                     "due an unexpected error during the fitting. "
+                     "Unfortunately this will also terminate the SlicerAstro session. "
+                     "The SlicerAstro team is working on a better solution and "
+                     "apologizes for any eventual loss of work."<<std::endl;
         std::cout << "Unknown axis type: no velocities along spectral axis.\n";
         std::terminate();
 	}
@@ -537,10 +572,20 @@ void Galmod<T>::ringIO(Rings<T> *rings) {
 		uradii[i]=rings->radii[i]/60.;
 		if (uradii[i-1]+r->radsep>=uradii[i]) {
 			if (uradii[i-1]>uradii[i]) {
+                std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                             "due an unexpected error during the fitting. "
+                             "Unfortunately this will also terminate the SlicerAstro session. "
+                             "The SlicerAstro team is working on a better solution and "
+                             "apologizes for any eventual loss of work."<<std::endl;
 				std::cout << "GALMOD error: Radii not in increasing order.\n";
 				std::terminate();
 			}
 			else {
+                std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                             "due an unexpected error during the fitting. "
+                             "Unfortunately this will also terminate the SlicerAstro session. "
+                             "The SlicerAstro team is working on a better solution and "
+                             "apologizes for any eventual loss of work."<<std::endl;
 				std::cout << "GALMOD error: Radius separation too small.\n";
 				std::terminate();
 			}
@@ -563,6 +608,11 @@ void Galmod<T>::ringIO(Rings<T> *rings) {
 
 		uvdisp[i]=rings->vdisp[i]*1000;
 		if (uvdisp[i]<0) {
+            std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                         "due an unexpected error during the fitting. "
+                         "Unfortunately this will also terminate the SlicerAstro session. "
+                         "The SlicerAstro team is working on a better solution and "
+                         "apologizes for any eventual loss of work."<<std::endl;
 			std::cout << "GALMOD error: Negative velocity dispersion not allowed.\n";
 			std::terminate();
 		}
@@ -570,12 +620,22 @@ void Galmod<T>::ringIO(Rings<T> *rings) {
 		udens[i]=rings->dens[i]/1.0E20;
 
         if (udens[i]<0) {
+            std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                         "due an unexpected error during the fitting. "
+                         "Unfortunately this will also terminate the SlicerAstro session. "
+                         "The SlicerAstro team is working on a better solution and "
+                         "apologizes for any eventual loss of work."<<std::endl;
 			std::cout << "GALMOD error: Negative column-density not allowed.\n";
 			std::terminate(); 
 		}
 		
 		uz0[i]=rings->z0[i]/60.;
 		if (uz0[i]<0) {
+            std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                         "due an unexpected error during the fitting. "
+                         "Unfortunately this will also terminate the SlicerAstro session. "
+                         "The SlicerAstro team is working on a better solution and "
+                         "apologizes for any eventual loss of work."<<std::endl;
 			std::cout << "GALMOD error: Negative scale height not allowed.\n";
 			std::terminate(); 
 		}
@@ -690,6 +750,11 @@ void Galmod<T>::galmod() {
 //			Get number of clouds inside ring.
 			int nc = lround(pow(cdens*r->dens[ir],cmode)*twopi*rtmp*r->radsep/pixarea); 
 			if (nc==0) {
+                std::cout << "The fitting code, 3DBarolo, is going to terminate "
+                             "due an unexpected error during the fitting. "
+                             "Unfortunately this will also terminate the SlicerAstro session. "
+                             "The SlicerAstro team is working on a better solution and "
+                             "apologizes for any eventual loss of work."<<std::endl;
                 std::cout << "No clouds used. Choose higher CDENS " << std::endl;
                 std::terminate();
 //				Do next ring, jump to end of loop for rings.
