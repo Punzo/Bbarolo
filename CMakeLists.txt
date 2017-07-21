@@ -12,6 +12,12 @@ SET(CMAKE_MAP_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/Map")
 SET(CMAKE_UTILITIES_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/Utilities")
 
 #-----------------------------------------------------------------------------
+# configurating additional Flags
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -ftree-vectorize -fPIC -Wuninitialized")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -ftree-vectorize -fPIC -Wuninitialized")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O2 -ftree-vectorize -fPIC -Wuninitialized -flto")
+
+#-----------------------------------------------------------------------------
 # configurating FFTW3
 SET(status "disabled")
 IF(NOT DEFINED FFTW3_INCLUDE_DIR AND NOT DEFINED FFTW3_LIBRARY_DIR)
