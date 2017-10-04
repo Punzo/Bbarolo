@@ -56,14 +56,14 @@ bool Galfit<T>::minimize(Rings<T> *dring, T &minimum, T *pmin) {
 	
 	/// This function uses the Downhill Simplex Method 
 	/// in multidimensions due to Nelder and Mead.
-	
+
     const int NMAX=2000;
 	const double TINY=1.0e-10;
 	
     int ndim=nfree;
     if (global) ndim=nfree*dring->nr;
 
-	int mpts=ndim+1;
+    int mpts=ndim+1;
 	T **p = allocate_2D<T>(mpts,ndim);
 	
     T *point = new T[ndim];
@@ -150,22 +150,22 @@ bool Galfit<T>::minimize(Rings<T> *dring, T &minimum, T *pmin) {
 	delete [] point;
 	delete [] dels;
 	
-	
+
 	T psum[ndim], x[ndim];
 	T *y = new T[mpts];
-	
+
 	for (int i=0; i<mpts; i++) {
         for (int j=0; j<ndim; j++) x[j]=p[i][j];
         y[i]=func3D(dring,x);
 	}
-	
+
 	int nfunc=0;
 	for (int j=0; j<ndim; j++) {
-		T sum=0.0;
+        T sum=0.0;
 		for (int i=0; i<mpts; i++) sum += p[i][j];
 		psum[j]=sum;
 	}
-	
+
 	// Main cycle begins here.
 	for (;;) {
 		int ihi, inhi;
@@ -246,7 +246,7 @@ bool Galfit<T>::minimize(Rings<T> *dring, T &minimum, T *pmin) {
 				}
 			}
 		} 
-		else --nfunc; 
+        else --nfunc;
 	} 
 	
 }	
@@ -521,7 +521,7 @@ T Galfit<T>::model(Rings<T> *dring) {
 	mod->calculate();
 	
 	T *modp = mod->Out()->Array();
-	
+
 	//<<<<< Convolution....
 #ifdef BBAROLO_SUPPORT_FFTW3
 	if (in->pars().getSM()) {
@@ -553,22 +553,22 @@ void Galfit<T>::Convolve(T *array, int *bsize) {
 		int ndx = (bsize[0]+NconX-1);
 		int ndy = (bsize[1]+NconY-1);
 		T *beforeCON = new T[ndx*ndy];
-		T *afterCON  = new T[ndx*ndy];
-		for (int z=0; z<in->DimZ(); z++) {
+        T *afterCON  = new T[ndx*ndy];
+        for (int z=0; z<in->DimZ(); z++) {
 			for (int x=0; x<ndx; x++) {
-				for (int y=0; y<ndy; y++) {
-					long nPix = x+y*ndx;
-					int mXpos = x-(NconX-1)/2;
-					int mYpos = y-(NconY-1)/2;
+                for (int y=0; y<ndy; y++) {
+                    long nPix = x+y*ndx;
+                    int mXpos = x-(NconX-1)/2;
+                    int mYpos = y-(NconY-1)/2;
 					long mPix = mXpos+mYpos*bsize[0]+z*bsize[0]*bsize[1];
-					afterCON[nPix] = beforeCON[nPix] = 0;
-					if (x>=(NconX-1)/2 && x<=(bsize[0]+(NconX-1)/2) && 
-						y>=(NconY-1)/2 && y<=(bsize[1]+(NconY-1)/2)) {
+                    afterCON[nPix] = beforeCON[nPix] = 0;
+                    if (x>(NconX-1)/2 && x<(bsize[0]+(NconX-1)/2) &&
+                        y>(NconY-1)/2 && y<(bsize[1]+(NconY-1)/2)) {
 						beforeCON[nPix] = array[mPix];	
-					}
+                    }
 				}
 			}
-			
+
 			for (int yc=0; yc<NconY; yc++) {
 				for (int xc=0; xc<NconX; xc++) {
 					T cf = cfield[NconX-xc-1+(NconY-yc-1)*NconX];
@@ -581,7 +581,7 @@ void Galfit<T>::Convolve(T *array, int *bsize) {
 					}
 				}
 			}		
-			
+
 			for (int x=(NconX-1)/2; x<(bsize[0]+(NconX-1)/2); x++) {
 				for (int y=(NconY-1)/2; y<(bsize[1]+(NconY-1)/2); y++) {
 					long nPix = x+y*(bsize[0]+NconX-1);
@@ -590,12 +590,12 @@ void Galfit<T>::Convolve(T *array, int *bsize) {
 						array[mPix] = afterCON[nPix];
 					//else modp[mPix] = 0;
 				}
-			}	
+            }
 		
 		}
 				
 		delete [] beforeCON;
-		delete [] afterCON;	
+        delete [] afterCON;
 	}
 	
 }

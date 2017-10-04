@@ -489,7 +489,7 @@ template void Galfit<double>::input(Cube<double>*,Rings<double>*,bool*,double);
 
 
 template <class T>
-bool Galfit<T>::galfit(int *status) {
+bool Galfit<T>::galfit() {
 
 	using namespace std;
 	verb = in->pars().isVerbose();
@@ -584,10 +584,6 @@ bool Galfit<T>::galfit(int *status) {
         int start_rad = in->pars().getStartRad()<inr->nr ? in->pars().getStartRad() : 0;
         for (int ir=start_rad; ir<inr->nr; ir++) {
 
-           if (*status == -1)
-           {
-           return false;
-           }
             w_r = ir;
             double toKpc = KpcPerArc(distance);
             if (verb) {
@@ -619,6 +615,7 @@ bool Galfit<T>::galfit(int *status) {
                 cout << "3DFIT error: Negative radius!!!\n";
                 std::terminate();
             }
+
 
             details = false;
             Rings<T> *dring = new Rings<T>;
@@ -772,18 +769,18 @@ bool Galfit<T>::galfit(int *status) {
 		cout << setfill('=') << setw(74) << " " << endl << endl; 
 		cout << fixed << setprecision(2) << setfill(' ');
 		in->pars().setVerbosity(true);
-	}
+    }
 
     return true;
-	
-	
+
+
 }
-template bool Galfit<float>::galfit(int *status);
-template bool Galfit<double>::galfit(int *status);
+template bool Galfit<float>::galfit();
+template bool Galfit<double>::galfit();
 
 
 template <class T> 
-bool Galfit<T>::SecondStage(int *status) {
+bool Galfit<T>::SecondStage() {
 	
 	bool isNeeded = mpar[INC] || mpar[PA]   || mpar[Z0] ||
 					mpar[XPOS]|| mpar[YPOS] || mpar[VSYS];
@@ -994,7 +991,7 @@ bool Galfit<T>::SecondStage(int *status) {
 	mpar[VSYS]= mpar[Z0] = false;
     nfree = mpar[VROT]+mpar[VDISP]+mpar[VRAD];
 
-    if(!galfit(status))
+    if(!galfit())
       {
       return false;
       }
@@ -1004,8 +1001,8 @@ bool Galfit<T>::SecondStage(int *status) {
 
     return isNeeded;
 }
-template bool Galfit<float>::SecondStage(int *status);
-template bool Galfit<double>::SecondStage(int *status);
+template bool Galfit<float>::SecondStage();
+template bool Galfit<double>::SecondStage();
 
 
 template <class T> 

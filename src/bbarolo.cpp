@@ -124,9 +124,8 @@ int main (int argc, char *argv[]) {
     if (par->getflagGalFit())
       {
       Model::Galfit<float> *fit = new Model::Galfit<float>(c);
-      int status= 0;
-      fit->galfit(&status);
-      if (par->getTwoStage()) fit->SecondStage(&status);
+      fit->galfit();
+      if (par->getTwoStage()) fit->SecondStage();
       if (par->getFlagDebug()) fit->writeModel("BOTH");
       else fit->writeModel(par->getNORM());
       delete fit;
@@ -219,11 +218,10 @@ int main (int argc, char *argv[]) {
       {
       Model::Galfit<float> *sfit = new Model::Galfit<float>;
       sfit->slit_init(c);
-      int status = 0;
-      sfit->galfit(&status);
+      sfit->galfit();
       if (par->getTwoStage())
         {
-        sfit->SecondStage(&status);
+        sfit->SecondStage();
         sfit->writeModel_slit();
         }
       else
