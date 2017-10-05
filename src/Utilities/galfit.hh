@@ -49,9 +49,9 @@ public:
 
     /// Functions defined in galfit.tpp
 	void input (Cube<T> *c, Rings<T> *inrings, bool *maskpar, double TOL=1E-03);
-    bool galfit();
+    bool galfit(int *status);
 	Galmod<T>* getModel();
-    bool SecondStage();
+    bool SecondStage(int *status);
 
     /// Functions defined in galfit_out.tpp
     void writeModel(std::string normtype);

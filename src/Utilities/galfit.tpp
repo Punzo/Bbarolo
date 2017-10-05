@@ -489,7 +489,7 @@ template void Galfit<double>::input(Cube<double>*,Rings<double>*,bool*,double);
 
 
 template <class T>
-bool Galfit<T>::galfit() {
+bool Galfit<T>::galfit(int *status) {
 
 	using namespace std;
 	verb = in->pars().isVerbose();
@@ -584,6 +584,10 @@ bool Galfit<T>::galfit() {
         int start_rad = in->pars().getStartRad()<inr->nr ? in->pars().getStartRad() : 0;
         for (int ir=start_rad; ir<inr->nr; ir++) {
 
+            if (*status == -1)
+              {
+              return false;
+              }
             w_r = ir;
             double toKpc = KpcPerArc(distance);
             if (verb) {
@@ -775,12 +779,12 @@ bool Galfit<T>::galfit() {
 
 
 }
-template bool Galfit<float>::galfit();
-template bool Galfit<double>::galfit();
+template bool Galfit<float>::galfit(int *status);
+template bool Galfit<double>::galfit(int *status);
 
 
 template <class T> 
-bool Galfit<T>::SecondStage() {
+bool Galfit<T>::SecondStage(int *status) {
 	
 	bool isNeeded = mpar[INC] || mpar[PA]   || mpar[Z0] ||
 					mpar[XPOS]|| mpar[YPOS] || mpar[VSYS];
@@ -991,7 +995,7 @@ bool Galfit<T>::SecondStage() {
 	mpar[VSYS]= mpar[Z0] = false;
     nfree = mpar[VROT]+mpar[VDISP]+mpar[VRAD];
 
-    if(!galfit())
+    if(!galfit(status))
       {
       return false;
       }
@@ -1001,8 +1005,8 @@ bool Galfit<T>::SecondStage() {
 
     return isNeeded;
 }
-template bool Galfit<float>::SecondStage();
-template bool Galfit<double>::SecondStage();
+template bool Galfit<float>::SecondStage(int *status);
+template bool Galfit<double>::SecondStage(int *status);
 
 
 template <class T> 
