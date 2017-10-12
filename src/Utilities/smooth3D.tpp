@@ -564,8 +564,8 @@ bool Smooth3D<T>::calculate(T *OldArray, T *NewArray) {
 				int oXpos = (x+blo[0]-(NconX-1)/2);
 				int oYpos = (y+blo[1]-(NconY-1)/2);
 				long oPix = oXpos+oYpos*dimAxes[0]+(z+blo[2])*dimAxes[0]*dimAxes[1];	
-				if (x>=(NconX-1)/2 && x<=(NdatX+(NconX-1)/2) && 
-					y>=(NconY-1)/2 && y<=(NdatY+(NconY-1)/2)) {
+                if (x>(NconX-1)/2 && x<(NdatX+(NconX-1)/2) &&
+                    y>(NconY-1)/2 && y<(NdatY+(NconY-1)/2)) {
 					beforeCON[nPix] = OldArray[oPix];
 				}
 				else beforeCON[nPix] = 0;	
