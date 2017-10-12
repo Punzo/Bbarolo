@@ -278,6 +278,7 @@ bool Galmod<T>::smooth(bool usescalefac) {
  	Smooth3D<T> *smoothed = new Smooth3D<T>;	
  	smoothed->setUseScalefac(usescalefac);
     smoothed->setUseBlanks(false);
+    out->Head().setCrota(in->Head().Crota());
     if(!smoothed->smooth(out, oldbeam, newbeam, out->Array(), out->Array()))
 		return false;	
 	
