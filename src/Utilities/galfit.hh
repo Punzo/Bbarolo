@@ -48,7 +48,8 @@ public:
     Rings<T> *Outrings () {return outr;}
 
     /// Functions defined in galfit.tpp
-	void input (Cube<T> *c, Rings<T> *inrings, bool *maskpar, double TOL=1E-03);
+    int input (Cube<T> *c);
+    void input (Cube<T> *c, Rings<T> *inrings, bool *maskpar, double TOL=1E-03);
     bool galfit(int *status);
 	Galmod<T>* getModel();
     bool SecondStage(int *status);

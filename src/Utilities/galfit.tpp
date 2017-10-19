@@ -408,8 +408,212 @@ Galfit<T>& Galfit<T>::operator=(const Galfit &g) {
 
     return *this;
 }
-template Galfit<float>& Galfit<float>::operator=(const Galfit<float>&);
-template Galfit<double>& Galfit<double>::operator=(const Galfit<double>&);
+
+template <class T>
+int Galfit<T>::input(Cube<T> *c)
+{
+  in = c;
+  Param *p = &c->pars();
+  verb = p->isVerbose();
+
+  arcconv = arcsconv(in->Head().Cunit(0));
+  distance = in->pars().getDistance();
+
+  if (in->Head().BeamArea()==0) {
+    cout << "\n Beam information is not available in the header: assuming a "
+         << in->pars().getBeamFWHM()*3600 << " arcsec beam. \n You can set the beam "
+         << "with BeamFWHM parameter (in arcsec).\n\n";
+    in->Head().setBmaj(in->pars().getBeamFWHM());
+    in->Head().setBmin(in->pars().getBeamFWHM());
+    in->Head().calcArea();
+  }
+
+  chan_noise = new float[in->DimZ()];
+  chan_noiseAllocated = true;
+  for (int z=0; z< in->DimZ(); z++) chan_noise[z]=1;
+
+  // Try to read ring information from an input file
+  Rings<T> file_rings;
+  bool radii_b,xpos_b,ypos_b,vsys_b,vrot_b,vdisp_b,z0_b,dens_b,inc_b,pa_b,vrad_b;
+  radii_b = getDataColumn(file_rings.radii,p->getRADII());
+  xpos_b  = getDataColumn(file_rings.xpos,p->getXPOS());
+  ypos_b  = getDataColumn(file_rings.ypos,p->getYPOS());
+  vsys_b  = getDataColumn(file_rings.vsys,p->getVSYS());
+  vrot_b  = getDataColumn(file_rings.vrot,p->getVROT());
+  vrad_b  = getDataColumn(file_rings.vrad,p->getVRAD());
+  vdisp_b = getDataColumn(file_rings.vdisp,p->getVDISP());
+  z0_b    = getDataColumn(file_rings.z0,p->getZ0());
+  dens_b  = getDataColumn(file_rings.dens,p->getDENS());
+  inc_b   = getDataColumn(file_rings.inc,p->getINC());
+  pa_b 	= getDataColumn(file_rings.phi,p->getPHI());
+
+  size_t size[MAXPAR+1] = {file_rings.radii.size(),file_rings.xpos.size(),
+                           file_rings.ypos.size(), file_rings.vsys.size(),
+                           file_rings.vrot.size(),file_rings.vdisp.size(),
+                           file_rings.z0.size(),file_rings.dens.size(),
+                           file_rings.inc.size(),file_rings.phi.size(),
+                           file_rings.vrad.size()};
+
+  size_t max_size=INT_MAX;
+  for (int i=0; i<MAXPAR+1; i++) if (size[i]!=0 && size[i]<max_size) max_size=size[i];
+
+  int nr=0;
+  T radsep, xpos, ypos, vsys, vrot, vdisp, z0, dens, inc, pa, vrad;
+  int nv;
+
+  bool toEstimate =  (p->getRADII()=="-1" && (p->getNRADII()==-1 || p->getRADSEP()==-1)) ||
+                      p->getXPOS()=="-1" || p->getYPOS()=="-1" || p->getVSYS()=="-1" ||
+                      p->getVROT()=="-1" || p->getPHI()=="-1"  || p->getINC()=="-1" ||
+                      p->getZ0() == "-1" || p->getDistance() == -1 || p->getVDISP() == "-1" ||
+                      p->getDENS() == "-1" || p->getNV() == -1;
+
+
+  // Creating mask if does not exist and write it in a fitsfile.
+  if (!in->MaskAll()) in->BlankMask(chan_noise);
+  mask = in->Mask();
+
+  Cube<short> *m = new Cube<short>(in->AxisDim());
+  m->saveHead(in->Head());
+  m->saveParam(in->pars());
+  m->Head().setMinMax(0.,0);
+  for (size_t i=in->NumPix(); i--;) m->Array()[i] = short(mask[i]);
+  delete m;
+
+  if (toEstimate) {
+
+      if (!in->getIsSearched()) in->Search();
+      PixelInfo::Detection<T> *largest = in->LargestDetection();
+
+      if (largest==NULL) {
+          std::cout << "3DFIT error: No sources detected in the datacube. Cannot fit!!! \n";
+          return 0;
+      }
+
+      if (verb) std::cout << "\n Estimating initial parameters... " << std::flush;
+      ParamGuess<T> *init_par = new ParamGuess<T>(in,largest);
+      init_par->findInitial();
+
+      if (p->getXPOS()!="-1")	init_par->setXcentre(getCenterCoord(p->getXPOS(),in->Head().Ctype(0)));
+      if (p->getYPOS()!="-1") init_par->setYcentre(getCenterCoord(p->getYPOS(),in->Head().Ctype(1)));
+    if (p->getPHI()!="-1")  init_par->setPosang(atof(p->getPHI().c_str()));
+
+      init_par->fitEllipse();
+      if (p->getFlagDebug()) init_par->fitIncfromMap();
+      if (p->getFlagDebug()) init_par->plotGuess();
+      if (verb) std::cout << "Done." << std::endl;
+
+      nr 	  = p->getNRADII()!=-1 ? p->getNRADII() : init_par->nrings;
+      radsep= p->getRADSEP()!=-1 ? p->getRADSEP() : init_par->radsep;
+      xpos  = p->getXPOS()!="-1" ? getCenterCoord(p->getXPOS(),in->Head().Ctype(0)) : init_par->xcentre;
+      ypos  = p->getYPOS()!="-1" ? getCenterCoord(p->getYPOS(),in->Head().Ctype(1)) : init_par->ycentre;
+      vsys  = p->getVSYS()!="-1" ? atof(p->getVSYS().c_str()) : init_par->vsystem;
+      if (distance==-1) distance = VeltoDist(fabs(vsys));
+      vrot  = p->getVROT()!="-1" ? atof(p->getVROT().c_str()) : init_par->vrot;
+      vdisp = p->getVDISP()!="-1" ? atof(p->getVDISP().c_str()): 8.;					// default is 8 km/s
+      z0    = p->getZ0()!="-1" ? atof(p->getZ0().c_str()) : 0.15/KpcPerArc(distance);	// default is 150 parsec
+      dens  = p->getDENS()!="-1" ? atof(p->getDENS().c_str()) : 1.;
+      inc   = p->getINC()!="-1" ? atof(p->getINC().c_str()) : init_par->inclin;
+      pa    = p->getPHI()!="-1" ? atof(p->getPHI().c_str()) : init_par->posang;
+      vrad  = p->getVRAD()!="-1" ? atof(p->getVRAD().c_str()) : 0.;
+      nv    = p->getNV()!=-1 ? p->getNV() : in->DimZ();
+      delete init_par;
+
+      p->setNRADII(nr);
+      p->setRADSEP(radsep);
+      p->setXPOS(DoubleToString(xpos));
+      p->setYPOS(DoubleToString(ypos));
+      p->setVSYS(DoubleToString(vsys));
+      p->setVROT(DoubleToString(vrot));
+      p->setPHI(DoubleToString(pa));
+      p->setINC(DoubleToString(inc));
+      p->setZ0(DoubleToString(z0));
+      p->setDistance(distance);
+      p->setVDISP(DoubleToString(vdisp));
+      p->setDENS(DoubleToString(dens));
+      p->setNV(nv);
+  }
+  else {
+      nr 	  = p->getNRADII();
+      radsep= p->getRADSEP();
+      xpos = getCenterCoord(p->getXPOS(),in->Head().Ctype(0));
+      ypos = getCenterCoord(p->getYPOS(),in->Head().Ctype(1));
+      vsys  = atof(p->getVSYS().c_str());
+      if (distance==-1) distance = VeltoDist(fabs(vsys));
+      vrot  = atof(p->getVROT().c_str());
+      vdisp = p->getVDISP()!="-1" ? atof(p->getVDISP().c_str()): 8.;					// default is 8 km/s
+      z0    = p->getZ0()!="-1" ? atof(p->getZ0().c_str()) : 0.15/KpcPerArc(distance);	// default is 150 parsec
+      vrad  = p->getVRAD()!="-1" ? atof(p->getVRAD().c_str()) : 0.;
+      dens  = p->getDENS()!="-1" ? atof(p->getDENS().c_str()) : 1.;
+      inc   = atof(p->getINC().c_str());
+      pa    = atof(p->getPHI().c_str());
+  }
+
+  if (nr < 2) {
+    return 2;
+  }
+
+  nr = nr>0 && nr < (int) max_size ? nr : max_size;
+  if (radii_b) {
+      radsep = 0;
+      for (uint i=1; i<file_rings.radii.size()-1; i++)
+          radsep += file_rings.radii[i+1]-file_rings.radii[i];
+      radsep/=(file_rings.radii.size()-2);
+  }
+
+  inr = new Rings<T>;
+  inDefined = true;
+  inr->nr 	= nr;
+  inr->radsep = radsep;
+  for (int i=0; i<inr->nr; i++) {
+      if (radii_b) inr->radii.push_back(file_rings.radii[i]);
+      else inr->radii.push_back(i*radsep+radsep/2.);
+      if (vrot_b) inr->vrot.push_back(file_rings.vrot[i]);
+      else inr->vrot.push_back(vrot);
+      if (vdisp_b) inr->vdisp.push_back(file_rings.vdisp[i]);
+      else inr->vdisp.push_back(vdisp);
+      if (z0_b) inr->z0.push_back(file_rings.z0[i]);
+      else inr->z0.push_back(z0);
+      if (dens_b) inr->dens.push_back(file_rings.dens[i]*1.E20);
+      else inr->dens.push_back(dens*1.E20);
+      if (inc_b) inr->inc.push_back(file_rings.inc[i]);
+      else inr->inc.push_back(inc);
+      if (pa_b) inr->phi.push_back(file_rings.phi[i]);
+      else inr->phi.push_back(pa);
+      if (xpos_b) inr->xpos.push_back(file_rings.xpos[i]);
+      else inr->xpos.push_back(xpos);
+      if (ypos_b) inr->ypos.push_back(file_rings.ypos[i]);
+      else inr->ypos.push_back(ypos);
+      if (vsys_b) inr->vsys.push_back(file_rings.vsys[i]);
+      else inr->vsys.push_back(vsys);
+      if (vrad_b) inr->vrad.push_back(file_rings.vrad[i]);
+      else inr->vrad.push_back(vrad);
+  }
+
+  setFree();
+
+  wpow = p->getWFUNC();
+  string polyn = makelower(p->getPOLYN());
+  if (polyn=="bezier") anglepar=-1;
+  else anglepar = 1+atoi(polyn.c_str());
+  tol = p->getTOL();
+  flagErrors = p->getflagErrors();
+
+  if (!in->pars().getflagGalMod()) {
+      input(c, inr, mpar, tol);
+  }
+
+  outr = new Rings<T>;
+  *outr = *inr;
+  outDefined = true;
+
+  if (p->getNORM()=="NONE") func_norm = &Model::Galfit<T>::norm_none;
+  else if (p->getNORM()=="AZIM") func_norm = &Model::Galfit<T>::norm_azim;
+  else func_norm = &Model::Galfit<T>::norm_local;
+
+  return 1;
+}
+template int Galfit<float>::input(Cube<float>*);
+template int Galfit<double>::input(Cube<double>*);
 
 
 template <class T>
