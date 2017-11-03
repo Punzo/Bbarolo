@@ -418,7 +418,8 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
 	crval3 = c->Head().Crval(2);
 	crpix3 = c->Head().Crpix(2);
 	drval3 = c->Head().Drval3();
-	
+    std::string dunit3 = makelower(c->Head().Dunit3());
+
     if (ctype3=="wave" || cunit3=="um" || cunit3=="nm" || cunit3=="ang" ) axtyp =2;
     else if (ctype3=="freq" || cunit3=="hz" || cunit3=="mhz") axtyp = 3;
     else if (ctype3=="velo" || ctype3=="velo-helo" || ctype3=="velo-hel" ||
@@ -461,8 +462,14 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
         if (restw!=-1 && reds!=-1) freq0 = C/(restw*(1+reds)*mconv);
         else freq0 = crvalfreq;                      // Velocity is 0 always at the reference channel
 
-        drval3 = C*(freq0*freq0-crvalfreq*crvalfreq)/(freq0*freq0+crvalfreq*crvalfreq);
-
+        if (fabs(drval3) < 1.E-06)
+          {
+          drval3 = C*(freq0*freq0-crvalfreq*crvalfreq)/(freq0*freq0+crvalfreq*crvalfreq);
+          }
+        else if (dunit3 == "km/s")
+          {
+          drval3 *= 1000.;
+          }
     }
     else if (axtyp==3) {
 		
@@ -485,8 +492,15 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
 		crval3=crval3*hzconv;
 		cdelt3=cdelt3*hzconv;  
 		
-		double crvalfreq = c->Head().Crval(2)*hzconv;
-        drval3 = C*(freq0*freq0-crvalfreq*crvalfreq)/(freq0*freq0+crvalfreq*crvalfreq);
+        if (fabs(drval3) < 1.E-06)
+          {
+          double crvalfreq = c->Head().Crval(2)*hzconv;
+          drval3 = C*(freq0*freq0-crvalfreq*crvalfreq)/(freq0*freq0+crvalfreq*crvalfreq);
+          }
+        else if (dunit3 == "km/s")
+          {
+          drval3 *= 1000.;
+          }
 	}
     else if (axtyp==4) {
 		
@@ -507,8 +521,16 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
 		
 		crval3=crval3*msconv;
 		cdelt3=cdelt3*msconv;
-		double crvalvel = c->Head().Crval(2)*msconv;
-		drval3=freq0*sqrt((C-crvalvel)/(C+crvalvel));
+
+        if (fabs(drval3) < 1.E-06)
+          {
+          double crvalvel = c->Head().Crval(2)*msconv;
+          drval3=freq0*sqrt((C-crvalvel)/(C+crvalvel));
+          }
+        else if (dunit3 == "km/s")
+          {
+          drval3 *= 1000.;
+          }
         //std::cout << "Give frequency at reference grid in HZ. DRVAL3= ";
         //std::cin >> drval3;
 	}
