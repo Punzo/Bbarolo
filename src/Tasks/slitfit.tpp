@@ -17,11 +17,11 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
-#include <galfit.h>
-#include <cube.h>
-#include <image.h>
-#include <utils.h>
-#include <gnuplot.h>
+#include <galfit.hh>
+#include <cube.hh>
+#include <image.hh>
+#include <utils.hh>
+#include <gnuplot.hh>
 
 
 #define Ha  6562.81

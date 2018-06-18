@@ -15,9 +15,9 @@ SET(CMAKE_UTILITIES_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/Utilities")
 
 #-----------------------------------------------------------------------------
 # configurating additional Flags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -ftree-vectorize -fPIC -Wuninitialized")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -ftree-vectorize -fPIC -Wuninitialized")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O2 -ftree-vectorize -fPIC -Wuninitialized -flto")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -ftree-vectorize -fPIC -Wuninitialized -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -ftree-vectorize -fPIC -Wuninitialized -std=c++11")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O2 -ftree-vectorize -fPIC -Wuninitialized -flto -std=c++11")
 
 #-----------------------------------------------------------------------------
 # configurating FFTW3
@@ -139,7 +139,7 @@ ENDIF()
 
 # Define project version
 SET(${PROJECT_NAME}_MAJOR_VERSION 1)
-SET(${PROJECT_NAME}_MINOR_VERSION 3)
+SET(${PROJECT_NAME}_MINOR_VERSION 4)
 SET(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION})
 SET(LIB_NAME bbarolo)
 
@@ -149,47 +149,47 @@ IF (BUILD_SHARED_LIBS)
 ENDIF (BUILD_SHARED_LIBS)
 
 SET(H_FILES
-    ${CMAKE_SOURCE_DIR}/src/bbarolo.h
-    ${CMAKE_ARRAY_SOURCE_DIR}/cube.h   ${CMAKE_ARRAY_SOURCE_DIR}/cube.tpp
+    ${CMAKE_SOURCE_DIR}/src/bbarolo.hh
+    ${CMAKE_ARRAY_SOURCE_DIR}/cube.hh   ${CMAKE_ARRAY_SOURCE_DIR}/cube.tpp
     ${CMAKE_ARRAY_SOURCE_DIR}/search.tpp
-    ${CMAKE_ARRAY_SOURCE_DIR}/header.h
-    ${CMAKE_ARRAY_SOURCE_DIR}/image.h   ${CMAKE_ARRAY_SOURCE_DIR}/image.tpp
-    ${CMAKE_ARRAY_SOURCE_DIR}/param.h
-    ${CMAKE_ARRAY_SOURCE_DIR}/rings.h
-    ${CMAKE_ARRAY_SOURCE_DIR}/stats.h   ${CMAKE_ARRAY_SOURCE_DIR}/stats.tpp
-    ${CMAKE_MAP_SOURCE_DIR}/detection.h   ${CMAKE_MAP_SOURCE_DIR}/detection.tpp
-    ${CMAKE_MAP_SOURCE_DIR}/object2D.h   ${CMAKE_MAP_SOURCE_DIR}/object2D.tpp
-    ${CMAKE_MAP_SOURCE_DIR}/object3D.h   ${CMAKE_MAP_SOURCE_DIR}/object3D.tpp
-    ${CMAKE_MAP_SOURCE_DIR}/objectgrower.h   ${CMAKE_MAP_SOURCE_DIR}/objectgrower.tpp
-    ${CMAKE_MAP_SOURCE_DIR}/scan.h   ${CMAKE_MAP_SOURCE_DIR}/scan.tpp
-    ${CMAKE_MAP_SOURCE_DIR}/voxel.h     ${CMAKE_MAP_SOURCE_DIR}/voxel.tpp
-    ${CMAKE_TASKS_SOURCE_DIR}/ellprof.h   ${CMAKE_TASKS_SOURCE_DIR}/ellprof.tpp
-    ${CMAKE_TASKS_SOURCE_DIR}/galfit.h    ${CMAKE_TASKS_SOURCE_DIR}/galfit.tpp
+    ${CMAKE_ARRAY_SOURCE_DIR}/header.hh
+    ${CMAKE_ARRAY_SOURCE_DIR}/image.hh   ${CMAKE_ARRAY_SOURCE_DIR}/image.tpp
+    ${CMAKE_ARRAY_SOURCE_DIR}/param.hh
+    ${CMAKE_ARRAY_SOURCE_DIR}/rings.hh
+    ${CMAKE_ARRAY_SOURCE_DIR}/stats.hh  ${CMAKE_ARRAY_SOURCE_DIR}/stats.tpp
+    ${CMAKE_MAP_SOURCE_DIR}/detection.hh   ${CMAKE_MAP_SOURCE_DIR}/detection.tpp
+    ${CMAKE_MAP_SOURCE_DIR}/object2D.hh   ${CMAKE_MAP_SOURCE_DIR}/object2D.tpp
+    ${CMAKE_MAP_SOURCE_DIR}/object3D.hh   ${CMAKE_MAP_SOURCE_DIR}/object3D.tpp
+    ${CMAKE_MAP_SOURCE_DIR}/objectgrower.hh  ${CMAKE_MAP_SOURCE_DIR}/objectgrower.tpp
+    ${CMAKE_MAP_SOURCE_DIR}/scan.hh   ${CMAKE_MAP_SOURCE_DIR}/scan.tpp
+    ${CMAKE_MAP_SOURCE_DIR}/voxel.hh    ${CMAKE_MAP_SOURCE_DIR}/voxel.tpp
+    ${CMAKE_TASKS_SOURCE_DIR}/ellprof.hh   ${CMAKE_TASKS_SOURCE_DIR}/ellprof.tpp
+    ${CMAKE_TASKS_SOURCE_DIR}/galfit.hh    ${CMAKE_TASKS_SOURCE_DIR}/galfit.tpp
     ${CMAKE_TASKS_SOURCE_DIR}/galfit_errors.tpp   ${CMAKE_TASKS_SOURCE_DIR}/galfit_min.tpp
     ${CMAKE_TASKS_SOURCE_DIR}/galfit_out.tpp
-    ${CMAKE_TASKS_SOURCE_DIR}/galmod.h   ${CMAKE_TASKS_SOURCE_DIR}/galmod.tpp
-    ${CMAKE_TASKS_SOURCE_DIR}/galwind.h   ${CMAKE_TASKS_SOURCE_DIR}/galwind.tpp
-    ${CMAKE_TASKS_SOURCE_DIR}/moment.h
-    ${CMAKE_TASKS_SOURCE_DIR}/ringmodel.h
+    ${CMAKE_TASKS_SOURCE_DIR}/galmod.hh   ${CMAKE_TASKS_SOURCE_DIR}/galmod.tpp
+    ${CMAKE_TASKS_SOURCE_DIR}/galwind.hh  ${CMAKE_TASKS_SOURCE_DIR}/galwind.tpp
+    ${CMAKE_TASKS_SOURCE_DIR}/moment.hh
+    ${CMAKE_TASKS_SOURCE_DIR}/ringmodel.hh
     ${CMAKE_TASKS_SOURCE_DIR}/slitfit.tpp
-    ${CMAKE_TASKS_SOURCE_DIR}/smooth3D.h   ${CMAKE_TASKS_SOURCE_DIR}/smooth3D.tpp
-    ${CMAKE_TASKS_SOURCE_DIR}/spacepar.h   ${CMAKE_TASKS_SOURCE_DIR}/spacepar.tpp
+    ${CMAKE_TASKS_SOURCE_DIR}/smooth3D.hh   ${CMAKE_TASKS_SOURCE_DIR}/smooth3D.tpp
+    ${CMAKE_TASKS_SOURCE_DIR}/spacepar.hh   ${CMAKE_TASKS_SOURCE_DIR}/spacepar.tpp
     ${CMAKE_UTILITIES_SOURCE_DIR}/allocator.tpp
-    ${CMAKE_UTILITIES_SOURCE_DIR}/conv2D.h   ${CMAKE_UTILITIES_SOURCE_DIR}/conv2D.tpp
-    ${CMAKE_UTILITIES_SOURCE_DIR}/converter.h
-    ${CMAKE_UTILITIES_SOURCE_DIR}/gnuplot.h
-    ${CMAKE_UTILITIES_SOURCE_DIR}/lsqfit.h   ${CMAKE_UTILITIES_SOURCE_DIR}/lsqfit.tpp
+    ${CMAKE_UTILITIES_SOURCE_DIR}/conv2D.hh   ${CMAKE_UTILITIES_SOURCE_DIR}/conv2D.tpp
+    ${CMAKE_UTILITIES_SOURCE_DIR}/converter.hh
+    ${CMAKE_UTILITIES_SOURCE_DIR}/gnuplot.hh
+    ${CMAKE_UTILITIES_SOURCE_DIR}/lsqfit.hh   ${CMAKE_UTILITIES_SOURCE_DIR}/lsqfit.tpp
     ${CMAKE_UTILITIES_SOURCE_DIR}/interpolation.tpp
-    ${CMAKE_UTILITIES_SOURCE_DIR}/paramguess.h
-    ${CMAKE_UTILITIES_SOURCE_DIR}/progressbar.h
+    ${CMAKE_UTILITIES_SOURCE_DIR}/paramguess.hh
+    ${CMAKE_UTILITIES_SOURCE_DIR}/progressbar.hh
     ${CMAKE_UTILITIES_SOURCE_DIR}/statistics.tpp
-    ${CMAKE_UTILITIES_SOURCE_DIR}/utils.h
+    ${CMAKE_UTILITIES_SOURCE_DIR}/utils.hh
 )
 
 IF(BBAROLO_SUPPORT_FFTW3)
   SET(H_FILES
      ${H_FILES}
-     ${CMAKE_UTILITIES_SOURCE_DIR}/conv2D.h
+     ${CMAKE_UTILITIES_SOURCE_DIR}/conv2D.hh
      )
 ENDIF()
 

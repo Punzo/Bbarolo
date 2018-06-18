@@ -20,10 +20,10 @@
 #include <iostream>
 #include <cstring>
 #include <cfloat> 
-#include <spacepar.h>
-#include <utils.h>
-#include <gnuplot.h>
-#include <progressbar.h>
+#include <spacepar.hh>
+#include <utils.hh>
+#include <gnuplot.hh>
+#include <progressbar.hh>
 #include <BbaroloConfigure.h>
 #ifdef BBAROLO_SUPPORT_OPENMP
 #include <omp.h>

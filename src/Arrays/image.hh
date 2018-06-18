@@ -26,9 +26,9 @@
 
 #include <iostream>
 #include <string>
-#include <stats.h>
-#include <header.h>
-#include <cube.h>
+#include <stats.hh>
+#include <header.hh>
+#include <cube.hh>
 
 using namespace Statistics;
 

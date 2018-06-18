@@ -21,8 +21,8 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
-#ifndef PARAM_H_
-#define PARAM_H_
+#ifndef PARAM_HH_
+#define PARAM_HH_
 
 #include <iostream>
 #include <string>

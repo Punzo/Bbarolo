@@ -21,8 +21,8 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
-#ifndef CONVERTER_H_
-#define CONVERTER_H_
+#ifndef CONVERTER_HH_
+#define CONVERTER_HH_
 
 enum Unit {
     ANG, NM, MUM, MM, CM, M, KM,                        // Linear units  

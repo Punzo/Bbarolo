@@ -22,8 +22,8 @@
 -----------------------------------------------------------------------*/
 
 #include <iostream>
-#include <stats.h>
-#include <utils.h>
+#include <stats.hh>
+#include <utils.hh>
 
 
 namespace Statistics

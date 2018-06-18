@@ -31,10 +31,10 @@
 #include <fstream>
 #include <time.h>
 #include <fitsio.h>
-#include <param.h>
-#include <header.h>
-#include <rings.h>
-#include <voxel.h>
+#include <param.hh>
+#include <header.hh>
+#include <rings.hh>
+#include <voxel.hh>
 #include <sys/stat.h>
 
 

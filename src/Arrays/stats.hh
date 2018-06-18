@@ -22,8 +22,8 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
-#ifndef STATS_H_
-#define STATS_H_
+#ifndef STATS_HH_
+#define STATS_HH_
 
 #include <iostream>
 #include <cmath>

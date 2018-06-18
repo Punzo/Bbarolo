@@ -26,9 +26,9 @@
 #include <list>
 #include <algorithm>
 #include <math.h>
-#include <object2D.h>
-#include <scan.h>
-#include <voxel.h>
+#include <object2D.hh>
+#include <scan.hh>
+#include <voxel.hh>
 
 namespace PixelInfo
 {

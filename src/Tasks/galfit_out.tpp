@@ -26,15 +26,15 @@
 #include <algorithm>
 #include <cmath>
 #include <cfloat>
-#include <cube.h>
-#include <image.h>
-#include <galfit.h>
-#include <galmod.h>
-#include <smooth3D.h>
-#include <utils.h>
-#include <gnuplot.h>
-#include <moment.h>
-#include <ellprof.h>
+#include <cube.hh>
+#include <image.hh>
+#include <galfit.hh>
+#include <galmod.hh>
+#include <smooth3D.hh>
+#include <utils.hh>
+#include <gnuplot.hh>
+#include <moment.hh>
+#include <ellprof.hh>
 
 //#ifdef HAVE_PYTHON
 //    #include <Python.h>

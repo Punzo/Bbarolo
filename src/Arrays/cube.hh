@@ -25,10 +25,10 @@
 #define CUBE_H_
 
 #include <string>
-#include <header.h>
-#include <stats.h>
-#include <param.h>
-#include <detection.h>
+#include <header.hh>
+#include <stats.hh>
+#include <param.hh>
+#include <detection.hh>
 
 using namespace Statistics;
 

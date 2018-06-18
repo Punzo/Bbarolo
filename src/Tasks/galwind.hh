@@ -26,7 +26,7 @@
 
 #include <iostream>
 #include <string>
-#include <cube.h>
+#include <cube.hh>
 
 template <class T>   
 class GalWind

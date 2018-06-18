@@ -21,8 +21,8 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
-#ifndef RINGS_H_
-#define RINGS_H_
+#ifndef RINGS_HH_
+#define RINGS_HH_
 
 #include <iostream>
 #include <vector>

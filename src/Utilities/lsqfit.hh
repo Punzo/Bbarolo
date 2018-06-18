@@ -21,8 +21,8 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
-#ifndef LSQFIT_H_
-#define LSQFIT_H_
+#ifndef LSQFIT_HH_
+#define LSQFIT_HH_
 
 template <class T>
 class Lsqfit

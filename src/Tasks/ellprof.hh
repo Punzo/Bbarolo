@@ -102,9 +102,9 @@
 
 #include <iostream>
 #include <vector>
-#include <cube.h>
-#include <moment.h>
-#include <galmod.h>
+#include <cube.hh>
+#include <moment.hh>
+#include <galmod.hh>
 
 namespace Tasks {
 template <class T>

@@ -23,12 +23,12 @@
 
 #include <iostream>
 #include <fstream>
-#include <cube.h>
-#include <stats.h>
-#include <detection.h>
-#include <utils.h>
-#include <progressbar.h>
-#include <smooth3D.h>
+#include <cube.hh>
+#include <stats.hh>
+#include <detection.hh>
+#include <utils.hh>
+#include <progressbar.hh>
+#include <smooth3D.hh>
 
 template <class T>
 void Cube<T>::defaults() {

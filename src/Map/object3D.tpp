@@ -25,10 +25,10 @@
 #include <sstream>
 #include <vector>
 #include <map>
-#include <voxel.h>
-#include <scan.h>
-#include <object2D.h>
-#include <object3D.h>
+#include <voxel.hh>
+#include <scan.hh>
+#include <object2D.hh>
+#include <object3D.hh>
 
 
 namespace PixelInfo

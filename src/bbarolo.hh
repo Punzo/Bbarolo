@@ -30,17 +30,17 @@
 #include <string>
 #include <iomanip>
 #include <sys/stat.h>
-#include <param.h>
-#include <cube.h>
-#include <stats.h>
-#include <moment.h>
-#include <ringmodel.h>
-#include <smooth3D.h>
-#include <galfit.h>
-#include <galwind.h>
-#include <ellprof.h>
-#include <spacepar.h>
-#include <utils.h>
+#include <param.hh>
+#include <cube.hh>
+#include <stats.hh>
+#include <moment.hh>
+#include <ringmodel.hh>
+#include <smooth3D.hh>
+#include <galfit.hh>
+#include <galwind.hh>
+#include <ellprof.hh>
+#include <spacepar.hh>
+#include <utils.hh>
 
 
 bool BBcore (Param *par) {

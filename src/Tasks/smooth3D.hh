@@ -43,7 +43,7 @@
 #define SMOOTH3D_H_
 
 #include <iostream>
-#include <cube.h>
+#include <cube.hh>
 #include "BbaroloConfigure.h"
 
 struct Beam {

@@ -24,8 +24,8 @@
 #include <iostream>
 #include <sys/time.h>
 #include <iomanip>
-#include <bbarolo.h>
-#include <param.h>
+#include <bbarolo.hh>
+#include <param.hh>
 
 
 /*

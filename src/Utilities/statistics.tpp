@@ -26,7 +26,7 @@
 #include <algorithm>
 #include <cmath>
 #include <vector>
-#include <utils.h>
+#include <utils.hh>
 
 
 template <class T> 

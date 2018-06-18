@@ -27,10 +27,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <voxel.h>
-#include <object3D.h>
-#include <param.h>
-#include <header.h>
+#include <voxel.hh>
+#include <object3D.hh>
+#include <param.hh>
+#include <header.hh>
 
 
 using namespace PixelInfo;

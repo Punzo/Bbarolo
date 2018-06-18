@@ -21,7 +21,7 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
-#include <conv2D.h>
+#include <conv2D.hh>
 #include <fftw3.h>
 #include <cmath>
 #include <iostream>

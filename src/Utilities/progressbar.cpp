@@ -27,8 +27,8 @@
 #include <ctime>
 #include <unistd.h>
 #include <sys/ioctl.h>
-#include <progressbar.h>
-#include <utils.h>
+#include <progressbar.hh>
+#include <utils.hh>
 #include <BbaroloConfigure.h>
 #ifdef BBAROLO_SUPPORT_OPENMP
 #include <omp.h>

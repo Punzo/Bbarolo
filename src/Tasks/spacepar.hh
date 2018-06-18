@@ -22,8 +22,8 @@
 
 #include <iostream>
 #include <cstring>
-#include <cube.h>
-#include <galfit.h>
+#include <cube.hh>
+#include <galfit.hh>
 
 using namespace Model;
 

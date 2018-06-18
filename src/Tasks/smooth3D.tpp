@@ -24,10 +24,10 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
-#include <cube.h>
-#include <smooth3D.h>
-#include <utils.h>
-#include <progressbar.h>
+#include <cube.hh>
+#include <smooth3D.hh>
+#include <utils.hh>
+#include <progressbar.hh>
 #include <BbaroloConfigure.h>
 #ifdef BBAROLO_SUPPORT_OPENMP
 #include <omp.h>

@@ -27,12 +27,12 @@
 #include <algorithm>
 #include <iomanip>
 #include <cstdlib>
-#include <cube.h>
-#include <param.h>
-#include <ellprof.h>
-#include <galmod.h>
-#include <utils.h>
-#include <progressbar.h>
+#include <cube.hh>
+#include <param.hh>
+#include <ellprof.hh>
+#include <galmod.hh>
+#include <utils.hh>
+#include <progressbar.hh>
 
 
 namespace Tasks {

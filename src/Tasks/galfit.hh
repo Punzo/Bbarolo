@@ -25,11 +25,11 @@
 #define GALFIT_H_
 
 #include <iostream>
-#include <param.h>
-#include <cube.h>
-#include <image.h>
-#include <rings.h>
-#include <galmod.h>
+#include <param.hh>
+#include <cube.hh>
+#include <image.hh>
+#include <rings.hh>
+#include <galmod.hh>
 #include "BbaroloConfigure.h"
 
 namespace Model {

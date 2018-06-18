@@ -31,11 +31,11 @@
 #include <random>
 #include <vector>
 #include <functional>
-#include <galmod.h>
-#include <cube.h>
-#include <smooth3D.h>
-#include <moment.h>
-#include <utils.h>
+#include <galmod.hh>
+#include <cube.hh>
+#include <smooth3D.hh>
+#include <moment.hh>
+#include <utils.hh>
 #include <BbaroloConfigure.h>
 #ifdef BBAROLO_SUPPORT_OPENMP
 #include <omp.h>

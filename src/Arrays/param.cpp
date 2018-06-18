@@ -29,8 +29,8 @@
 #include <cmath>
 #include <thread>
 #include <unistd.h>
-#include <param.h>
-#include <utils.h>
+#include <param.hh>
+#include <utils.hh>
 #include <BbaroloConfigure.h>
 
 #define BBVERSION "1.4.1"

@@ -29,11 +29,11 @@
 #include <algorithm>
 #include <cmath>
 #include <random>
-#include <utils.h>
-#include <header.h>
-#include <param.h>
-#include <rings.h>
-#include <voxel.h>
+#include <utils.hh>
+#include <header.hh>
+#include <param.hh>
+#include <rings.hh>
+#include <voxel.hh>
 #include <fitsio.h>
 #include <wcs.h>
 #include <sys/stat.h>

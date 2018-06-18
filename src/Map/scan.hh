@@ -21,8 +21,8 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
-#ifndef SCAN_H_
-#define SCAN_H_
+#ifndef SCAN_HH_
+#define SCAN_HH_
 
 #include <iostream>
 #include <vector>

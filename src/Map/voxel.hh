@@ -22,8 +22,8 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
-#ifndef VOXEL_H_
-#define VOXEL_H_
+#ifndef VOXEL_HH_
+#define VOXEL_HH_
 
 #include <iostream>
 

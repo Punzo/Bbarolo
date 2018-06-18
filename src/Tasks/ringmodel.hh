@@ -26,8 +26,8 @@
 
 #include <vector>
 #include <fstream>
-#include <cube.h>
-#include <rings.h>
+#include <cube.hh>
+#include <rings.hh>
 
 enum ALLPARS {VSYS, VROT, VEXP, PA, INC, X0, Y0, MAXPAR};
 

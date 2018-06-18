@@ -31,7 +31,7 @@
 #include <wcsunits.h>
 #include <wcshdr.h>
 #include <wcsfix.h>
-#include <header.h>
+#include <header.hh>
 #include <BbaroloConfigure.h>
 
 Header::Header () {

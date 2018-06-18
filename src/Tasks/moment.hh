@@ -28,10 +28,10 @@
 #include <fitsio.h>
 #include <vector>
 
-#include <cube.h>
-#include <image.h>
-#include <utils.h>
-#include <progressbar.h>
+#include <cube.hh>
+#include <image.hh>
+#include <utils.hh>
+#include <progressbar.hh>
 #include <BbaroloConfigure.h>
 #ifdef BBAROLO_SUPPORT_OPENMP
 #include <omp.h>

@@ -29,7 +29,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <random>
-#include <utils.h>
+#include <utils.hh>
 
 
 std::string makelower(std::string s) {

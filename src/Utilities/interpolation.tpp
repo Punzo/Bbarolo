@@ -25,7 +25,7 @@
 #include <iostream>
 #include <cmath>
 #include <assert.h>
-#include <utils.h>
+#include <utils.hh>
 
 
 template <class Type>

@@ -24,10 +24,10 @@
 #include <iostream>
 #include <cfloat>
 #include <cmath>
-#include <cube.h>
-#include <galmod.h>
-#include <galfit.h>
-#include <utils.h>
+#include <cube.hh>
+#include <galmod.hh>
+#include <galfit.hh>
+#include <utils.hh>
 #include "BbaroloConfigure.h"
 #ifdef BBAROLO_SUPPORT_FFTW3
 #include "conv2D.hh"

@@ -29,11 +29,11 @@
 #include <math.h>
 #include <algorithm>
 #include <map>
-#include <voxel.h>
-#include <object3D.h>
-#include <detection.h>
-#include <utils.h>
-#include <header.h>
+#include <voxel.hh>
+#include <object3D.hh>
+#include <detection.hh>
+#include <utils.hh>
+#include <header.hh>
 
 
 using namespace PixelInfo;

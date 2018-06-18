@@ -21,8 +21,8 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
-#ifndef GNUPLOT_H_
-#define GNUPLOT_H_
+#ifndef GNUPLOT_HH_
+#define GNUPLOT_HH_
 
 #include <cstdio>
 #include <string>

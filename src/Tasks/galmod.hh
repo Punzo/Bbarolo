@@ -65,10 +65,10 @@
 #include <iostream>
 #include <vector>
 #include <random>
-#include <cube.h>
-#include <param.h>
-#include <rings.h>
-#include <utils.h>
+#include <cube.hh>
+#include <param.hh>
+#include <rings.hh>
+#include <utils.hh>
 
 namespace Model {
     

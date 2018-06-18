@@ -23,7 +23,7 @@
 
 #include <iostream>
 #include <cmath>
-#include <converter.h>
+#include <converter.hh>
 
 double UNITS::ConvFactor() {
     

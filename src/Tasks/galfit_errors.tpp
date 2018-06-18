@@ -24,12 +24,12 @@
 
 #include <iostream>
 //#include <random>
-#include <galfit.h>
-#include <galmod.h>
-#include <cube.h>
-#include <utils.h>
-#include <lsqfit.h>
-#include <progressbar.h>
+#include <galfit.hh>
+#include <galmod.hh>
+#include <cube.hh>
+#include <utils.hh>
+#include <lsqfit.hh>
+#include <progressbar.hh>
 #include <BbaroloConfigure.h>
 #ifdef BBAROLO_SUPPORT_OPENMP
 #include <omp.h>

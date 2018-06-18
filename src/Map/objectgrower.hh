@@ -25,10 +25,10 @@
 #define OBJECT_GROWER_H_
 
 #include <iostream>
-#include <detection.h>
-#include <voxel.h>
-#include <cube.h>
-#include <stats.h>
+#include <detection.hh>
+#include <voxel.hh>
+#include <cube.hh>
+#include <stats.hh>
 
 /// @brief A class to manage the growing of objects to a secondary
 /// threshold

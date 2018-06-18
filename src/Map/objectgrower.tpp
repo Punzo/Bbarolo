@@ -24,11 +24,11 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <objectgrower.h>
-#include <detection.h>
-#include <cube.h>
-#include <stats.h>
-#include <voxel.h>
+#include <objectgrower.hh>
+#include <detection.hh>
+#include <cube.hh>
+#include <stats.hh>
+#include <voxel.hh>
 
 template <class T>
 ObjectGrower<T>::ObjectGrower() {}

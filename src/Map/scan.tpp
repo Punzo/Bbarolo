@@ -24,7 +24,7 @@
 
 #include <iostream>
 #include <math.h>
-#include <scan.h>
+#include <scan.hh>
 
 namespace PixelInfo
 {

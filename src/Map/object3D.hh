@@ -29,9 +29,9 @@
 #include <vector>
 #include <algorithm>
 #include <map>
-#include <voxel.h>
-#include <scan.h>
-#include <object2D.h>
+#include <voxel.hh>
+#include <scan.hh>
+#include <object2D.hh>
 
 
 namespace PixelInfo

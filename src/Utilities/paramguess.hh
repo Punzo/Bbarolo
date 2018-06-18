@@ -22,14 +22,14 @@
 -----------------------------------------------------------------------*/
 
 #include <iostream>
-#include <cube.h>
-#include <detection.h>
-#include <galmod.h>
-#include <utils.h>
-#include <lsqfit.h>
-#include <gnuplot.h>
-#include <moment.h>
-#include <ellprof.h>
+#include <cube.hh>
+#include <detection.hh>
+#include <galmod.hh>
+#include <utils.hh>
+#include <lsqfit.hh>
+#include <gnuplot.hh>
+#include <moment.hh>
+#include <ellprof.hh>
 
 template <class T>
 class ParamGuess 
