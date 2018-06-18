@@ -8,5 +8,13 @@
 
 #cmakedefine BBAROLO_SUPPORT_FFTW3
 
+#cmakedefine BBAROLO_SUPPORT_OPENMP
+
+#cmakedefine HAVE_GNUPLOT
+
+#cmakedefine HAVE_PYTHON
+
+#cmakedefine MACOSX
+
 #endif // __BbaroloConfigure_h
 
