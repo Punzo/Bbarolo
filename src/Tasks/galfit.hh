@@ -161,12 +161,14 @@ protected:
 // Some fitting function used in Galfit
 template <class T>
 T coreExp (T *c, T *p, int npar) {
+    (void)npar;
     return p[0]*(p[1]+1)/(p[1]+exp(c[0]/p[2]));
 }
 
 
 template <class T>
 void coreExpd (T *c, T *p, T *d, int npar) {
+    (void)npar;
     T expn = exp(c[0]/p[2]);
     T denm = p[1]+expn;
     d[0] = (p[1]+1)/denm;
@@ -185,6 +187,7 @@ T polyn (T *c, T *p, int npar) {
 
 template <class T> 
 void polynd (T *c, T *p, T *d, int npar) {
+    (void)p;
     for (int i=0; i<npar; i++) d[i]=std::pow(double(c[0]),double(i));
 }
 

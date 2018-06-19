@@ -585,7 +585,7 @@ void ParamGuess<T>::findGeometricalParameters() {
     /// Linear regression between the center and the two point found previously.
     /// For not including the center, just change the last parameter from 2 to 1 in 
     /// the function below.
-    int a = linear_reg<int>(3, xx, yy, pmaj, errmaj, rmaj, 0, 2);
+    linear_reg<int>(3, xx, yy, pmaj, errmaj, rmaj, 0, 2);
     
     pmin[0] = - 1/pmaj[0];
     pmin[1] = (ycentre)-pmin[0]*xcentre;
@@ -668,9 +668,8 @@ bool ParamGuess<T>::fitSimplex(int ndim, T **p) {
     const double TINY=1.0e-10;
     const double tol =1.E-03;
     
-    int mpts=ndim+1;    
-    T minimum;
-    
+    int mpts=ndim+1;
+
     T psum[ndim], x[ndim];
     T *y = new T[mpts];
     
@@ -707,7 +706,6 @@ bool ParamGuess<T>::fitSimplex(int ndim, T **p) {
             for (int i=0; i<ndim; i++) {
                 std::swap(p[0][i],p[ilo][i]);
             }
-            minimum=y[0];
             delete [] y;
             Ok = true;
             break;

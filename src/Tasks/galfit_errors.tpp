@@ -65,13 +65,13 @@ void Galfit<T>::getErrors (Rings<T> *dr, T **err, int ir, T minimum) {
     }
             
     int free_var[nfree];
-    float maxval[nfree],minval[nfree],midval[nfree];
+    float maxval[nfree],minval[nfree];//midval[nfree];
     for (int nm=0, k=0; nm<MAXPAR; nm++) {
         if (mpar[nm]) {
             free_var[k]=nm;
             maxval[k]= -1.E04;
             minval[k]= 1.E04;
-            if(nm==VROT)        midval[k]=outr->vrot[ir];
+            /*if(nm==VROT)        midval[k]=outr->vrot[ir];
             else if(nm==VDISP)  midval[k]=outr->vdisp[ir];
             else if(nm==DENS)   midval[k]=outr->dens[ir];
             else if(nm==Z0)     midval[k]=outr->z0[ir];
@@ -80,7 +80,7 @@ void Galfit<T>::getErrors (Rings<T> *dr, T **err, int ir, T minimum) {
             else if(nm==XPOS)   midval[k]=outr->xpos[ir];
             else if(nm==YPOS)   midval[k]=outr->ypos[ir];
             else if(nm==VSYS)   midval[k]=outr->vsys[ir];
-            else if(nm==VRAD)   midval[k]=outr->vrad[ir];
+            else if(nm==VRAD)   midval[k]=outr->vrad[ir];*/
             k++;
         }
     }
@@ -261,7 +261,7 @@ void Galfit<T>::getErrors (Rings<T> *dr, T **err, int ir, T minimum) {
         for (int nm=n_models;nm--;) {
             if (chatty) bar.update(cc++);
             var_val[nm] = unifrand(maxv, minv);
-            float stddev = 0.25509*min(maxv-midval[nf],midval[nf]-minv);    /// Read: 0.25509=1/(1.386*2*sqrt(2));
+            //float stddev = 0.25509*min(maxv-midval[nf],midval[nf]-minv);    /// Read: 0.25509=1/(1.386*2*sqrt(2));
             //normal_distribution<double> distribution(midval[nf],stddev);
             //uniform_real_distribution<double> distribution(minv,maxv);
             //var_val[nm] = distribution(generator);

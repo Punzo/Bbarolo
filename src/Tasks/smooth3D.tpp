@@ -374,10 +374,10 @@ bool Smooth3D<T>::smooth(Cube<T> *c, Beam Oldbeam, Beam Newbeam, T *OldArray, T 
 
     bool allOK;
 #ifdef BBAROLO_SUPPORT_FFTW3
-    if (fft) allOK = calculatefft(c->Array(), NewArray);
-    else allOK = calculate(c->Array(), NewArray);
+    if (fft) allOK = calculatefft(OldArray, NewArray);
+    else allOK = calculate(OldArray, NewArray);
 #else
-    allOK = calculate(c->Array(), NewArray);
+    allOK = calculate(OldArray, NewArray);
 #endif
     if (!allOK) {
         std::cout << "SMOOTH error: cannot smooth data\n";
@@ -514,9 +514,9 @@ bool Smooth3D<T>::calculate(T *OldArray, T *NewArray) {
     
     long size = (NdatX+NconX-1)*(NdatY+NconY-1);
     if (!usescalefac) scalefac=1.0;
-    int nthreads = in->pars().getThreads();
 
 #ifdef BBAROLO_SUPPORT_OPENMP
+    int nthreads = in->pars().getThreads();
 #pragma omp parallel num_threads(nthreads)
 {
 #endif

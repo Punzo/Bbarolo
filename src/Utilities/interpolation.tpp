@@ -386,12 +386,12 @@ void bezier_interp(std::vector<T> x_in,  std::vector<T> y_in,
     if (np==-1) np=x_in.size();
     if (ns==-1) ns=np;
 
-    if (np>x_in.size()-fp) {
+    if (np>(int)x_in.size()-fp) {
         std::cout << "BEZIER Error: number of datapoints is greater than the size of input vectors.\n";
         exit(EXIT_FAILURE);
     }
 
-    if (x_out.size()!=ns || y_out.size()!=ns) {
+    if ((int)x_out.size()!=ns || (int)y_out.size()!=ns) {
         std::cout << "BEZIER Error: The dimensions of output bezier vector must be = n_samples.\n";
         exit(EXIT_FAILURE);
     }

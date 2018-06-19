@@ -303,7 +303,7 @@ int Galfit<T>::input(Cube<T> *c)
         return 3;
     }
 
-    nr = nr>0 && nr<max_size ? nr : max_size;
+    nr = nr>0 && ((size_t)(nr))<max_size ? nr : max_size;
     if (radii_b) {
         radsep = 0;
         for (uint i=1; i<file_rings.radii.size()-1; i++)
@@ -540,7 +540,7 @@ Galfit<T>::Galfit(Cube<T> *c) {
         std::terminate();
     }
 
-    nr = nr>0 && nr<max_size ? nr : max_size;
+    nr = nr>0 && ((size_t)(nr))<max_size ? nr : max_size;
     if (radii_b) {
         radsep = 0;
         for (uint i=1; i<file_rings.radii.size()-1; i++)

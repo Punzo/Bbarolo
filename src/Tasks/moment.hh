@@ -186,9 +186,9 @@ void MomentMap<T>::ZeroMoment (bool msk) {
     
     ProgressBar bar(" Extracting 0th moment map... ", true);
     bar.setShowbar(in->pars().getShowbar());
-    int nthreads = in->pars().getThreads();
 
 #ifdef BBAROLO_SUPPORT_OPENMP     
+    int nthreads = in->pars().getThreads();
 #pragma omp parallel num_threads(nthreads)
 {
 #endif
@@ -245,9 +245,9 @@ void MomentMap<T>::FirstMoment (bool msk) {
             
     ProgressBar bar(" Extracting 1st moment map... ", true);
     bar.setShowbar(in->pars().getShowbar());
-    int nthreads = in->pars().getThreads();
 
 #ifdef BBAROLO_SUPPORT_OPENMP
+    int nthreads = in->pars().getThreads();
 #pragma omp parallel num_threads(nthreads)
 {
 #endif
@@ -316,9 +316,9 @@ void MomentMap<T>::SecondMoment (bool msk) {
 
     ProgressBar bar(" Extracting 2nd moment map... ", true);
     bar.setShowbar(in->pars().getShowbar());
-    int nthreads = in->pars().getThreads();
 
 #ifdef BBAROLO_SUPPORT_OPENMP
+    int nthreads = in->pars().getThreads();
 #pragma omp parallel num_threads(nthreads)
 {
 #endif
@@ -429,9 +429,9 @@ void MomentMap<T>::RMSMap (float level, float sncut) {
     // Progress bar
     ProgressBar bar(" Computing RMS map... ", true);
     bar.setShowbar(in->pars().getShowbar());
-    int nthreads = in->pars().getThreads();
 
 #ifdef BBAROLO_SUPPORT_OPENMP    
+    int nthreads = in->pars().getThreads();
 #pragma omp parallel num_threads(nthreads)
 {
 #endif

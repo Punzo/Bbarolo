@@ -714,7 +714,8 @@ void Header::headwrite_2d (fitsfile *fptr, bool fullHead) {
 
 template <class T>
 bool Header::read_keyword(std::string keyword, T &key, bool err) {
-    
+    (void)key;
+    (void)err;
     std::cout << "HEADER ERROR: unknown type of keyword "<< keyword << std::endl;
     return false;
 }

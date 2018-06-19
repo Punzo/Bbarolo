@@ -128,9 +128,9 @@ bool GalWind<T>::compute() {
     if (verb) in->pars().setVerbosity(false);
     ProgressBar bar(" Generating outflow model... ",false);
     bar.setShowbar(in->pars().getShowbar());
-    int nthreads = in->pars().getThreads();
 
 #ifdef BBAROLO_SUPPORT_OPENMP
+    int nthreads = in->pars().getThreads();
 #pragma omp parallel num_threads(nthreads)
 {
 #endif

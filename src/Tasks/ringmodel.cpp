@@ -182,7 +182,7 @@ void Ringmodel::setfromCube (Cube<float> *c, Rings<float> *r)  {
     map.input(c);
     if (c->Head().NumAx()>2) map.FirstMoment(true);
     else {
-        for (int i=0; i<c->NumPix(); i++) map.Array(i) = c->Array(i);
+        for (int i=0; i<(int)c->NumPix(); i++) map.Array(i) = c->Array(i);
         map.setHead(1);
     }
     map.fitswrite_2d((c->pars().getOutfolder()+c->Head().Name()+"map_1st.fits").c_str());
@@ -365,7 +365,7 @@ void Ringmodel::setoption (bool *maskpar, int hside, int wfunc, float freeangle)
 void Ringmodel::setfield (float *Array, int xsize, int ysize, int *boxup, int *boxlow) {
     
     int npoints;
-    
+    (void)ysize;
     for (int i=0; i<2; i++) {
         bup[i] = boxup[i];
         blo[i] = boxlow[i];
@@ -400,9 +400,9 @@ void Ringmodel::ringfit() {
         ProgressBar bar(" Fitting 2D tilted-ring model... ", true);
         bar.setShowbar(in->pars().getShowbar());        
         bool verb = in->pars().isVerbose();
-        int nthreads = in->pars().getThreads();
 
 #ifdef BBAROLO_SUPPORT_OPENMP
+        int nthreads = in->pars().getThreads();
 #pragma omp parallel num_threads(nthreads)
 {
 #endif
@@ -897,7 +897,7 @@ void Ringmodel::writeModel (std::string fname) {
     for (int i=model.NumPix(); i--;) model[i] = log(-1);
 
     const double F = M_PI/180.;
-    float p[MAXPAR], e[MAXPAR];
+    float p[MAXPAR];
     float ot = thetaf;
     thetaf = 0;
     ///*
@@ -994,7 +994,7 @@ float func (float *c, float *p, int npar) {
   ///
   /// \return       The radial velocity in requested point.
   
-
+    (void)npar;
     float   vs, vc, vr;                     // Parameters of velocity field. 
     float   x, y;                           // Sky coordinates.
     float   cost1, sint1; 
@@ -1051,6 +1051,7 @@ void derv (float *c, float *p, float *d, int npar) {
   /// \param  d     Partial derivatives, returned to user.
   /// \param  npar  Number of parameters.
 
+    (void) npar;
     float   vc, vr;                         // Parameters of velocity field.
     float   x, y;                           // Sky coordinates.
     float   cost1, cost2, sint1, sint2;

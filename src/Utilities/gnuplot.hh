@@ -97,6 +97,7 @@ class Gnuplot_Pipe : public Gnuplot_Base
 {
 public:
     virtual int begin(const char * cmd_opt=NULL, const char * reserved=NULL) {
+        (void)reserved;
         if(fp) return GNUPLOT_ALREADY_OPEN;
         cmdline = exec;
         if(cmd_opt) {

@@ -855,7 +855,6 @@ void Galmod<T>::galmod() {
     bar.setShowbar(in->pars().getShowbar());
     if (verb) bar.init(r->nr);
     
-    int isd = iseed;
 //  Get number of velocity profiles that will be done.
     int nprof = bsize[0]*bsize[1];
 //  Initialize data buffer on zero.
@@ -915,7 +914,7 @@ void Galmod<T>::galmod() {
             double caz  = cos(az); 
 //          Get height above the plane of the ring using a random deviate
 //          drawn from density profile of the layer.
-            double z    = fdev(isd)*z0tmp;
+            double z    = fdev()*z0tmp;
 //          Get position in the plane of the sky with respect to the major
 //          and minor axes of the spiral galaxy.
             double x    = R*caz;
@@ -1114,7 +1113,7 @@ template double Galmod<double>::velgrid(double);
 
 
 template <class T>
-double Galmod<T>::fdev(int &idum){
+double Galmod<T>::fdev(){
     
     /// Function to get random deviates for various functions.
     /// The double precision variable Fdev contains the random deviate.
@@ -1142,8 +1141,8 @@ double Galmod<T>::fdev(int &idum){
 
     return Fdev;
 }
-template double Galmod<float>::fdev(int&);
-template double Galmod<double>::fdev(int&);
+template double Galmod<float>::fdev();
+template double Galmod<double>::fdev();
 
 
 }

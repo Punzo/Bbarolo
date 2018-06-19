@@ -267,9 +267,9 @@ std::vector <Detection<T> > Cube<T>::search3DArraySpatial() {
     ProgressBar bar("Searching in progress... ");
     bool useBar = (zdim>1);
     bar.setShowbar(par.getShowbar());
-    int nthreads=par.getThreads();
 
 #ifdef BBAROLO_SUPPORT_OPENMP
+    int nthreads=par.getThreads();
 #pragma omp parallel num_threads(nthreads)
 {
 #endif
@@ -395,9 +395,9 @@ void Cube<T>::ObjectMerger() {
         if(par.getParSE().flagGrowth) {
             ObjectGrower<T> grower;
             grower.define(this);
-            int nthreads=par.getThreads();
 
 #ifdef BBAROLO_SUPPORT_OPENMP
+            int nthreads=par.getThreads();
 #pragma omp parallel for num_threads(nthreads)
 #endif
             for(size_t i=0;i<currentList.size();i++){

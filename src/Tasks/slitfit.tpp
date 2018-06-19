@@ -49,7 +49,8 @@ void Galfit<T>::slit_init(Cube<T> *c) {
         exit(EXIT_FAILURE);
     }
     else if (numObj>1) {
-        uint n=0, size=0;
+        uint size=0;
+        int n=0;
         for (int i=0; i<numObj; i++)
             if (in->pObject(i)->getSize()>size) {n=i;size=in->pObject(i)->getSize();}
         for (int i=0; i<numObj; i++)
@@ -138,7 +139,8 @@ void Galfit<T>::slit_init(Cube<T> *c) {
         exit(EXIT_FAILURE);
     }
     else if (numObj>1) {
-        uint n=0, size=0;
+        uint size=0;
+        int n = 0;
         for (int i=0; i<numObj; i++)
             if (line_im->pObject(i)->getSize()>size) {n=i;size=line_im->pObject(i)->getSize();}
         for (int i=0; i<numObj; i++)
@@ -151,7 +153,7 @@ void Galfit<T>::slit_init(Cube<T> *c) {
     for(vox=voxelList.begin();vox<voxelList.end();vox++)
         isObj[line_im->nPix(vox->getX(),vox->getY(),vox->getZ())] = true;
 
-    for (int i=0; i<line_im->NumPix(); i++) (*line_im)(i)*=isObj[i];
+    for (int i=0; i<(int)line_im->NumPix(); i++) (*line_im)(i)*=isObj[i];
 
 
     // Setting a fake cube needed in input for the fit
@@ -245,7 +247,7 @@ void Galfit<T>::slit_init(Cube<T> *c) {
                     file_rings.inc.size(),file_rings.phi.size()};
 
     int max_size=INT_MAX;
-    for (int i=0; i<10; i++) if (size[i]!=0 && size[i]<max_size) max_size=size[i];
+    for (int i=0; i<10; i++) if (size[i]!=0 && (int)size[i]<max_size) max_size=size[i];
 
     int nr=0;
     T radsep, xpos, ypos, vsys, vrot, vdisp, z0, dens, inc, pa;
@@ -470,7 +472,7 @@ void Galfit<T>::writeModel_slit() {
 
     std::ofstream outpv_m((outfold+"pv_mod.txt").c_str());
     std::ofstream outpv_o((outfold+"pv.txt").c_str());
-    float xmin=1.E10,xmax=0,xmmin=1.E10,xmmax=0;
+    float xmin=1.E10,xmax=0;
     for (int y=0; y<slit->DimY() ; y++) {
         for (int x=0;x<slit->DimX();x++) {
             int i = x+y*slit->DimX();

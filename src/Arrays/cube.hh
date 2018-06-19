@@ -84,7 +84,7 @@ public:
     bool    Mask    (long npix) {return mask[npix];};
     void    setMask (bool *inputMask){  if(maskAllocated) delete [] mask;
                                         mask = new bool[numPix];
-                                        for(int i=0;i<numPix;i++) mask[i] = inputMask[i];
+                                        for(int i=0;i<(int)numPix;i++) mask[i] = inputMask[i];
                                         maskAllocated = true;};
     bool    MaskAll () {return maskAllocated;};
     void    SetMaskAll (bool flag) {maskAllocated=flag;};

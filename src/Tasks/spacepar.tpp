@@ -153,8 +153,8 @@ void Spacepar<T>::calculate() {
         bar.setShowbar(Galfit<T>::in->pars().getShowbar());
 
         // Starting loops over parameters
-        int nthreads = Galfit<T>::in->pars().getThreads();
 #ifdef BBAROLO_SUPPORT_OPENMP
+        int nthreads = Galfit<T>::in->pars().getThreads();
 #pragma omp parallel num_threads(nthreads) shared(funmin,p1min,p2min)
 {
 #endif
@@ -343,8 +343,6 @@ void Spacepar<T>::plotAll_Python() {
     
     if (!parspAll) return;
     
-    bool verb = Galfit<T>::in->pars().isVerbose();
-    
     // Writing fitsfile with parameter space
     std::string outfold = Galfit<T>::in->pars().getOutfolder();
     std::string object  = Galfit<T>::in->Head().Name();
@@ -415,6 +413,7 @@ void Spacepar<T>::plotAll_Python() {
             << "fig.savefig('"+fout+"',bbox_inches='tight')\n";
     
 #ifdef HAVE_PYTHON
+    bool verb = Galfit<T>::in->pars().isVerbose();
     std::string cmd = "python "+outfold+scriptname;//+" > /dev/null 2>&1";
     if (Galfit<T>::in->pars().getFlagPlots()) {
         if (verb) std::cout << "\n\nProducing " << randomAdjective(1) << " parameter space plots..." << std::flush;

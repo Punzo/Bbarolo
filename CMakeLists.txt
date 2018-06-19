@@ -15,9 +15,11 @@ SET(CMAKE_UTILITIES_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/Utilities")
 
 #-----------------------------------------------------------------------------
 # configurating additional Flags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -ftree-vectorize -fPIC -Wuninitialized -std=c++11")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -ftree-vectorize -fPIC -Wuninitialized -std=c++11")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O2 -ftree-vectorize -fPIC -Wuninitialized -flto -std=c++11")
+set(ADDITIONAL_FLAGS "-O2 -ftree-vectorize -fPIC -Wuninitialized -std=c++11")
+set(ADDITIONAL_FLAGS "${ADDITIONAL_FLAGS} -Wunused-variable -Wunused-parameter -Wsign-compare")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${ADDITIONAL_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ADDITIONAL_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${ADDITIONAL_FLAGS}")
 
 #-----------------------------------------------------------------------------
 # configurating FFTW3
@@ -68,15 +70,15 @@ endif()
 
 #-----------------------------------------------------------------------------
 # configurating Gnuplot (disable)
-SET(HAVE_GNUPLOT 0)
+SET(HAVE_GNUPLOT 1)
 configure_file(
   ${CMAKE_SOURCE_DIR}/CMake/BbaroloConfigure.h.in
   ${CMAKE_BINARY_DIR}/BbaroloConfigure.h
   )
 
 #-----------------------------------------------------------------------------
-# configurating Python (disable)
-SET(HAVE_PYTHON 0)
+# configurating Python (active)
+SET(HAVE_PYTHON 1)
 configure_file(
   ${CMAKE_SOURCE_DIR}/CMake/BbaroloConfigure.h.in
   ${CMAKE_BINARY_DIR}/BbaroloConfigure.h
