@@ -64,6 +64,7 @@ public:
     Rings<T> *Outrings () {return outr;}
 
     /// Functions defined in galfit.cpp
+    int input (Cube<T> *c);
     void setup (Cube<T> *c, Rings<T> *inrings, GALFIT_PAR *p);
     bool galfit(int *status);
     Galmod<T>* getModel();

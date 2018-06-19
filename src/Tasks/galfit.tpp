@@ -163,6 +163,247 @@ Galfit<T>& Galfit<T>::operator=(const Galfit &g) {
 template Galfit<float>& Galfit<float>::operator=(const Galfit<float>&);
 template Galfit<double>& Galfit<double>::operator=(const Galfit<double>&);
 
+template<class T>
+int Galfit<T>::input(Cube<T> *c)
+{
+    defaults();
+    in = c;
+    par = in->pars().getParGF();
+    in->checkBeam();
+
+    verb = in->pars().isVerbose();
+    arcconv = arcsconv(in->Head().Cunit(0));
+
+    chan_noise = new float[in->DimZ()];
+    chan_noiseAllocated = true;
+    for (int z=0; z< in->DimZ(); z++) chan_noise[z]=1;
+
+    // Creating mask if does not exist
+    if (!in->MaskAll()) in->BlankMask(chan_noise);
+    mask = in->Mask();
+
+    // Setting the convolution field
+    if (par.SM) {
+        if (!setCfield()) {
+            std::cout << "3DFIT WARNING: can not set an appropriate convolution "
+                      << "field. Turning off the convolution step.\n";
+            par.SM = false;
+        }
+    }
+
+    // Building Rings object
+    // Try to read ring information from an input file
+    Rings<T> file_rings;
+    bool radii_b = getDataColumn(file_rings.radii,par.RADII);
+    bool xpos_b  = getDataColumn(file_rings.xpos,par.XPOS);
+    bool ypos_b  = getDataColumn(file_rings.ypos,par.YPOS);
+    bool vsys_b  = getDataColumn(file_rings.vsys,par.VSYS);
+    bool vrot_b  = getDataColumn(file_rings.vrot,par.VROT);
+    bool vrad_b  = getDataColumn(file_rings.vrad,par.VRAD);
+    bool vdisp_b = getDataColumn(file_rings.vdisp,par.VDISP);
+    bool z0_b    = getDataColumn(file_rings.z0,par.Z0);
+    bool dens_b  = getDataColumn(file_rings.dens,par.DENS);
+    bool inc_b   = getDataColumn(file_rings.inc,par.INC);
+    bool pa_b    = getDataColumn(file_rings.phi,par.PHI);
+    bool vvert_b = getDataColumn(file_rings.vvert,par.VVERT);
+    bool dvdz_b  = getDataColumn(file_rings.dvdz,par.DVDZ);
+    bool zcyl_b  = getDataColumn(file_rings.zcyl,par.ZCYL);
+    bool onefile = radii_b||xpos_b||ypos_b||vsys_b||vrot_b||vdisp_b||z0_b||dens_b||inc_b||pa_b||vrad_b||vvert_b||dvdz_b||zcyl_b;
+
+    size_t size[MAXPAR+4] = {file_rings.radii.size(),file_rings.xpos.size(), file_rings.ypos.size(),
+                             file_rings.vsys.size(),file_rings.vrot.size(),file_rings.vdisp.size(),
+                             file_rings.z0.size(),file_rings.dens.size(),file_rings.inc.size(),file_rings.phi.size(),
+                             file_rings.vrad.size(),file_rings.vvert.size(),file_rings.dvdz.size(),file_rings.zcyl.size()};
+
+    size_t max_size=UINT_MAX;
+    for (int i=0; i<MAXPAR+4; i++) if (size[i]!=0 && size[i]<max_size) max_size=size[i];
+
+    int nr=0, nv;
+    T radsep, xpos, ypos, vsys, vrot, vdisp, z0, dens, inc, pa, vrad, vvert, zcyl, dvdz;
+
+    bool toEstimate =  (par.RADII=="-1" && (par.NRADII==-1 || par.RADSEP==-1)) ||
+                        par.XPOS=="-1" || par.YPOS=="-1" || par.VSYS=="-1" ||
+                        par.VROT=="-1" || par.PHI=="-1"  || par.INC=="-1" ||
+                        par.Z0=="-1" || par.DISTANCE==-1 || par.VDISP=="-1" ||
+                        par.DENS=="-1" || par.NV==-1;
+
+    if (toEstimate) {
+
+        if (!c->getIsSearched()) c->Search();
+        Detection<T> *largest = c->LargestDetection();
+
+        if (largest==NULL) {
+            std::cout << "3DFIT error: No sources detected in the datacube. Cannot fit!!! \n";
+            return 2;
+        }
+
+        if (verb) std::cout << "\n Estimating initial parameters... " << std::flush;
+
+        T *init_par = EstimateInitial(c,&par);
+        if (verb) std::cout << "Done." << std::endl;
+
+        string pos[2] = {par.XPOS, par.YPOS};
+        double *pixs = getCenterCoordinates(pos, c->Head());
+
+        nr    = par.NRADII!=-1 ? par.NRADII : init_par[0];
+        radsep= par.RADSEP!=-1 ? par.RADSEP : init_par[1];
+        xpos  = par.XPOS!="-1" ? pixs[0] : init_par[2];
+        ypos  = par.YPOS!="-1" ? pixs[1] : init_par[3];
+        vsys  = par.VSYS!="-1" ? atof(par.VSYS.c_str()) : init_par[4];
+        distance = par.DISTANCE >.1e-03 ? par.DISTANCE : VeltoDist(fabs(vsys));
+        vrot  = par.VROT!="-1" ? atof(par.VROT.c_str()) : init_par[5];
+        vdisp = par.VDISP!="-1" ? atof(par.VDISP.c_str()): 8.;// default is 8 km/s
+        z0    = par.Z0!="-1" ? atof(par.Z0.c_str()) : 0.; // default is infinitely thin disk
+        dens  = par.DENS!="-1" ? atof(par.DENS.c_str()) : 1.;
+        inc   = par.INC!="-1" ? atof(par.INC.c_str()) : init_par[6];
+        pa    = par.PHI!="-1" ? atof(par.PHI.c_str()) : init_par[7];
+        vrad  = par.VRAD!="-1" ? atof(par.VRAD.c_str()) : 0.;
+        nv    = par.NV!=-1 ? par.NV : in->DimZ();
+        delete [] init_par;
+
+        par.NRADII = nr;
+        par.RADSEP = radsep;
+        par.XPOS = DoubleToString(xpos);
+        par.YPOS = DoubleToString(ypos);
+        par.VSYS = DoubleToString(vsys);
+        par.VROT = DoubleToString(vrot);
+        par.PHI = DoubleToString(pa);
+        par.INC = DoubleToString(inc);
+        par.Z0 = DoubleToString(z0);
+        par.DISTANCE = distance;
+        par.VDISP = DoubleToString(vdisp);
+        par.DENS = DoubleToString(dens);
+        par.VRAD = DoubleToString(vrad);
+        par.NV = nv;
+    }
+    else {
+        nr    = par.NRADII;
+        radsep= par.RADSEP;
+        string pos[2] = {par.XPOS, par.YPOS};
+        double *pixs = getCenterCoordinates(pos, c->Head());
+        xpos  = pixs[0];
+        ypos  = pixs[1];
+        vsys  = atof(par.VSYS.c_str());
+        distance = par.DISTANCE;
+        vrot  = atof(par.VROT.c_str());
+        vdisp = par.VDISP!="-1" ? atof(par.VDISP.c_str()): 8.;                  // default is 8 km/s
+        z0    = par.Z0!="-1" ? atof(par.Z0.c_str()) : 0.; // default is infinitely thin disk
+        vrad  = par.VRAD!="-1" ? atof(par.VRAD.c_str()) : 0.;
+        dens  = par.DENS!="-1" ? atof(par.DENS.c_str()) : 1.;
+        inc   = atof(par.INC.c_str());
+        pa    = atof(par.PHI.c_str());
+    }
+
+    vvert = par.VVERT!="-1" ? atof(par.VVERT.c_str()) : 0.;
+    dvdz  = par.DVDZ!="-1" ? atof(par.DVDZ.c_str()) : 0.;
+    zcyl  = par.ZCYL!="-1" ? atof(par.ZCYL.c_str()) : 0.;
+
+    if (nr < 2) {
+        std::cout << "\n 3DFIT ERROR: The number of radii must be > 1! " << std::endl;
+        return 3;
+    }
+
+    nr = nr>0 && nr<max_size ? nr : max_size;
+    if (radii_b) {
+        radsep = 0;
+        for (uint i=1; i<file_rings.radii.size()-1; i++)
+            radsep += file_rings.radii[i+1]-file_rings.radii[i];
+        radsep/=(file_rings.radii.size()-2);
+    }
+
+    inr = new Rings<T>;
+    inDefined = true;
+    inr->nr     = nr;
+    inr->radsep = radsep;
+    for (int i=0; i<inr->nr; i++) {
+        if (radii_b) inr->radii.push_back(file_rings.radii[i]);
+        else inr->radii.push_back(i*radsep+radsep/2.);
+        if (vrot_b) inr->vrot.push_back(file_rings.vrot[i]);
+        else inr->vrot.push_back(vrot);
+        if (vdisp_b) inr->vdisp.push_back(file_rings.vdisp[i]);
+        else inr->vdisp.push_back(vdisp);
+        if (z0_b) inr->z0.push_back(file_rings.z0[i]);
+        else inr->z0.push_back(z0);
+        if (dens_b) inr->dens.push_back(file_rings.dens[i]*1.E20);
+        else inr->dens.push_back(dens*1.E20);
+        if (inc_b) inr->inc.push_back(file_rings.inc[i]);
+        else inr->inc.push_back(inc);
+        if (pa_b) inr->phi.push_back(file_rings.phi[i]);
+        else inr->phi.push_back(pa);
+        if (xpos_b) inr->xpos.push_back(file_rings.xpos[i]);
+        else inr->xpos.push_back(xpos);
+        if (ypos_b) inr->ypos.push_back(file_rings.ypos[i]);
+        else inr->ypos.push_back(ypos);
+        if (vsys_b) inr->vsys.push_back(file_rings.vsys[i]);
+        else inr->vsys.push_back(vsys);
+        if (vrad_b) inr->vrad.push_back(file_rings.vrad[i]);
+        else inr->vrad.push_back(vrad);
+
+        // In the current version, vertical motions, and gradients are not fitted
+        if (vvert_b) inr->vvert.push_back(file_rings.vvert[i]);
+        else inr->vvert.push_back(vvert);
+        if (dvdz_b) inr->vvert.push_back(file_rings.dvdz[i]);
+        else inr->dvdz.push_back(dvdz);
+        if (zcyl_b) inr->vvert.push_back(file_rings.zcyl[i]);
+        else inr->zcyl.push_back(zcyl);
+    }
+
+    setFree();
+
+    wpow = par.WFUNC;
+    string polyn = makelower(par.POLYN);
+    if (polyn=="bezier") anglepar=-1;
+    else anglepar = 1+atoi(polyn.c_str());
+
+    if (!c->pars().getflagGalMod()) {
+        if (!onefile) showInitial(inr, std::cout);
+        else printInitial(inr, c->pars().getOutfolder()+"initial_rings.txt");
+    }
+
+    // Allocate output Rings
+    outr = new Rings<T>;
+    *outr = *inr;
+    outDefined = true;
+
+    // Setting limits for fitting parameters
+    double kpcperarc = KpcPerArc(distance);
+    maxs[VROT]  = 1000;
+    mins[VROT]  = 0;
+    maxs[VDISP] = 500;
+    mins[VDISP] = 0.01;
+    maxs[Z0] = 5/kpcperarc;         // Max scaleheight allowed is 5 Kpc.
+    mins[Z0] = 0.;                  // Min scaleheight allowed is 0 pc.
+    maxs[INC] = *max_element(inr->inc.begin(),inr->inc.end())+par.DELTAINC;
+    mins[INC] = *min_element(inr->inc.begin(),inr->inc.end())-par.DELTAINC;
+    maxs[PA]  = *max_element(inr->phi.begin(),inr->phi.end())+par.DELTAPHI;
+    mins[PA]  = *min_element(inr->phi.begin(),inr->phi.end())-par.DELTAPHI;
+    if (maxs[INC]>90) maxs[INC] = 90;
+    if (mins[INC]<0)  mins[INC] = 0;
+    if (maxs[PA]>360) maxs[PA]  = 360;
+    if (mins[PA]<-360) mins[PA]  = -360;
+    maxs[XPOS] = *max_element(inr->xpos.begin(),inr->xpos.end())+10;
+    mins[XPOS] = *min_element(inr->xpos.begin(),inr->xpos.end())-10;
+    maxs[YPOS] = *max_element(inr->ypos.begin(),inr->ypos.end())+10;
+    mins[YPOS] = *min_element(inr->ypos.begin(),inr->ypos.end())-10;
+    maxs[VSYS] = AlltoVel(in->getZphys(in->DimZ()-1), in->Head());
+    mins[VSYS] = AlltoVel(in->getZphys(0), in->Head());
+    if (maxs[XPOS]>in->DimX()) maxs[XPOS] = in->DimX();
+    if (maxs[YPOS]>in->DimY()) maxs[YPOS] = in->DimY();
+    if (mins[XPOS]<0)  mins[XPOS] = 0;
+    if (mins[YPOS]<0)  mins[YPOS] = 0;
+    if (maxs[VSYS]<mins[VSYS]) std::swap(maxs[VSYS],mins[VSYS]);
+    maxs[VRAD]  = 100;
+    mins[VRAD]  = -100;
+
+    if (par.NORM=="NONE") func_norm = &Model::Galfit<T>::norm_none;
+    else if (par.NORM=="AZIM") func_norm = &Model::Galfit<T>::norm_azim;
+    else func_norm = &Model::Galfit<T>::norm_local;
+
+    return 1;
+}
+template int Galfit<float>::input(Cube<float>*);
+template int Galfit<double>::input(Cube<double>*);
+
 
 template <class T>
 Galfit<T>::Galfit(Cube<T> *c) {
@@ -289,13 +530,13 @@ Galfit<T>::Galfit(Cube<T> *c) {
     dvdz  = par.DVDZ!="-1" ? atof(par.DVDZ.c_str()) : 0.;
     zcyl  = par.ZCYL!="-1" ? atof(par.ZCYL.c_str()) : 0.;
     
-    if (nr==0) {
+    if (nr < 2) {
         std::cout << "The fitting code, 3DBarolo, is going to terminate "
                      "due an unexpected error during the fitting. "
                      "Unfortunately this will also terminate the SlicerAstro session. "
                      "The SlicerAstro team is working on a better solution and "
                      "apologizes for any eventual loss of work."<<std::endl;
-        std::cout << "\n 3DFIT ERROR: The number of radii must be > 0! " << std::endl;
+        std::cout << "\n 3DFIT ERROR: The number of radii must be > 1! " << std::endl;
         std::terminate();
     }
 
