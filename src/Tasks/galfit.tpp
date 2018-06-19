@@ -275,6 +275,21 @@ int Galfit<T>::input(Cube<T> *c)
         par.DENS = DoubleToString(dens);
         par.VRAD = DoubleToString(vrad);
         par.NV = nv;
+
+        in->pars().getParGF().NRADII = nr;
+        in->pars().getParGF().RADSEP = radsep;
+        in->pars().getParGF().XPOS = DoubleToString(xpos);
+        in->pars().getParGF().YPOS = DoubleToString(ypos);
+        in->pars().getParGF().VSYS = DoubleToString(vsys);
+        in->pars().getParGF().VROT = DoubleToString(vrot);
+        in->pars().getParGF().PHI = DoubleToString(pa);
+        in->pars().getParGF().INC = DoubleToString(inc);
+        in->pars().getParGF().Z0 = DoubleToString(z0);
+        in->pars().getParGF().DISTANCE = distance;
+        in->pars().getParGF().VDISP = DoubleToString(vdisp);
+        in->pars().getParGF().DENS = DoubleToString(dens);
+        in->pars().getParGF().VRAD = DoubleToString(vrad);
+        in->pars().getParGF().NV = nv;
     }
     else {
         nr    = par.NRADII;
@@ -507,6 +522,21 @@ Galfit<T>::Galfit(Cube<T> *c) {
         par.DENS = DoubleToString(dens);
         par.VRAD = DoubleToString(vrad);
         par.NV = nv;
+
+        in->pars().getParGF().NRADII = nr;
+        in->pars().getParGF().RADSEP = radsep;
+        in->pars().getParGF().XPOS = DoubleToString(xpos);
+        in->pars().getParGF().YPOS = DoubleToString(ypos);
+        in->pars().getParGF().VSYS = DoubleToString(vsys);
+        in->pars().getParGF().VROT = DoubleToString(vrot);
+        in->pars().getParGF().PHI = DoubleToString(pa);
+        in->pars().getParGF().INC = DoubleToString(inc);
+        in->pars().getParGF().Z0 = DoubleToString(z0);
+        in->pars().getParGF().DISTANCE = distance;
+        in->pars().getParGF().VDISP = DoubleToString(vdisp);
+        in->pars().getParGF().DENS = DoubleToString(dens);
+        in->pars().getParGF().VRAD = DoubleToString(vrad);
+        in->pars().getParGF().NV = nv;
     }
     else {
         nr    = par.NRADII;
