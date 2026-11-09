@@ -48,10 +48,10 @@ Header::Header () {
     veldef = "auto";
     pointAllocated = false;
     warning = true;
-    wcs = new struct wcsprm;
-    wcs->flag=-1;
+    wcs = nullptr;
+    nwcs = 0;
+    allocWCS();
     wcsIsGood=false;
-    nwcs=0;
     specConv=1;
 }
 
@@ -68,12 +68,56 @@ Header::~Header () {
     }
     
     keys.clear();
-    wcsvfree(&nwcs,&wcs);
+    freeWCS();
+}
+
+
+void Header::allocWCS() {
+    // wcslib releases wcsprm arrays with free(): always allocate with calloc.
+    wcs = static_cast<struct wcsprm*>(calloc(1, sizeof(struct wcsprm)));
+    wcs->flag = -1;
+    nwcs = 1;
+}
+
+
+void Header::freeWCS() {
+    if (wcs) {
+        int n = nwcs > 0 ? nwcs : 1;
+        wcsvfree(&n, &wcs);
+    }
+    wcs = nullptr;
+    nwcs = 0;
+}
+
+
+void Header::setCrota(double val) {
+    crota = val;
+}
+
+
+bool Header::saveWCSStruct(const struct wcsprm *wcsin) {
+    // Replace this header's WCS with a deep copy of wcsin.
+    if (!wcsin) return false;
+    freeWCS();
+    allocWCS();
+    int status = wcssub(1, wcsin, 0x0, 0x0, wcs);
+    if (!status) status = wcsset(wcs);
+    if (status) {
+        std::cerr << "BBarolo WARNING: unable to copy the WCS structure (wcslib status "
+                  << status << ").\n";
+        wcsIsGood = false;
+        return false;
+    }
+    wcsIsGood = (wcs->lng!=-1) && (wcs->lat!=-1);
+    return true;
 }
 
 
 Header::Header(const Header& h) {
     
+    pointAllocated = false;
+    wcs = nullptr;
+    nwcs = 0;
     operator=(h);
 }
 
@@ -144,13 +188,12 @@ Header& Header::operator=(const Header& h) {
 //    this->wcs = h.wcs;
 #pragma omp critical (wcs_header)
 {
-    wcsvfree(&nwcs,&wcs);
-    this->wcs = new struct wcsprm;
-    this->wcs->flag = -1;
-    wcsini(true, h.wcs->naxis, this->wcs);
-    wcscopy(true, h.wcs, this->wcs);
-    wcsset(this->wcs);
-    this->nwcs      = h.nwcs;
+    freeWCS();
+    allocWCS();
+    if (h.wcs && h.wcs->flag != -1) {
+        wcssub(1, h.wcs, 0x0, 0x0, this->wcs);
+        wcsset(this->wcs);
+    }
     this->wcsIsGood = h.wcsIsGood;
 }
 
@@ -596,16 +639,22 @@ bool Header::header_read (std::string fname) {
     status = 0;
     fits_hdr2str(fptr, noComments, NULL, nExc, &hdr, &nkeys, &status);
 
-    status = wcsini(true, numAxes, wcs);
+    freeWCS();
 
     int relax=1; // for wcspih -- admit all recognised informal WCS extensions
     int ctrl=2;  // for wcspih -- report each rejected card and its reason for rejection
     int nreject;
     // Parse the FITS header to fill in the wcsprm structure
     status=wcspih(hdr, nkeys, relax, ctrl, &nreject, &nwcs, &wcs);
+    fits_free_memory(hdr, &status);
+    status = 0;
 
-    // Here, I am always just loading 1 wcs structure, so overriding nwcs.
-    nwcs = 1;
+    // Only the primary WCS (wcs[0]) is used. All nwcs structs are freed in freeWCS().
+    if (nwcs < 1 || !wcs) {
+        freeWCS();
+        allocWCS();
+        wcsini(true, numAxes, wcs);
+    }
 
     int stat[NWCSFIX];
     // Applies all necessary corrections to the wcsprm structure

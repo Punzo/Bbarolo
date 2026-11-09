@@ -100,6 +100,8 @@ public:
     void setCrval (int i, float val) {crval[i]=val;}
     void setCdelt (int i, float val) {cdelt[i]=val;}
     void setDrval3 (double val) {drval3=val;}
+    void setCrota  (double val);                         /// Set the rotation angle (degrees).
+    bool saveWCSStruct (const struct wcsprm *wcsin);     /// Replace the WCS with a deep copy of wcsin.
     void setDunit3 (std::string s) {dunit3=s;}
     void setBmaj  (float val) {bmaj = val;}
     void setBmin  (float val) {bmin = val;}
@@ -170,6 +172,8 @@ private:
     double  freq0;                  ///< Frequency at rest.
     double  wave0;                  ///< Wavelength at rest
     double  crota;                  ///< Rotation angle.
+    void    allocWCS();             ///< Allocate an empty wcsprm (calloc, as wcslib frees it).
+    void    freeWCS();              ///< Release all wcsprm structs.
     double  datamin;                ///< Minimum pixel value.
     double  datamax;                ///< Maximum data value.
     double  redshift;
