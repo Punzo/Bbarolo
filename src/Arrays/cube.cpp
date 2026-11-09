@@ -21,6 +21,7 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
+#include <Utilities/fatal.hh>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -85,7 +86,7 @@ Cube<T>::Cube(int *dimensions) {
     numPix = numAxes = 0;
     if((size<0) || (imsize<0) ) {
         std::cout << "Error [Cube(dimArray)]: Negative size -- could not define Cube "<< std::endl;
-        std::terminate();
+        BBAROLO_FATAL();
     }
     else {
         numPix = size;
@@ -177,7 +178,7 @@ void Cube<T>::checkBeam() {
         if (bmaj<0 && bmin<0) {
             std::cerr << "\n ERROR: No beam information available for data.\n"
                       << "        Please set the beam with BMAJ/BMIN/BPA or BeamFWHM params (in arcsec).\n\n";
-            std::exit(EXIT_FAILURE);
+            BBAROLO_FATAL();
         }
         else {
             std::cout << "\n WARNING: Beam not available in the header: using a " << setprecision(5)
@@ -593,7 +594,7 @@ void Cube<T>::BlankMask (float *channel_noise, bool onlyLargest){
         size_t numObj = smoothed->getNumObj();
         if (numObj==0) {
             std::cout << "MASKING error: No sources detected in the datacube. Cannot build mask!!! \n";
-            std::terminate();
+            BBAROLO_FATAL();
         }
     
         if (onlyLargest || numObj==1) {
@@ -628,7 +629,7 @@ void Cube<T>::BlankMask (float *channel_noise, bool onlyLargest){
         int numObj = getNumObj();
         if (numObj==0) {
             std::cout << "MASKING error: No sources detected in the datacube. Cannot build mask!!! \n";
-            std::terminate();
+            BBAROLO_FATAL();
         }
     
         if (onlyLargest || numObj==1) {
@@ -750,7 +751,7 @@ void Cube<T>::BlankMask (float *channel_noise, bool onlyLargest){
         size_t last = str.find_last_of(")");
         if (first==std::string::npos || last==std::string::npos) {
             std::cerr << "\n  ERROR: MASK parameter is not correct. Provide file(Maskfitsfile)\n";
-            std::terminate();
+            BBAROLO_FATAL();
         }
         std::string filename = str.substr (first+1,last-first-1);
         Cube<float> *ma = new Cube<float>;
@@ -758,14 +759,14 @@ void Cube<T>::BlankMask (float *channel_noise, bool onlyLargest){
         if (!fexists(filename) || !ma->readCube(filename,false)) {
             std::cerr << "\n ERROR: Mask " << filename
                       << " is not a readable FITS image! Exiting ...\n";
-            std::terminate();
+            BBAROLO_FATAL();
         }
 
         if (ma->NumPix()!=numPix || ma->DimX()!=axisDim[0] ||
             ma->DimY()!=axisDim[1] || ma->DimZ()!=axisDim[2]) {
             std::cerr << "\n ERROR: Mask file and data file have different dimensions." << filename
                       << " Exiting ...\n";
-            std::terminate();
+            BBAROLO_FATAL();
         }
 
         for (size_t i=0; i<numPix; i++) mask[i] = ma->Array(i);

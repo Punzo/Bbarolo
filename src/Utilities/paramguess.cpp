@@ -21,6 +21,7 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
+#include <Utilities/fatal.hh>
 #include <iostream>
 #include <functional>
 #include <cfloat>
@@ -282,7 +283,7 @@ void ParamGuess<T>::findPositionAngle(int algorithm) {
     }
     else {
         std::cerr << "PARAMGUESS ERROR: unknown algorithm value " << algorithm << std::endl;
-        std::terminate();
+        BBAROLO_FATAL();
     }
     
 }
@@ -362,7 +363,7 @@ void ParamGuess<T>::findInclination(int algorithm) {
         }
         catch (...) {
             std::cerr << "PARAMGUESS ERROR: Error while estimating inclination." << std::endl;
-            std::terminate();
+            BBAROLO_FATAL();
         }
 
         Rmax   = mymin[0];
@@ -389,7 +390,7 @@ void ParamGuess<T>::findInclination(int algorithm) {
     }
     else {
         std::cerr << "PARAMGUESS ERROR: unknown algorithm value " << algorithm << std::endl;
-        std::terminate();
+        BBAROLO_FATAL();
     }
     
     if (inclin<10) inclin=25;
@@ -904,7 +905,7 @@ ParamGuess<T>* EstimateInitial(Cube<T> *c, GALFIT_PAR *p){
 
     if (largest==NULL) {
         std::cout << " 3DFIT ERROR: No sources detected in the datacube. Cannot fit!!! \n";
-        std::terminate();
+        BBAROLO_FATAL();
     }
 
     ParamGuess<T> *ip = new ParamGuess<T>(c,largest);

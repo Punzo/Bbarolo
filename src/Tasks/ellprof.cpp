@@ -21,6 +21,7 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
+#include <Utilities/fatal.hh>
 #include <iostream>
 #include <cfloat>
 #include <cmath>
@@ -261,7 +262,7 @@ void Ellprof<T>::init(MomentMap<T> *image, Rings<T> *rings, size_t nseg, float* 
 
     if (!image->HeadDef()) {
         std::cerr << "\n ELLPROF ERROR: Moment map has no proper header. Exiting ...\n";
-        std::terminate();
+        BBAROLO_FATAL();
     }
 
     im = image;

@@ -17,6 +17,7 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
+#include <Utilities/fatal.hh>
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
@@ -38,17 +39,17 @@ Spacepar<T>::Spacepar(Cube<T> *c) : Galfit<T>::Galfit(c) {
         p1!="PA"   && p1!="XPOS"  && p1!="YPOS" && p1!="VSYS"&& p1!="VRAD") {
         std::cout << "SPACEPAR ERROR: Unknown parameter 1 "
                   << p1 << std::endl;
-        std::terminate();
+        BBAROLO_FATAL();
     }
     if (p2!="VROT" && p2!="VDISP" && p2!="Z0"   && p2!="INC" &&
         p2!="PA"   && p2!="XPOS"  && p2!="YPOS" && p2!="VSYS" && p2!="VRAD") {
         std::cout << "SPACEPAR ERROR: Unknown parameter 2 "
                   << p2 << std::endl;
-        std::terminate();
+        BBAROLO_FATAL();
     }
     if (p1==p2) {
         std::cout << "SPACEPAR ERROR: p1=p2!!" << std::endl;
-        std::terminate();
+        BBAROLO_FATAL();
     }
     
     for (int i=0; i<MAXPAR; i++) Galfit<T>::mpar[i]=false;

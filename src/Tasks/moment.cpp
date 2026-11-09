@@ -20,6 +20,7 @@
  Correspondence concerning BBarolo may be directed to:
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
+#include <Utilities/fatal.hh>
 #include <iostream>
 #include <cfloat>
 #include <vector>
@@ -126,7 +127,7 @@ void MomentMap<T>::HIMassDensityMap (bool msk) {
     }
     else {
         std::cerr << "MOMENT MAPS ERROR: Input datacube must be in JY/BEAM or K.\n";
-        std::terminate();
+        BBAROLO_FATAL();
     }
 }
 
@@ -140,7 +141,7 @@ void MomentMap<T>::storeMap(bool msk, int whichmap, std::string map_type) {
     if (!this->arrayAllocated) {
         std::cout << "MOMENT MAPS error: ";
         std::cout << "Array not allocated. Call 'input' first!!\n";
-        std::terminate();
+        BBAROLO_FATAL();
     }
         
     if (!(this->headDefined=setHead(whichmap)) && in->pars().isVerbose()) {
@@ -307,7 +308,7 @@ void MomentMap<T>::RMSMap (bool msk, float sncut, float level) {
     if (!this->arrayAllocated) {
         std::cout << "MOMENT MAPS error: ";
         std::cout << "Array not allocated. Call 'input' first!!\n";
-        std::terminate();
+        BBAROLO_FATAL();
     }
         
     if (!(this->headDefined=setHead(3))) {

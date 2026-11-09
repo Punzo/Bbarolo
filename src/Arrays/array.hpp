@@ -2,6 +2,7 @@
 // array.hh
 // Array class
 //------------------------------------------------------------------  
+#include <Utilities/fatal.hh>
 #include <iostream>
 
 #ifndef ARRAY_HH
@@ -60,7 +61,7 @@ public:
             std::cerr << ") > (";
             for (int i=N; i--;) std::cerr << dim[i] << ",";
             std::cerr << ")\n";
-            std::terminate();
+            BBAROLO_FATAL();
         }
 #endif
 
@@ -130,7 +131,7 @@ private:
             if (terminate) {
                 std::cerr << "\nError: arrays must have the same size: "
                           << size << " != " << a.size << std::endl;
-                std::terminate();
+                BBAROLO_FATAL();
             }
             else return false;
         }
@@ -144,7 +145,7 @@ private:
                 std::cerr << ") != (";
                 for (int i=N; i--;) std::cerr << a.dim[i] << ",";
                 std::cerr << ")\n";
-                std::terminate();
+                BBAROLO_FATAL();
             }
             else return false;
         }
@@ -154,7 +155,7 @@ private:
     bool checkNDim (size_t nd) {
         if (nd!=N) {
             std::cerr << "\nError: you must provide "<< N << " dimensions. \n";
-            std::terminate();
+            BBAROLO_FATAL();
         }
         else return true;
     }

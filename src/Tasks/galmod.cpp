@@ -21,6 +21,7 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
+#include <Utilities/fatal.hh>
 #include <iostream>
 #include <cmath>
 #include <random>
@@ -346,7 +347,7 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
             std::cerr << "GALMOD error (unknown CUNIT for RA-DEC): ";
             std::cerr << "cannot convert to ARCMIN.\n";
             std::cerr << cunit;
-            std::terminate(); 
+            BBAROLO_FATAL(); 
         }
         cdelt[i]   = cdelt[i]*arcmconv;
         pixsize[i] = fabs(cdelt[i]); 
@@ -389,7 +390,7 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
         else if (cunit3=="a" ||cunit3=="ang"||cunit3=="angstrom") mconv = 1.0E-10;
         else {
             std::cout << "GALMOD ERROR: unknown CUNIT3=" << cunit3 << ". Cannot convert to meters.\n";
-            std::terminate();
+            BBAROLO_FATAL();
         }
 
         crval3=crval3*mconv;
@@ -425,7 +426,7 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
         else if (cunit3=="ghz") hzconv = 1.0E09;
         else {
             std::cerr << "GALMOD ERROR: unknown CUNIT3=" << cunit3 <<". Cannot convert to Hz.\n";
-            std::terminate(); 
+            BBAROLO_FATAL(); 
         }
         
         crval3=crval3*hzconv;
@@ -461,7 +462,7 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
         else if ("cm/s") msconv = 1.0E-03;
         else {
             std::cerr << "GALMOD ERROR: unknown CUNIT3=" << cunit3 <<". Cannot convert to M/S.\n";
-            std::terminate(); 
+            BBAROLO_FATAL(); 
         }
         
         /// Information about frequency/velocity axis and conversions.
@@ -477,7 +478,7 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
     }
     else { 
         std::cerr << "GALMOD ERROR: unknown Spectral axis type. Check CTYPE3 and CUNIT3 keywords." << std::endl;
-        std::terminate(); 
+        BBAROLO_FATAL(); 
     }
     
     // Get the instrumental broadnening: default value is FWHM=1 channel, thus sig_instr is FWHM/2.355.
@@ -512,11 +513,11 @@ void Galmod<T>::ringIO(Rings<T> *rings) {
             if (ur->radii[i-1]+r->radsep>=ur->radii[i]) {
                 if (ur->radii[i-1]>ur->radii[i]) {
                     std::cerr << "GALMOD ERROR: Radii not in increasing order.\n";
-                    std::terminate();
+                    BBAROLO_FATAL();
                 }
                 else {
                     std::cerr << "GALMOD ERROR: Radius separation too small.\n";
-                    std::terminate();
+                    BBAROLO_FATAL();
                 }
             }
         }
@@ -648,7 +649,7 @@ void Galmod<T>::galmod() {
         int nc = lround(cdens*pow(r->dens[ir],cmode)*twopi*rtmp*r->radsep/pixarea); 
         if (nc==0) {
             std::cerr << " GALMOD ERROR: No clouds used. Choose higher CDENS " << std::endl;
-            std::terminate();
+            BBAROLO_FATAL();
 //          Do next ring, jump to end of loop for rings.
             continue;
         }
@@ -944,7 +945,7 @@ void Galmod<T>::galmod() {
         int nc = lround(cdens*pow(r->dens[ir],cmode)*twopi*rtmp*r->radsep/pixarea); 
         if (nc==0) {
             std::cerr << " GALMOD ERROR: No clouds used. Choose higher CDENS " << std::endl;
-            std::terminate();
+            BBAROLO_FATAL();
 //          Do next ring, jump to end of loop for rings.
             continue;
         }
@@ -1265,11 +1266,11 @@ void Galmod_wind<T>::shellIO(Shells<T> *shells) {
         if (uradii[i-1]+s->sep>=uradii[i]) {
             if (uradii[i-1]>uradii[i]) {
                 std::cout << "GALMOD error: Radii not in increasing order.\n";
-                std::terminate();
+                BBAROLO_FATAL();
             }
             else {
                 std::cout << "GALMOD error: Radius separation too small.\n";
-                std::terminate();
+                BBAROLO_FATAL();
             }
         }
     }
@@ -1282,14 +1283,14 @@ void Galmod_wind<T>::shellIO(Shells<T> *shells) {
         uvdisp[i] = shells->vdisp[i]*1000;
         if (uvdisp[i]<0) {
             std::cout << "GALMOD error: Negative velocity dispersion not allowed.\n";
-            std::terminate();
+            BBAROLO_FATAL();
         }
         
         udens[i]=shells->dens[i];
 
         if (udens[i]<0) {
             std::cout << "GALMOD error: Negative column-density not allowed.\n";
-            std::terminate(); 
+            BBAROLO_FATAL(); 
         }
         
         uinc[i]   = shells->inc[i]*M_PI/180.;
@@ -1411,7 +1412,7 @@ void Galmod_wind<T>::galmod_wind() {
         int nc = lround(this->cdens*pow(s->dens[ir],this->cmode)*2*M_PI*rtmp*s->sep/this->pixarea); 
         if (nc==0) {
             std::cerr << " GALMOD ERROR: No clouds used. Choose higher CDENS " << std::endl;
-            std::terminate();
+            BBAROLO_FATAL();
         }
 //      Get values of ir-radius.
         double vrottmp = s->vrot[ir];

@@ -21,6 +21,7 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
+#include <Utilities/fatal.hh>
 #include <Utilities/conv2D.hh>
 #include <fftw3.h>
 #include <cmath>
@@ -119,7 +120,7 @@ void init_Conv2D (Conv2D &ws, CONV_MODE mode, int w_src, int h_src, int w_kernel
                       << "   - CIRCULAR_SAME \n"
                       << "   - CIRCULAR_SHIFTED\n"
                       << "   - CIRCULAR_CUSTOM\n";
-            std::terminate();
+            BBAROLO_FATAL();
     }
 
     ws.in_src  = new double[ws.h_fftw*ws.w_fftw];
@@ -286,7 +287,7 @@ void convolve(Conv2D &ws, double *src, double *kernel) {
                       << "   - CIRCULAR_SAME \n"
                       << "   - CIRCULAR_SHIFTED\n"
                       << "   - CIRCULAR_CUSTOM\n";
-            std::terminate();
+            BBAROLO_FATAL();
     }
     
 }

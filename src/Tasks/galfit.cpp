@@ -21,6 +21,7 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
+#include <Utilities/fatal.hh>
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
@@ -192,7 +193,7 @@ Galfit<T>::Galfit(Cube<T> *c) {
     Rings<T> *inR = readRings<T>(par,c->Head(),&fromfile);
     if (inR->nr==0) {
         std::cerr << "\n 3DFIT ERROR: The number of radii must be > 0! " << std::endl;
-        std::terminate();
+        BBAROLO_FATAL();
     }
     
     if (distance==-1) distance = VeltoDist(fabs(inr->vsys[0]));
@@ -332,12 +333,12 @@ void Galfit<T>::setup (Cube<T> *c, Rings<T> *inrings, GALFIT_PAR *p) {
         if (ir!=0) {
             if (inr->radii[ir]<=inr->radii[ir-1]) {
                 std::cerr  << "3DFIT ERROR: Radii not in increasing order.\n";
-                std::terminate();
+                BBAROLO_FATAL();
             }
         }
         if (inr->radii[ir]<0) {
             std::cerr << "3DFIT ERROR: Negative radius!!!\n";
-            std::terminate();
+            BBAROLO_FATAL();
         }
     }
     
@@ -1049,7 +1050,7 @@ void Galfit<T>::setFree() {
     for (int i=0; i<MAXPAR; i++) nfixed += (1-mpar[i]);
     if (nfixed == MAXPAR) {
         std::cerr << " 3DFIT ERROR: NO free parameters!\n";
-        std::terminate();
+        BBAROLO_FATAL();
     }
     nfree = MAXPAR-nfixed;
     

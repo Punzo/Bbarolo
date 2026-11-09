@@ -17,6 +17,7 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
+#include <Utilities/fatal.hh>
 #include <Tasks/galfit.hh>
 #include <Arrays/cube.hh>
 #include <Arrays/image.hh>
@@ -115,7 +116,7 @@ void Galfit<T>::slit_init(Cube<T> *c) {
     int numObj = line_im->getNumObj();
     if (numObj==0)  {
         std::cout << "SLITFIT error: No lines detected in the datacube. Cannot fit!!! \n";
-        exit(EXIT_FAILURE);
+        BBAROLO_FATAL();
     }
     else if (numObj>1) {
         unsigned int n=0, size=0;
@@ -163,7 +164,7 @@ void Galfit<T>::slit_init(Cube<T> *c) {
     int numObj = in->getNumObj();
     if (numObj==0)  {
         std::cout << "SLITFIT error: No lines detected in the datacube. Cannot fit!!! \n";
-        exit(EXIT_FAILURE);
+        BBAROLO_FATAL();
     }
     else if (numObj>1) {
         unsigned int n=0, size=0;
@@ -180,7 +181,7 @@ void Galfit<T>::slit_init(Cube<T> *c) {
     Wave->readImage(in->pars().getWavefile());
     if (in->DimX()!=Wave->DimX()) {
         std::cout << "SLITFIT error: The data and the wave files have different dimensions. \n";
-        exit(EXIT_FAILURE);
+        BBAROLO_FATAL();
     }
 
     double *wave = new double[Wave->DimX()];
@@ -192,13 +193,13 @@ void Galfit<T>::slit_init(Cube<T> *c) {
     else if (p->getLine()=="Hb") wave_s = Hb;
     else {
         std::cout << "SLITFIT: Sorry, I do not know the line " << p->getLine() << std::endl;
-        exit(EXIT_FAILURE);
+        BBAROLO_FATAL();
     }
     wave_s = wave_rest*(p->getRedshift()+1);
 
     if (wave_s<wave[0] || wave_s>wave[in->DimX()-1]) {
         std::cout << "SLITFIT error: the line is not inside the provided wavelength range." << std::endl;
-        exit(EXIT_FAILURE);
+        BBAROLO_FATAL();
     }
 
     int chan_s=0;
@@ -253,7 +254,7 @@ void Galfit<T>::slit_init(Cube<T> *c) {
     numObj = line_im->getNumObj();
     if (numObj==0)  {
         std::cout << "SLITFIT error: No lines detected in the datacube. Cannot fit!!! \n";
-        exit(EXIT_FAILURE);
+        BBAROLO_FATAL();
     }
     else if (numObj>1) {
         unsigned int n=0, size=0;

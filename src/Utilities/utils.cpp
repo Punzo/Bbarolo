@@ -21,6 +21,7 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
+#include <Utilities/fatal.hh>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -474,7 +475,7 @@ double arcsconv(std::string cunit) {
         errmsg += " Cannot convert to ARCSEC.\n";
         //throw errmsg;
         std::cerr << errmsg;
-        std::terminate();
+        BBAROLO_FATAL();
     }
 }
 
@@ -490,7 +491,7 @@ double degconv(std::string cunit) {
         errmsg += " Cannot convert to DEGREE.\n";
         //throw errmsg;
         std::cerr << errmsg;
-        std::terminate();
+        BBAROLO_FATAL();
     }
 }
 
@@ -747,7 +748,7 @@ bool getDataColumn (std::vector<T> &data, std::string filestring) {
     std::ifstream filein(filename.c_str());
     if (!filein) {
         std::cerr << "\n ERROR: " << filename << " doesn't exist! \n";
-        std::terminate();
+        BBAROLO_FATAL();
     }
     
     int row_n=0, col_n=0;
@@ -815,7 +816,7 @@ Rings<T>* readRings(GALFIT_PAR &par, Header &h, bool *fromfile) {
             float step = std::stof(s[0].substr(f2+1));
             if (Rmin>Rmax || step<0) {
                 std::cerr << " INPUT ERROR: RADII parameter format is \"Rmin~Rmax:step\".\n";
-                std::terminate();
+                BBAROLO_FATAL();
             }
             fr.radii.push_back(Rmin);
             while (fr.radii.back()<=Rmax-step)
@@ -950,7 +951,7 @@ double* getCenterCoordinates(std::string *pos, Header &h) {
     }
     else {
         std::cerr << "WCS ERROR: please provide both center coordinates. \n";
-        std::terminate();
+        BBAROLO_FATAL();
     }
     return pixels;
 }

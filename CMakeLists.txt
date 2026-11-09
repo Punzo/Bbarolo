@@ -10,6 +10,7 @@ project(BBarolo VERSION 1.8 LANGUAGES C CXX)
 include(GNUInstallDirs)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(BBAROLO_THROW_ON_ERROR "Throw bbarolo::Error instead of terminating the process on fatal errors" OFF)
 option(BBAROLO_USE_OPENMP "Enable OpenMP multi-threading inside BBarolo (if available)" ON)
 
 if(NOT DEFINED CMAKE_CXX_STANDARD)
@@ -69,6 +70,9 @@ target_include_directories(bbarolo PUBLIC
 target_link_libraries(bbarolo PUBLIC ${CFITSIO_LIBRARY} ${WCSLIB_LIBRARY} ${FFTW3_LIBRARY})
 
 target_compile_definitions(bbarolo PRIVATE HAVE_FFTW3)
+if(BBAROLO_THROW_ON_ERROR)
+  target_compile_definitions(bbarolo PUBLIC BBAROLO_THROW_ON_ERROR)
+endif()
 if(APPLE)
   target_compile_definitions(bbarolo PRIVATE MACOS)
 endif()
