@@ -29,6 +29,7 @@
 #include <Arrays/stats.hh>
 #include <Arrays/param.hh>
 #include <Tasks/search.hh>
+#include <algorithm>
 #include <Map/detection.hh>
 
 using namespace Statistics;
@@ -84,6 +85,10 @@ public:
     bool&   Mask    (size_t npix) {return mask[npix];}
     bool&   Mask    (size_t x,size_t y,size_t z) {return mask[x+y*axisDim[0]+z*axisDim[0]*axisDim[1]];}
     bool    MaskAll () {return maskAllocated;}
+    /// Allocate (if needed) and return the mask, so that callers can fill it in place.
+    bool*   allocateMask () {if (!maskAllocated) {mask = new bool[numPix]; maskAllocated = true;} return mask;}
+    /// Copy an external mask (numPix booleans) into the cube mask.
+    void    setMask (const bool *inputMask) {std::copy(inputMask, inputMask+numPix, allocateMask());}
     
     void    printStats() {std::cout << stats << std::endl;}
     Stats<T>  getStats(){ return stats;}
