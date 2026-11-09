@@ -528,9 +528,11 @@ void Galfit<T>::fit_straight(T ***errors, bool *fitok, std::ostream &fout) {
     int start_rad = par.STARTRAD<inr->nr ? par.STARTRAD : 0;
     int nthreads = in->pars().getThreads();
 
+    ringsDone = 0;
 #pragma omp parallel for num_threads(nthreads) schedule(dynamic)
     for (int ir=start_rad; ir<inr->nr; ir++) {
 
+        if (isAborted()) continue;
         T minimum=0;
         T pmin[nfree];
 
@@ -633,6 +635,7 @@ void Galfit<T>::fit_straight(T ***errors, bool *fitok, std::ostream &fout) {
         writeRing(fout,outr,ir,toKpc,nfree,par.flagERRORS,errors,par.flagBADOUT,fitok[ir]);
 
         delete dring;
+        reportRingDone(inr->nr-start_rad);
     }
 }
 template void Galfit<float>::fit_straight(float ***errors, bool *fitok, std::ostream &fout);
@@ -645,8 +648,10 @@ void Galfit<T>::fit_reverse(T ***errors, bool *fitok, std::ostream &fout) {
     double toKpc = KpcPerArc(distance);
     int start_rad = par.STARTRAD<inr->nr ? par.STARTRAD : 0;
 
+    ringsDone = 0;
     for (int ir=inr->nr-1; ir>=start_rad; ir--) {
 
+        if (isAborted()) break;
         T minimum=0;
         T pmin[nfree];
 
@@ -750,6 +755,7 @@ void Galfit<T>::fit_reverse(T ***errors, bool *fitok, std::ostream &fout) {
         writeRing(fout,outr,ir,toKpc,nfree,par.flagERRORS,errors,par.flagBADOUT,fitok[ir]);
 
         delete dring;
+        reportRingDone(inr->nr-start_rad);
     }
 }
 template void Galfit<float>::fit_reverse(float ***errors, bool *fitok, std::ostream &fout);

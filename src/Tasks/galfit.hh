@@ -32,6 +32,8 @@
 #include <Tasks/galmod.hh>
 #include <Tasks/ellprof.hh>
 #include <Utilities/paramguess.hh>
+#include <atomic>
+#include <functional>
 
 namespace Model {
 
@@ -60,6 +62,14 @@ public:
     Rings<T> *Outrings () {return outr;}
     string Norms(int i=2) {return norms[i];}
     void setOutRings (Rings<T>* r) {*outr = *r;}
+
+    /// Optional hooks for applications embedding BBarolo:
+    /// - abort flag: when set to true, the remaining rings are skipped and the
+    ///   fit returns as soon as possible (results are then incomplete).
+    /// - progress callback: called with (rings done, total rings) after each ring.
+    void setAbortFlag (const std::atomic<bool> *flag) {abortFlag = flag;}
+    bool isAborted () const {return abortFlag && abortFlag->load();}
+    void setProgressCallback (std::function<void(int,int)> cb) {progressCallback = cb;}
 
     /// Functions defined in galfit.cpp
     void setup (Cube<T> *c, Rings<T> *inrings, GALFIT_PAR *p);
@@ -90,6 +100,17 @@ public:
     template <class Type> friend class Galmod;
 
 protected:
+    const std::atomic<bool> *abortFlag = nullptr;
+    std::function<void(int,int)> progressCallback;
+    std::atomic<int> ringsDone{0};
+    void reportRingDone (int total) {
+        int done = ++ringsDone;
+        if (progressCallback) {
+#pragma omp critical (galfit_progress)
+            progressCallback(done, total);
+        }
+    }
+
     GALFIT_PAR par;                         //< Container for GALFIT parameters
     Cube<T>  *in;                           //< A pointer to the input cube.
     Rings<T> *inr;                          //< A pointer to the initial rings.
