@@ -967,6 +967,20 @@ template bool Galfit<double>::setCfield();
 
 
 template <class T>
+Model::Galmod<T>* Galfit<T>::getFullModel() {
+
+    // Full field of view; work on a copy of the output rings because
+    // getModel(..., finalModel=true) moves the innermost/outermost radii.
+    int bhi[2] = {in->DimX(), in->DimY()};
+    int blo[2] = {0, 0};
+    Rings<T> rings = *outr;
+    return getModel(&rings, bhi, blo, nullptr, true);
+}
+template Model::Galmod<float>* Galfit<float>::getFullModel();
+template Model::Galmod<double>* Galfit<double>::getFullModel();
+
+
+template <class T>
 Model::Galmod<T>* Galfit<T>::getModel(Rings<T> *dr, int* bhi, int* blo, Model::Galmod<T> *modsoFar, bool finalModel) {
 
     if (finalModel) {

@@ -78,6 +78,9 @@ public:
     double calculateResiduals(Rings<T> *r) {return getFuncValue(r);}
     void writeRingFile(std::string filename, Rings<T> *r, T ***errors=nullptr);
     Galmod<T>* getModel(Rings<T> *dr, int *bhi, int* blo, Model::Galmod<T> *modsoFar=nullptr, bool finalModel=false);
+    /// Final model of the output rings over the full field of view of the input cube.
+    /// The output rings are left unchanged. The caller owns the returned object.
+    Galmod<T>* getFullModel();
     T* getModel_BBB(Rings<T> *dr, int* bhi, int* blo, int iseed);
 
     bool AsymmetricDrift(T *rad, T *densprof, T *dispprof, T *rotcur, T *inc, int nn);
