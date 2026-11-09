@@ -25,8 +25,12 @@
 #include <string>
 #include <iomanip>
 #include <ctime>
+#ifdef _WIN32
+#include <windows.h>
+#else
 #include <unistd.h>
 #include <sys/ioctl.h>
+#endif
 #include <Utilities/progressbar.hh>
 #include <Utilities/utils.hh>
 #ifdef _OPENMP
@@ -46,7 +50,16 @@ void ProgressBar::defaults() {
 #ifdef MACOS
     backs = 7;
 #endif 
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+#ifdef _WIN32
+    w.ws_row = 25; w.ws_col = 80;
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
+        w.ws_col = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        w.ws_row = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+    }
+#else
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) != 0) {w.ws_row = 25; w.ws_col = 80;}
+#endif
 
 }
 

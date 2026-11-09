@@ -21,6 +21,7 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
+#include <memory>
 #include <Utilities/fatal.hh>
 #include <iostream>
 #include <fstream>
@@ -1266,8 +1267,8 @@ void Cube<T>::continuumSubtract() {
 
     // Number of coefficients for polynomial (= order + 1)
     int ncoeff = par.getContOrder() + 1;
-    T coeff[ncoeff], coefferr[ncoeff];
-    bool mp[ncoeff];
+    auto coeff_buf = std::make_unique<T[]>(ncoeff); T *coeff = coeff_buf.get(); auto coefferr_buf = std::make_unique<T[]>(ncoeff); T *coefferr = coefferr_buf.get();
+    auto mp_buf = std::make_unique<bool[]>(ncoeff); bool *mp = mp_buf.get();
     for (int i=0; i<ncoeff;i++) mp[i] = true;
     
     // Looping over spectra

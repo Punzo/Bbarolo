@@ -21,6 +21,7 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
+#include <memory>
 #include <Utilities/fatal.hh>
 #include <iostream>
 #include <iomanip>
@@ -39,15 +40,15 @@
 #include <wcslib/wcs.h>
 #include <sys/stat.h>
 #include <errno.h>
-#include <unistd.h>
+#include <filesystem>
+#include <system_error>
 #include <Utilities/allocator.hpp>
 
 
 std::string get_currentpath() {
-    std::string path = "";
-    char pathbuf[2048];
-    if (getcwd(pathbuf, sizeof(pathbuf))==NULL) std::cerr << "Could not find the current PID \n";
-    else path = pathbuf;
+    std::error_code ec;
+    std::string path = std::filesystem::current_path(ec).string();
+    if (ec) std::cerr << "Could not find the current path \n";
     return path;
 }
 
@@ -62,22 +63,16 @@ bool fexists(std::string filename) {std::ifstream ifile(filename.c_str()); retur
 bool mkdirp(const char* path, mode_t mode) {
     /** Utility function to create directory tree */
 
-    if(path[0] == '\0') return false;
+    if(path == nullptr || path[0] == '\0') return false;
 
-    char* p = const_cast<char*>(path);
-    while (*p != '\0') {
-        p++;
-        while(*p != '\0' && *p != '/') p++;
-        char v = *p;
-        *p = '\0';
-
-        if(mkdir(path, mode) != 0 && errno != EEXIST) {
-            *p = v;
-            return false;
-        }
-        *p = v;
-    }
-
+    std::error_code ec;
+    std::filesystem::create_directories(std::filesystem::path(path), ec);
+    if (ec) return false;
+#ifndef _WIN32
+    chmod(path, mode);
+#else
+    (void)mode;
+#endif
     return true;
 }
 
@@ -920,8 +915,8 @@ template Rings<double>* readRings(GALFIT_PAR&,Header&,bool*);
 double* getCenterCoordinates(std::string *pos, Header &h) {
 
     double *pixels = new double[h.NumAx()];
-    double world[h.NumAx()];
-    bool isPOS[h.NumAx()];
+    auto world_buf = std::make_unique<double[]>(h.NumAx()); double *world = world_buf.get();
+    auto isPOS_buf = std::make_unique<bool[]>(h.NumAx()); bool *isPOS = isPOS_buf.get();
     for (int i=0; i<h.NumAx(); i++) {
         world[i] = 0;
         isPOS[i] = false;

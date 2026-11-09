@@ -28,7 +28,11 @@
 #include <string>
 #include <sstream>
 #include <ctime>
+#ifdef _WIN32
+struct winsize { unsigned short ws_row, ws_col; };
+#else
 #include <sys/ioctl.h>
+#endif
 
 
 class ProgressBar           /// A class that prints out a progress 

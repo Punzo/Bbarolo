@@ -21,6 +21,7 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
+#include <memory>
 #include <iostream>
 #include <cmath>
 #include <cfloat>
@@ -261,9 +262,9 @@ int Lsqfit<T>::invmat () {
   /// The algorithm used is the Gauss-Jordan algorithm.
  
    double even, mjk, rowmax;
-   double hv[npar];
+   auto hv_buf = std::make_unique<double[]>(npar); double *hv = hv_buf.get();
    int   evin;
-   int   per[npar];
+   auto per_buf = std::make_unique<int[]>(npar); int *per = per_buf.get();
    int   row;
 
    for (int i=0; i<nfree; i++) per[i] = i;

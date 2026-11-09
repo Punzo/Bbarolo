@@ -21,6 +21,8 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
+#include <memory>
+#include <vector>
 #include <Utilities/fatal.hh>
 #include <iostream>
 #include <cfloat>
@@ -512,9 +514,9 @@ void Ellprof<T>::processpixel(int x, int y,float imval) {
 
     bool validpixel = IsInRange(imval, Range);
 
-    bool inside[Nrad];
+    auto inside_buf = std::make_unique<bool[]>(Nrad); bool *inside = inside_buf.get();
 
-    bool  Contribflag[Nrad][Nseg];  /* Did a pixel already contribute to ring? */
+    std::vector<std::vector<bool>> Contribflag(Nrad, std::vector<bool>(Nseg));  /* Did a pixel already contribute to ring? */
     for (size_t rad=0; rad<Nrad; rad++)
         for (size_t seg=0; seg<Nseg; seg++)
             Contribflag[rad][seg] = false;

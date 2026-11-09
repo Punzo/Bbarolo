@@ -17,6 +17,7 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
+#include <memory>
 #include <Utilities/fatal.hh>
 #include <Tasks/galfit.hh>
 #include <Arrays/cube.hh>
@@ -558,7 +559,7 @@ void Galfit<T>::writeModel_slit() {
     }
     outpv.close();
 
-    int free[nfree];
+    auto free_buf = std::make_unique<int[]>(nfree); int *free = free_buf.get();
     int k;
     for (int nm=0, k=0; nm<9; nm++) {
         if (mpar[nm]) free[k++]=nm;

@@ -36,9 +36,16 @@
 #include <Arrays/rings.hh>
 #include <Map/voxel.hh>
 #include <sys/stat.h>
+#ifdef _WIN32
+typedef int mode_t;
+#endif
 
 
+#ifdef _WIN32
+#define DEFAULT_MODE      0
+#else
 #define DEFAULT_MODE      S_IRWXU | S_IRGRP |  S_IXGRP | S_IROTH | S_IXOTH
+#endif
 
 
 // Macro for debugging purposes

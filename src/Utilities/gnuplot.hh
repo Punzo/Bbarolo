@@ -27,6 +27,10 @@
 #include <cstdio>
 #include <string>
 #include <cstdarg>
+#ifdef _WIN32
+#define popen _popen
+#define pclose _pclose
+#endif
 
 class Gnuplot_Base 
 {

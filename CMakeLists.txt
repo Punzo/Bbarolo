@@ -83,6 +83,10 @@ endif()
 
 if(OpenMP_CXX_FOUND)
   target_link_libraries(bbarolo PRIVATE OpenMP::OpenMP_CXX)
+  if(MSVC)
+    # BBarolo uses OpenMP features beyond MSVC's default OpenMP 2.0.
+    target_compile_options(bbarolo PRIVATE /openmp:llvm)
+  endif()
 endif()
 
 if(NOT WIN32)
