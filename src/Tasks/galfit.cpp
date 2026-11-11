@@ -21,6 +21,8 @@
     Internet email: enrico.diteodoro@gmail.com
 -----------------------------------------------------------------------*/
 
+#include <atomic>
+#include <exception>
 #include <memory>
 #include <Utilities/fatal.hh>
 #include <iostream>
@@ -527,10 +529,15 @@ void Galfit<T>::fit_straight(T ***errors, bool *fitok, std::ostream &fout) {
     int nthreads = in->pars().getThreads();
 
     ringsDone = 0;
+    std::exception_ptr loopError = nullptr;
+    std::atomic<bool> loopFailed(false);
 #pragma omp parallel for num_threads(nthreads) schedule(dynamic)
     for (int ir=start_rad; ir<inr->nr; ir++) {
 
-        if (isAborted()) continue;
+        if (isAborted() || loopFailed) continue;
+        // An exception must not leave the parallel region (std::terminate):
+        // the first one is kept and rethrown after the loop.
+        try {
         T minimum=0;
         std::unique_ptr<T[]> pmin_buf = std::make_unique<T[]>(nfree); T *pmin = pmin_buf.get();
 
@@ -634,7 +641,16 @@ void Galfit<T>::fit_straight(T ***errors, bool *fitok, std::ostream &fout) {
 
         delete dring;
         reportRingDone(inr->nr-start_rad);
+            }
+        catch (...) {
+#pragma omp critical (galfit_fit_straight_error)
+            {
+                if (!loopError) loopError = std::current_exception();
+                loopFailed = true;
+            }
+        }
     }
+    if (loopError) std::rethrow_exception(loopError);
 }
 template void Galfit<float>::fit_straight(float ***errors, bool *fitok, std::ostream &fout);
 template void Galfit<double>::fit_straight(double ***errors, bool *fitok, std::ostream &fout);

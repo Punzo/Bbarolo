@@ -110,6 +110,19 @@ bool Header::saveWCSStruct(const struct wcsprm *wcsin) {
         return false;
     }
     wcsIsGood = (wcs->lng!=-1) && (wcs->lat!=-1);
+
+    // Spectral type from CTYPE3 and CUNIT3 (set before), as when the header is
+    // read from a FITS file: the header of an application is filled with setters.
+    if (numAxes>2) {
+        std::string ct2 = makelower(ctype[2]), cu2 = makelower(cunit[2]);
+        size_t f = std::string::npos;
+        if (ct2.find("wav")!=f  || cu2.find("um")!=f || cu2.find("nm")!=f ||
+            cu2.find("ang")!=f  || cu2.find("micr")!=f) sptype="wave";
+        else if (ct2.find("freq")!=f || cu2.find("hz")!=f) sptype="freq";
+        else if (ct2.find("vopt")!=f || ct2.find("felo")!=f) sptype="velo-opt";
+        else if (ct2.find("vel")!=f  || ct2.find("vrad")!=f || cu2.find("m/s")!=f) sptype="velo-radio";
+        else sptype="unknown";
+    }
     return true;
 }
 
