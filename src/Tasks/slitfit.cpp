@@ -116,8 +116,7 @@ void Galfit<T>::slit_init(Cube<T> *c) {
     line_im->search();
     int numObj = line_im->getNumObj();
     if (numObj==0)  {
-        std::cout << "SLITFIT error: No lines detected in the datacube. Cannot fit!!! \n";
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("SLITFIT error: No lines detected in the datacube. Cannot fit!!! \n");
     }
     else if (numObj>1) {
         unsigned int n=0, size=0;
@@ -164,8 +163,7 @@ void Galfit<T>::slit_init(Cube<T> *c) {
 
     int numObj = in->getNumObj();
     if (numObj==0)  {
-        std::cout << "SLITFIT error: No lines detected in the datacube. Cannot fit!!! \n";
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("SLITFIT error: No lines detected in the datacube. Cannot fit!!! \n");
     }
     else if (numObj>1) {
         unsigned int n=0, size=0;
@@ -181,8 +179,7 @@ void Galfit<T>::slit_init(Cube<T> *c) {
     Wave->Head().setWarning(false);
     Wave->readImage(in->pars().getWavefile());
     if (in->DimX()!=Wave->DimX()) {
-        std::cout << "SLITFIT error: The data and the wave files have different dimensions. \n";
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("SLITFIT error: The data and the wave files have different dimensions. \n");
     }
 
     double *wave = new double[Wave->DimX()];
@@ -193,14 +190,12 @@ void Galfit<T>::slit_init(Cube<T> *c) {
     if (p->getLine()=="Ha") wave_rest = Ha;
     else if (p->getLine()=="Hb") wave_s = Hb;
     else {
-        std::cout << "SLITFIT: Sorry, I do not know the line " << p->getLine() << std::endl;
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("SLITFIT: Sorry, I do not know the line " << p->getLine());
     }
     wave_s = wave_rest*(p->getRedshift()+1);
 
     if (wave_s<wave[0] || wave_s>wave[in->DimX()-1]) {
-        std::cout << "SLITFIT error: the line is not inside the provided wavelength range." << std::endl;
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("SLITFIT error: the line is not inside the provided wavelength range.");
     }
 
     int chan_s=0;
@@ -254,8 +249,7 @@ void Galfit<T>::slit_init(Cube<T> *c) {
     line_im->search();
     numObj = line_im->getNumObj();
     if (numObj==0)  {
-        std::cout << "SLITFIT error: No lines detected in the datacube. Cannot fit!!! \n";
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("SLITFIT error: No lines detected in the datacube. Cannot fit!!! \n");
     }
     else if (numObj>1) {
         unsigned int n=0, size=0;
@@ -559,7 +553,7 @@ void Galfit<T>::writeModel_slit() {
     }
     outpv.close();
 
-    auto free_buf = std::make_unique<int[]>(nfree); int *free = free_buf.get();
+    std::unique_ptr<int[]> free_buf = std::make_unique<int[]>(nfree); int *free = free_buf.get();
     int k;
     for (int nm=0, k=0; nm<9; nm++) {
         if (mpar[nm]) free[k++]=nm;

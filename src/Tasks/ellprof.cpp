@@ -263,8 +263,7 @@ void Ellprof<T>::init(MomentMap<T> *image, Rings<T> *rings, size_t nseg, float* 
     defaults();
 
     if (!image->HeadDef()) {
-        std::cerr << "\n ELLPROF ERROR: Moment map has no proper header. Exiting ...\n";
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("\n ELLPROF ERROR: Moment map has no proper header. Exiting ...\n");
     }
 
     im = image;
@@ -349,16 +348,14 @@ void Ellprof<T>::update_rings(Rings<T> *rings, size_t nseg, float* segments) {
     Position[1] = findMean(&rings->ypos[0], rings->nr);
     if (Position[0]>=im->DimX() || Position[0]<0 ||
         Position[1]>=im->DimY() || Position[1]<0) {
-            std::cerr << "ELLPROF ERROR: The center of galaxy must be inside the map. Exiting...\n ";
-            abort();
+            BBAROLO_FATAL_MSG("ELLPROF ERROR: The center of galaxy must be inside the map. Exiting...");
     }
 
     //Setting spacings in arcsec
     Dx = im->Head().Cdelt(0)*arcsconv(im->Head().Cunit(0));
     Dy = im->Head().Cdelt(1)*arcsconv(im->Head().Cunit(1));
     if (Dx==0 || Dy==0) {
-        std::cerr << "ELLPROF ERROR: Null spacing. Check CUNIT and CDELT keywords in the header. Exiting...\n ";
-        abort();
+        BBAROLO_FATAL_MSG("ELLPROF ERROR: Null spacing. Check CUNIT and CDELT keywords in the header. Exiting...");
     }
 
     stepxy[0] = fabs(Dx) / (float) subpix[0];
@@ -514,7 +511,7 @@ void Ellprof<T>::processpixel(int x, int y,float imval) {
 
     bool validpixel = IsInRange(imval, Range);
 
-    auto inside_buf = std::make_unique<bool[]>(Nrad); bool *inside = inside_buf.get();
+    std::unique_ptr<bool[]> inside_buf = std::make_unique<bool[]>(Nrad); bool *inside = inside_buf.get();
 
     std::vector<std::vector<bool>> Contribflag(Nrad, std::vector<bool>(Nseg));  /* Did a pixel already contribute to ring? */
     for (size_t rad=0; rad<Nrad; rad++)

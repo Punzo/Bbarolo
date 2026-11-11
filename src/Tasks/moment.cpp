@@ -126,8 +126,7 @@ void MomentMap<T>::HIMassDensityMap (bool msk) {
         storedtype = 3;
     }
     else {
-        std::cerr << "MOMENT MAPS ERROR: Input datacube must be in JY/BEAM or K.\n";
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("MOMENT MAPS ERROR: Input datacube must be in JY/BEAM or K.\n");
     }
 }
 
@@ -140,8 +139,7 @@ void MomentMap<T>::storeMap(bool msk, int whichmap, std::string map_type) {
     
     if (!this->arrayAllocated) {
         std::cout << "MOMENT MAPS error: ";
-        std::cout << "Array not allocated. Call 'input' first!!\n";
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("Array not allocated. Call 'input' first!!\n");
     }
         
     if (!(this->headDefined=setHead(whichmap)) && in->pars().isVerbose()) {
@@ -307,8 +305,7 @@ void MomentMap<T>::RMSMap (bool msk, float sncut, float level) {
 
     if (!this->arrayAllocated) {
         std::cout << "MOMENT MAPS error: ";
-        std::cout << "Array not allocated. Call 'input' first!!\n";
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("Array not allocated. Call 'input' first!!\n");
     }
         
     if (!(this->headDefined=setHead(3))) {

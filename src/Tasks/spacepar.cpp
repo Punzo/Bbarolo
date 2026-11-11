@@ -37,19 +37,16 @@ Spacepar<T>::Spacepar(Cube<T> *c) : Galfit<T>::Galfit(c) {
 
     if (p1!="VROT" && p1!="VDISP" && p1!="Z0"   && p1!="INC" &&
         p1!="PA"   && p1!="XPOS"  && p1!="YPOS" && p1!="VSYS"&& p1!="VRAD") {
-        std::cout << "SPACEPAR ERROR: Unknown parameter 1 "
-                  << p1 << std::endl;
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("SPACEPAR ERROR: Unknown parameter 1 "
+                          << p1);
     }
     if (p2!="VROT" && p2!="VDISP" && p2!="Z0"   && p2!="INC" &&
         p2!="PA"   && p2!="XPOS"  && p2!="YPOS" && p2!="VSYS" && p2!="VRAD") {
-        std::cout << "SPACEPAR ERROR: Unknown parameter 2 "
-                  << p2 << std::endl;
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("SPACEPAR ERROR: Unknown parameter 2 "
+                          << p2);
     }
     if (p1==p2) {
-        std::cout << "SPACEPAR ERROR: p1=p2!!" << std::endl;
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("SPACEPAR ERROR: p1=p2!!");
     }
     
     for (int i=0; i<MAXPAR; i++) Galfit<T>::mpar[i]=false;

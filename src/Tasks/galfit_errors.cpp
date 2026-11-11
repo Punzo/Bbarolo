@@ -65,8 +65,8 @@ void Galfit<T>::getErrors (Rings<T> *dr, T **err, int ir, T minimum) {
         dr->vrad[ii]=outr->vrad[ir];
     }
             
-    auto free_var_buf = std::make_unique<int[]>(nfree); int *free_var = free_var_buf.get();
-    auto maxval_buf = std::make_unique<float[]>(nfree); float *maxval = maxval_buf.get(); auto minval_buf = std::make_unique<float[]>(nfree); float *minval = minval_buf.get(); auto midval_buf = std::make_unique<float[]>(nfree); float *midval = midval_buf.get();
+    std::unique_ptr<int[]> free_var_buf = std::make_unique<int[]>(nfree); int *free_var = free_var_buf.get();
+    std::unique_ptr<float[]> maxval_buf = std::make_unique<float[]>(nfree); float *maxval = maxval_buf.get(); std::unique_ptr<float[]> minval_buf = std::make_unique<float[]>(nfree); float *minval = minval_buf.get(); std::unique_ptr<float[]> midval_buf = std::make_unique<float[]>(nfree); float *midval = midval_buf.get();
     for (int nm=0, k=0; nm<MAXPAR; nm++) {
         if (mpar[nm]) {
             free_var[k]=nm;
@@ -362,8 +362,8 @@ void Galfit<T>::getErrors (Rings<T> *dr, T **err, int ir, T minimum) {
         /// minimum in the best-fit model. If you want to change, you must change also after if (nrt<0) continue;
         /// where the roots for a cubic equation are calculated. 
         int order=3;
-        auto ww_buf = std::make_unique<T[]>(n_bin); T *ww = ww_buf.get(); auto coeff_buf = std::make_unique<T[]>(order+1); T *coeff = coeff_buf.get(); auto coefferr_buf = std::make_unique<T[]>(order+1); T *coefferr = coefferr_buf.get();
-        auto mp_buf = std::make_unique<bool[]>(order+1); bool *mp = mp_buf.get();
+        std::unique_ptr<T[]> ww_buf = std::make_unique<T[]>(n_bin); T *ww = ww_buf.get(); std::unique_ptr<T[]> coeff_buf = std::make_unique<T[]>(order+1); T *coeff = coeff_buf.get(); std::unique_ptr<T[]> coefferr_buf = std::make_unique<T[]>(order+1); T *coefferr = coefferr_buf.get();
+        std::unique_ptr<bool[]> mp_buf = std::make_unique<bool[]>(order+1); bool *mp = mp_buf.get();
         
         int n_datapoints=0, y_interv=15;
         while (n_datapoints<2*order) {

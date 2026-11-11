@@ -262,9 +262,9 @@ int Lsqfit<T>::invmat () {
   /// The algorithm used is the Gauss-Jordan algorithm.
  
    double even, mjk, rowmax;
-   auto hv_buf = std::make_unique<double[]>(npar); double *hv = hv_buf.get();
+   std::unique_ptr<double[]> hv_buf = std::make_unique<double[]>(npar); double *hv = hv_buf.get();
    int   evin;
-   auto per_buf = std::make_unique<int[]>(npar); int *per = per_buf.get();
+   std::unique_ptr<int[]> per_buf = std::make_unique<int[]>(npar); int *per = per_buf.get();
    int   row;
 
    for (int i=0; i<nfree; i++) per[i] = i;

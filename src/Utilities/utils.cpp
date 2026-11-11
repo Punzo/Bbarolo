@@ -469,8 +469,7 @@ double arcsconv(std::string cunit) {
         std::string errmsg = "Conversion error (unknown CUNIT for RA-DEC): " + cunit + ".";
         errmsg += " Cannot convert to ARCSEC.\n";
         //throw errmsg;
-        std::cerr << errmsg;
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG(errmsg);
     }
 }
 
@@ -485,8 +484,7 @@ double degconv(std::string cunit) {
         std::string errmsg = "Conversion error (unknown CUNIT for RA-DEC): " + cunit + ".";
         errmsg += " Cannot convert to DEGREE.\n";
         //throw errmsg;
-        std::cerr << errmsg;
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG(errmsg);
     }
 }
 
@@ -742,8 +740,7 @@ bool getDataColumn (std::vector<T> &data, std::string filestring) {
     checkHome(filename);
     std::ifstream filein(filename.c_str());
     if (!filein) {
-        std::cerr << "\n ERROR: " << filename << " doesn't exist! \n";
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("\n ERROR: " << filename << " doesn't exist! \n");
     }
     
     int row_n=0, col_n=0;
@@ -810,8 +807,7 @@ Rings<T>* readRings(GALFIT_PAR &par, Header &h, bool *fromfile) {
             float Rmax = std::stof(s[0].substr(f1+1,f2-f1-1));
             float step = std::stof(s[0].substr(f2+1));
             if (Rmin>Rmax || step<0) {
-                std::cerr << " INPUT ERROR: RADII parameter format is \"Rmin~Rmax:step\".\n";
-                BBAROLO_FATAL();
+                BBAROLO_FATAL_MSG(" INPUT ERROR: RADII parameter format is \"Rmin~Rmax:step\".\n");
             }
             fr.radii.push_back(Rmin);
             while (fr.radii.back()<=Rmax-step)
@@ -915,8 +911,8 @@ template Rings<double>* readRings(GALFIT_PAR&,Header&,bool*);
 double* getCenterCoordinates(std::string *pos, Header &h) {
 
     double *pixels = new double[h.NumAx()];
-    auto world_buf = std::make_unique<double[]>(h.NumAx()); double *world = world_buf.get();
-    auto isPOS_buf = std::make_unique<bool[]>(h.NumAx()); bool *isPOS = isPOS_buf.get();
+    std::unique_ptr<double[]> world_buf = std::make_unique<double[]>(h.NumAx()); double *world = world_buf.get();
+    std::unique_ptr<bool[]> isPOS_buf = std::make_unique<bool[]>(h.NumAx()); bool *isPOS = isPOS_buf.get();
     for (int i=0; i<h.NumAx(); i++) {
         world[i] = 0;
         isPOS[i] = false;
@@ -945,8 +941,7 @@ double* getCenterCoordinates(std::string *pos, Header &h) {
         wcsToPixSingle(h.WCS(),world,pixels);
     }
     else {
-        std::cerr << "WCS ERROR: please provide both center coordinates. \n";
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("WCS ERROR: please provide both center coordinates. \n");
     }
     return pixels;
 }

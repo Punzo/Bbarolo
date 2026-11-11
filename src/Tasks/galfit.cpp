@@ -193,8 +193,7 @@ Galfit<T>::Galfit(Cube<T> *c) {
     bool fromfile = false;
     Rings<T> *inR = readRings<T>(par,c->Head(),&fromfile);
     if (inR->nr==0) {
-        std::cerr << "\n 3DFIT ERROR: The number of radii must be > 0! " << std::endl;
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("\n 3DFIT ERROR: The number of radii must be > 0! ");
     }
     
     if (distance==-1) distance = VeltoDist(fabs(inr->vsys[0]));
@@ -333,13 +332,11 @@ void Galfit<T>::setup (Cube<T> *c, Rings<T> *inrings, GALFIT_PAR *p) {
     for (int ir=0; ir<inr->nr; ir++) {
         if (ir!=0) {
             if (inr->radii[ir]<=inr->radii[ir-1]) {
-                std::cerr  << "3DFIT ERROR: Radii not in increasing order.\n";
-                BBAROLO_FATAL();
+                BBAROLO_FATAL_MSG("3DFIT ERROR: Radii not in increasing order.\n");
             }
         }
         if (inr->radii[ir]<0) {
-            std::cerr << "3DFIT ERROR: Negative radius!!!\n";
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG("3DFIT ERROR: Negative radius!!!\n");
         }
     }
     
@@ -469,7 +466,7 @@ void Galfit<T>::galfit() {
     }
     
     T ***errors = allocate_3D<T>(inr->nr,2,nfree);
-    auto fitok_buf = std::make_unique<bool[]>(inr->nr); bool *fitok = fitok_buf.get();
+    std::unique_ptr<bool[]> fitok_buf = std::make_unique<bool[]>(inr->nr); bool *fitok = fitok_buf.get();
     for (int i=0; i<inr->nr; i++) fitok[i]=false;
 
     // Selecting the normalization function for current step
@@ -535,7 +532,7 @@ void Galfit<T>::fit_straight(T ***errors, bool *fitok, std::ostream &fout) {
 
         if (isAborted()) continue;
         T minimum=0;
-        auto pmin_buf = std::make_unique<T[]>(nfree); T *pmin = pmin_buf.get();
+        std::unique_ptr<T[]> pmin_buf = std::make_unique<T[]>(nfree); T *pmin = pmin_buf.get();
 
         if (verb && nthreads==1) {
             time_t t = time(NULL);
@@ -654,7 +651,7 @@ void Galfit<T>::fit_reverse(T ***errors, bool *fitok, std::ostream &fout) {
 
         if (isAborted()) break;
         T minimum=0;
-        auto pmin_buf = std::make_unique<T[]>(nfree); T *pmin = pmin_buf.get();
+        std::unique_ptr<T[]> pmin_buf = std::make_unique<T[]>(nfree); T *pmin = pmin_buf.get();
 
         if (verb) {
             time_t t = time(NULL);
@@ -897,10 +894,10 @@ bool Galfit<T>::regularizeParams(std::vector<T> x, std::vector<T> y, std::vector
             xx.erase(xx.begin()+std::distance(yy.begin(), where));
         }
 
-        auto mp_buf = std::make_unique<bool[]>(rtype); bool *mp = mp_buf.get();
+        std::unique_ptr<bool[]> mp_buf = std::make_unique<bool[]>(rtype); bool *mp = mp_buf.get();
         for (int i=0; i<rtype;i++) mp[i] = true;
         std::vector<T> ww(n,1);
-        auto coeff_buf = std::make_unique<T[]>(rtype); T *coeff = coeff_buf.get(); auto coefferr_buf = std::make_unique<T[]>(rtype); T *coefferr = coefferr_buf.get();
+        std::unique_ptr<T[]> coeff_buf = std::make_unique<T[]>(rtype); T *coeff = coeff_buf.get(); std::unique_ptr<T[]> coefferr_buf = std::make_unique<T[]>(rtype); T *coefferr = coefferr_buf.get();
 
         Lsqfit<T> lsq(&xx[0],1,&yy[0],&ww[0],xx.size(),coeff,coefferr,mp,rtype,&polyn,&polynd);
         if (lsq.fit()<0) {
@@ -1070,8 +1067,7 @@ void Galfit<T>::setFree() {
     int nfixed=0;
     for (int i=0; i<MAXPAR; i++) nfixed += (1-mpar[i]);
     if (nfixed == MAXPAR) {
-        std::cerr << " 3DFIT ERROR: NO free parameters!\n";
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG(" 3DFIT ERROR: NO free parameters!\n");
     }
     nfree = MAXPAR-nfixed;
     
@@ -1094,8 +1090,8 @@ bool Galfit<T>::AsymmetricDrift(T *rad, T *densprof, T *dispprof, T *rotcur, T *
 
     // Fitting dispersion squared with a polynomial function
     int npar1 = in->pars().getParGF().ADRIFTPOL1 + 1;
-    auto cdisp_buf = std::make_unique<T[]>(npar1); T *cdisp = cdisp_buf.get(); auto cdisperr_buf = std::make_unique<T[]>(npar1); T *cdisperr = cdisperr_buf.get(); auto ww_buf = std::make_unique<T[]>(nn); T *ww = ww_buf.get();
-    auto mp_buf = std::make_unique<bool[]>(npar1); bool *mp = mp_buf.get();
+    std::unique_ptr<T[]> cdisp_buf = std::make_unique<T[]>(npar1); T *cdisp = cdisp_buf.get(); std::unique_ptr<T[]> cdisperr_buf = std::make_unique<T[]>(npar1); T *cdisperr = cdisperr_buf.get(); std::unique_ptr<T[]> ww_buf = std::make_unique<T[]>(nn); T *ww = ww_buf.get();
+    std::unique_ptr<bool[]> mp_buf = std::make_unique<bool[]>(npar1); bool *mp = mp_buf.get();
     T *disp2 = new T[nn];
     if (npar1>0) { // If ADRIFTPOL1<0, just use the dispersion profile
         if (npar1>=nn) npar1 = nn-1;
@@ -1116,8 +1112,8 @@ bool Galfit<T>::AsymmetricDrift(T *rad, T *densprof, T *dispprof, T *rotcur, T *
     T *SigmaFO = new T[nn];
     int npar2 = in->pars().getParGF().ADRIFTPOL2 + 1;
     if (npar2>=nn) npar2 = nn-1;
-    auto cfun_buf = std::make_unique<T[]>(npar2); T *cfun = cfun_buf.get(); auto cfunerr_buf = std::make_unique<T[]>(npar2); T *cfunerr = cfunerr_buf.get();
-    auto mpp_buf = std::make_unique<bool[]>(npar2); bool *mpp = mpp_buf.get();
+    std::unique_ptr<T[]> cfun_buf = std::make_unique<T[]>(npar2); T *cfun = cfun_buf.get(); std::unique_ptr<T[]> cfunerr_buf = std::make_unique<T[]>(npar2); T *cfunerr = cfunerr_buf.get();
+    std::unique_ptr<bool[]> mpp_buf = std::make_unique<bool[]>(npar2); bool *mpp = mpp_buf.get();
     for (int i=0; i<npar2; i++) mpp[i] = true;
     for (int i=0; i<nn; i++) {
         SigmaFO[i] = densprof[i]*cos(inc[i]*M_PI/180.);

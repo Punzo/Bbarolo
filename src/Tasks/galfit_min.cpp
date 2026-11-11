@@ -97,7 +97,7 @@ bool Galfit<T>::minimize(Rings<T> *dring, T &minimum, T *pmin, Galmod<T> *modsoF
     delete [] point;
     delete [] dels;
 
-    auto psum_buf = std::make_unique<T[]>(ndim); T *psum = psum_buf.get(); auto x_buf = std::make_unique<T[]>(ndim); T *x = x_buf.get();
+    std::unique_ptr<T[]> psum_buf = std::make_unique<T[]>(ndim); T *psum = psum_buf.get(); std::unique_ptr<T[]> x_buf = std::make_unique<T[]>(ndim); T *x = x_buf.get();
     T *y = new T[mpts];
 
     for (int i=0; i<mpts; i++) {
@@ -201,7 +201,7 @@ double Galfit<T>::mtry(Rings<T> *dring, T **p, T *y, T *psum, const int ihi, con
     // the high point, tries it, and replaces the high point if the new point is better.
 
     int ndim = nfree;
-    auto ptry_buf = std::make_unique<T[]>(ndim); T *ptry = ptry_buf.get();
+    std::unique_ptr<T[]> ptry_buf = std::make_unique<T[]>(ndim); T *ptry = ptry_buf.get();
     double fac1=(1.0-fac)/ndim;
     double fac2=fac1-fac;
 
@@ -233,7 +233,7 @@ double Galfit<T>::func3D(Rings<T> *dring, T *zpar, Galmod<T> *modsoFar) {
         
     int n=1, np=0, w_r=dring->id;
 
-    auto vrot_buf = std::make_unique<T[]>(n); T *vrot = vrot_buf.get(); auto vdisp_buf = std::make_unique<T[]>(n); T *vdisp = vdisp_buf.get(); auto dens_buf = std::make_unique<T[]>(n); T *dens = dens_buf.get(); auto z0_buf = std::make_unique<T[]>(n); T *z0 = z0_buf.get(); auto inc_buf = std::make_unique<T[]>(n); T *inc = inc_buf.get(); auto phi_buf = std::make_unique<T[]>(n); T *phi = phi_buf.get(); auto xpos_buf = std::make_unique<T[]>(n); T *xpos = xpos_buf.get(); auto ypos_buf = std::make_unique<T[]>(n); T *ypos = ypos_buf.get(); auto vsys_buf = std::make_unique<T[]>(n); T *vsys = vsys_buf.get(); auto vrad_buf = std::make_unique<T[]>(n); T *vrad = vrad_buf.get();
+    std::unique_ptr<T[]> vrot_buf = std::make_unique<T[]>(n); T *vrot = vrot_buf.get(); std::unique_ptr<T[]> vdisp_buf = std::make_unique<T[]>(n); T *vdisp = vdisp_buf.get(); std::unique_ptr<T[]> dens_buf = std::make_unique<T[]>(n); T *dens = dens_buf.get(); std::unique_ptr<T[]> z0_buf = std::make_unique<T[]>(n); T *z0 = z0_buf.get(); std::unique_ptr<T[]> inc_buf = std::make_unique<T[]>(n); T *inc = inc_buf.get(); std::unique_ptr<T[]> phi_buf = std::make_unique<T[]>(n); T *phi = phi_buf.get(); std::unique_ptr<T[]> xpos_buf = std::make_unique<T[]>(n); T *xpos = xpos_buf.get(); std::unique_ptr<T[]> ypos_buf = std::make_unique<T[]>(n); T *ypos = ypos_buf.get(); std::unique_ptr<T[]> vsys_buf = std::make_unique<T[]>(n); T *vsys = vsys_buf.get(); std::unique_ptr<T[]> vrad_buf = std::make_unique<T[]>(n); T *vrad = vrad_buf.get();
 
     for (int j=0; j<n; j++) {
       vrot[j]  = dring->vrot[j];

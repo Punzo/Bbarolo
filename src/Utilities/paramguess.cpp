@@ -282,8 +282,7 @@ void ParamGuess<T>::findPositionAngle(int algorithm) {
 
     }
     else {
-        std::cerr << "PARAMGUESS ERROR: unknown algorithm value " << algorithm << std::endl;
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("PARAMGUESS ERROR: unknown algorithm value " << algorithm);
     }
     
 }
@@ -362,8 +361,7 @@ void ParamGuess<T>::findInclination(int algorithm) {
             else mymin = optimizer.minimize(point,dels,func2);
         }
         catch (...) {
-            std::cerr << "PARAMGUESS ERROR: Error while estimating inclination." << std::endl;
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG("PARAMGUESS ERROR: Error while estimating inclination.");
         }
 
         Rmax   = mymin[0];
@@ -389,8 +387,7 @@ void ParamGuess<T>::findInclination(int algorithm) {
         //ycentre= mymin[4];
     }
     else {
-        std::cerr << "PARAMGUESS ERROR: unknown algorithm value " << algorithm << std::endl;
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("PARAMGUESS ERROR: unknown algorithm value " << algorithm);
     }
     
     if (inclin<10) inclin=25;
@@ -904,8 +901,7 @@ ParamGuess<T>* EstimateInitial(Cube<T> *c, GALFIT_PAR *p){
     if (verb) std::cout << "\n Estimating initial parameters... " << std::flush;
 
     if (largest==NULL) {
-        std::cout << " 3DFIT ERROR: No sources detected in the datacube. Cannot fit!!! \n";
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG(" 3DFIT ERROR: No sources detected in the datacube. Cannot fit!!! \n");
     }
 
     ParamGuess<T> *ip = new ParamGuess<T>(c,largest);

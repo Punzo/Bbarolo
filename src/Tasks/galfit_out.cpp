@@ -525,7 +525,7 @@ template void Galfit<double>::plotPVs_Gnuplot(Image2D<double>*,Image2D<double>*,
 template <class T>
 int *Galfit<T>::getErrorColumns() {
 
-    auto free_buf = std::make_unique<int[]>(nfree); int *free = free_buf.get();
+    std::unique_ptr<int[]> free_buf = std::make_unique<int[]>(nfree); int *free = free_buf.get();
     int *nc = new int[MAXPAR];
     int k=0;
     for (int nm=0; nm<MAXPAR; nm++) if(mpar[nm]) free[k++]=nm;

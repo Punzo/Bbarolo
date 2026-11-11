@@ -112,15 +112,14 @@ void init_Conv2D (Conv2D &ws, CONV_MODE mode, int w_src, int h_src, int w_kernel
             break;
  
         default:
-            std::cout << "CONV2D error: Unrecognized convolution mode, possible modes are:\n"
-                      << "   - LINEAR_FULL \n"
-                      << "   - LINEAR_SAME \n"
-                      << "   - LINEAR_SAME_UNPADDED\n"
-                      << "   - LINEAR_VALID \n"
-                      << "   - CIRCULAR_SAME \n"
-                      << "   - CIRCULAR_SHIFTED\n"
-                      << "   - CIRCULAR_CUSTOM\n";
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG("CONV2D error: Unrecognized convolution mode, possible modes are:\n"
+                              << "   - LINEAR_FULL \n"
+                              << "   - LINEAR_SAME \n"
+                              << "   - LINEAR_SAME_UNPADDED\n"
+                              << "   - LINEAR_VALID \n"
+                              << "   - CIRCULAR_SAME \n"
+                              << "   - CIRCULAR_SHIFTED\n"
+                              << "   - CIRCULAR_CUSTOM\n");
     }
 
     ws.in_src  = new double[ws.h_fftw*ws.w_fftw];
@@ -279,15 +278,14 @@ void convolve(Conv2D &ws, double *src, double *kernel) {
             break;
  
         default:
-            std::cout << "CONV2D error: Unrecognized convolution mode, possible modes are:\n"
-                      << "   - LINEAR_FULL \n"
-                      << "   - LINEAR_SAME \n"
-                      << "   - LINEAR_SAME_UNPADDED\n"
-                      << "   - LINEAR_VALID \n"
-                      << "   - CIRCULAR_SAME \n"
-                      << "   - CIRCULAR_SHIFTED\n"
-                      << "   - CIRCULAR_CUSTOM\n";
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG("CONV2D error: Unrecognized convolution mode, possible modes are:\n"
+                              << "   - LINEAR_FULL \n"
+                              << "   - LINEAR_SAME \n"
+                              << "   - LINEAR_SAME_UNPADDED\n"
+                              << "   - LINEAR_VALID \n"
+                              << "   - CIRCULAR_SAME \n"
+                              << "   - CIRCULAR_SHIFTED\n"
+                              << "   - CIRCULAR_CUSTOM\n");
     }
     
 }

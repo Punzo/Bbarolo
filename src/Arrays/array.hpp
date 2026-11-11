@@ -56,12 +56,12 @@ public:
         bool goodPix = true;
         for (int i=N; i--;) goodPix = goodPix && (pix[i]<dim[i]);
         if(!goodPix) {
-            std::cerr << "\nBad index (";
-            for (int i=N; i--;) std::cerr << pix[i] << ",";
-            std::cerr << ") > (";
-            for (int i=N; i--;) std::cerr << dim[i] << ",";
-            std::cerr << ")\n";
-            BBAROLO_FATAL();
+            std::ostringstream message;
+            message << "\nBad index (";
+            for (int i=N; i--;) message << pix[i] << ",";
+            message << ") > (";
+            for (int i=N; i--;) message << dim[i] << ",";
+            BBAROLO_FATAL_MSG(message.str() << ")");
         }
 #endif
 
@@ -129,9 +129,8 @@ private:
     bool checkSize (const Array &a, bool terminate=true) const {
         if (size!=a.size) {
             if (terminate) {
-                std::cerr << "\nError: arrays must have the same size: "
-                          << size << " != " << a.size << std::endl;
-                BBAROLO_FATAL();
+                BBAROLO_FATAL_MSG("\nError: arrays must have the same size: "
+                                  << size << " != " << a.size);
             }
             else return false;
         }
@@ -140,12 +139,12 @@ private:
         for (int i=N; i--;) sameSize = sameSize && (dim[i]==a.dim[i]);
         if(!sameSize) {
             if (terminate) {
-                std::cerr << "\nError: arrays must have the same shape: (";
-                for (int i=N; i--;) std::cerr << dim[i] << ",";
-                std::cerr << ") != (";
-                for (int i=N; i--;) std::cerr << a.dim[i] << ",";
-                std::cerr << ")\n";
-                BBAROLO_FATAL();
+                std::ostringstream message;
+                message << "\nError: arrays must have the same shape: (";
+                for (int i=N; i--;) message << dim[i] << ",";
+                message << ") != (";
+                for (int i=N; i--;) message << a.dim[i] << ",";
+                BBAROLO_FATAL_MSG(message.str() << ")");
             }
             else return false;
         }
@@ -154,8 +153,7 @@ private:
 
     bool checkNDim (size_t nd) {
         if (nd!=N) {
-            std::cerr << "\nError: you must provide "<< N << " dimensions. \n";
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG("\nError: you must provide "<< N << " dimensions. \n");
         }
         else return true;
     }

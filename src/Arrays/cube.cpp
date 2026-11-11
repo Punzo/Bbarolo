@@ -86,8 +86,7 @@ Cube<T>::Cube(int *dimensions) {
     arrayAllocated = false;
     numPix = numAxes = 0;
     if((size<0) || (imsize<0) ) {
-        std::cout << "Error [Cube(dimArray)]: Negative size -- could not define Cube "<< std::endl;
-        BBAROLO_FATAL();
+        BBAROLO_FATAL_MSG("Error [Cube(dimArray)]: Negative size -- could not define Cube ");
     }
     else {
         numPix = size;
@@ -177,9 +176,8 @@ void Cube<T>::checkBeam() {
         
         // Throwing an error if still no information is found
         if (bmaj<0 && bmin<0) {
-            std::cerr << "\n ERROR: No beam information available for data.\n"
-                      << "        Please set the beam with BMAJ/BMIN/BPA or BeamFWHM params (in arcsec).\n\n";
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG("\n ERROR: No beam information available for data.\n"
+                              << "        Please set the beam with BMAJ/BMIN/BPA or BeamFWHM params (in arcsec).\n\n");
         }
         else {
             std::cout << "\n WARNING: Beam not available in the header: using a " << setprecision(5)
@@ -594,8 +592,7 @@ void Cube<T>::BlankMask (float *channel_noise, bool onlyLargest){
         smoothed->search();
         size_t numObj = smoothed->getNumObj();
         if (numObj==0) {
-            std::cout << "MASKING error: No sources detected in the datacube. Cannot build mask!!! \n";
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG("MASKING error: No sources detected in the datacube. Cannot build mask!!! \n");
         }
     
         if (onlyLargest || numObj==1) {
@@ -629,8 +626,7 @@ void Cube<T>::BlankMask (float *channel_noise, bool onlyLargest){
     
         int numObj = getNumObj();
         if (numObj==0) {
-            std::cout << "MASKING error: No sources detected in the datacube. Cannot build mask!!! \n";
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG("MASKING error: No sources detected in the datacube. Cannot build mask!!! \n");
         }
     
         if (onlyLargest || numObj==1) {
@@ -751,23 +747,20 @@ void Cube<T>::BlankMask (float *channel_noise, bool onlyLargest){
         size_t first = str.find_first_of("(");
         size_t last = str.find_last_of(")");
         if (first==std::string::npos || last==std::string::npos) {
-            std::cerr << "\n  ERROR: MASK parameter is not correct. Provide file(Maskfitsfile)\n";
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG("\n  ERROR: MASK parameter is not correct. Provide file(Maskfitsfile)\n");
         }
         std::string filename = str.substr (first+1,last-first-1);
         Cube<float> *ma = new Cube<float>;
 
         if (!fexists(filename) || !ma->readCube(filename,false)) {
-            std::cerr << "\n ERROR: Mask " << filename
-                      << " is not a readable FITS image! Exiting ...\n";
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG("\n ERROR: Mask " << filename
+                              << " is not a readable FITS image! Exiting ...\n");
         }
 
         if (ma->NumPix()!=numPix || ma->DimX()!=axisDim[0] ||
             ma->DimY()!=axisDim[1] || ma->DimZ()!=axisDim[2]) {
-            std::cerr << "\n ERROR: Mask file and data file have different dimensions." << filename
-                      << " Exiting ...\n";
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG("\n ERROR: Mask file and data file have different dimensions." << filename
+                              << " Exiting ...\n");
         }
 
         for (size_t i=0; i<numPix; i++) mask[i] = ma->Array(i);
@@ -1267,8 +1260,8 @@ void Cube<T>::continuumSubtract() {
 
     // Number of coefficients for polynomial (= order + 1)
     int ncoeff = par.getContOrder() + 1;
-    auto coeff_buf = std::make_unique<T[]>(ncoeff); T *coeff = coeff_buf.get(); auto coefferr_buf = std::make_unique<T[]>(ncoeff); T *coefferr = coefferr_buf.get();
-    auto mp_buf = std::make_unique<bool[]>(ncoeff); bool *mp = mp_buf.get();
+    std::unique_ptr<T[]> coeff_buf = std::make_unique<T[]>(ncoeff); T *coeff = coeff_buf.get(); std::unique_ptr<T[]> coefferr_buf = std::make_unique<T[]>(ncoeff); T *coefferr = coefferr_buf.get();
+    std::unique_ptr<bool[]> mp_buf = std::make_unique<bool[]>(ncoeff); bool *mp = mp_buf.get();
     for (int i=0; i<ncoeff;i++) mp[i] = true;
     
     // Looping over spectra

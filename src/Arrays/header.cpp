@@ -953,7 +953,7 @@ double Header::getZphys(double z, bool convert) {
     // in physical units (same units as the spectral axis). If convert=false, return the units of WCSLIB.
     // If bad WCS or if errors in WCS retrieving, no error is thrown, just return input value
     
-    auto pix_buf = std::make_unique<double[]>(numAxes); double *pix = pix_buf.get(); auto world_buf = std::make_unique<double[]>(numAxes); double *world = world_buf.get();
+    std::unique_ptr<double[]> pix_buf = std::make_unique<double[]>(numAxes); double *pix = pix_buf.get(); std::unique_ptr<double[]> world_buf = std::make_unique<double[]>(numAxes); double *world = world_buf.get();
     for (int i=0; i<numAxes; i++) pix[i]=world[i]=0;
     pix[wcs->spec] = z;
     
@@ -974,7 +974,7 @@ double Header::getZgrid(double specvalue, bool convert) {
     // to channel value (0-indexed). If convert=false, return the units of WCSLIB.
     // If bad WCS or if errors in WCS retrieving, no error is thrown, just return input value
     
-    auto pix_buf = std::make_unique<double[]>(numAxes); double *pix = pix_buf.get(); auto world_buf = std::make_unique<double[]>(numAxes); double *world = world_buf.get();
+    std::unique_ptr<double[]> pix_buf = std::make_unique<double[]>(numAxes); double *pix = pix_buf.get(); std::unique_ptr<double[]> world_buf = std::make_unique<double[]>(numAxes); double *world = world_buf.get();
     for (int i=0; i<numAxes; i++) pix[i]=world[i]=0;
     
     world[wcs->spec] = specvalue;

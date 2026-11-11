@@ -346,8 +346,7 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
         else {
             std::cerr << "GALMOD error (unknown CUNIT for RA-DEC): ";
             std::cerr << "cannot convert to ARCMIN.\n";
-            std::cerr << cunit;
-            BBAROLO_FATAL(); 
+            BBAROLO_FATAL_MSG(cunit);
         }
         cdelt[i]   = cdelt[i]*arcmconv;
         pixsize[i] = fabs(cdelt[i]); 
@@ -389,8 +388,7 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
         else if (cunit3=="nm"||cunit3=="nanom") mconv = 1.0E-09;
         else if (cunit3=="a" ||cunit3=="ang"||cunit3=="angstrom") mconv = 1.0E-10;
         else {
-            std::cout << "GALMOD ERROR: unknown CUNIT3=" << cunit3 << ". Cannot convert to meters.\n";
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG("GALMOD ERROR: unknown CUNIT3=" << cunit3 << ". Cannot convert to meters.\n");
         }
 
         crval3=crval3*mconv;
@@ -425,8 +423,7 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
         else if (cunit3=="mhz") hzconv = 1.0E06;
         else if (cunit3=="ghz") hzconv = 1.0E09;
         else {
-            std::cerr << "GALMOD ERROR: unknown CUNIT3=" << cunit3 <<". Cannot convert to Hz.\n";
-            BBAROLO_FATAL(); 
+            BBAROLO_FATAL_MSG("GALMOD ERROR: unknown CUNIT3=" << cunit3 <<". Cannot convert to Hz.\n");
         }
         
         crval3=crval3*hzconv;
@@ -461,8 +458,7 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
         else if (cunit3=="km/s") msconv = 1.0E03;
         else if ("cm/s") msconv = 1.0E-03;
         else {
-            std::cerr << "GALMOD ERROR: unknown CUNIT3=" << cunit3 <<". Cannot convert to M/S.\n";
-            BBAROLO_FATAL(); 
+            BBAROLO_FATAL_MSG("GALMOD ERROR: unknown CUNIT3=" << cunit3 <<". Cannot convert to M/S.\n");
         }
         
         /// Information about frequency/velocity axis and conversions.
@@ -477,8 +473,7 @@ void Galmod<T>::initialize(Cube<T> *c, int *Boxup, int *Boxlow) {
         cdelt3=cdelt3*msconv;
     }
     else { 
-        std::cerr << "GALMOD ERROR: unknown Spectral axis type. Check CTYPE3 and CUNIT3 keywords." << std::endl;
-        BBAROLO_FATAL(); 
+        BBAROLO_FATAL_MSG("GALMOD ERROR: unknown Spectral axis type. Check CTYPE3 and CUNIT3 keywords.");
     }
     
     // Get the instrumental broadnening: default value is FWHM=1 channel, thus sig_instr is FWHM/2.355.
@@ -512,12 +507,10 @@ void Galmod<T>::ringIO(Rings<T> *rings) {
             // Checking that rings are ok
             if (ur->radii[i-1]+r->radsep>=ur->radii[i]) {
                 if (ur->radii[i-1]>ur->radii[i]) {
-                    std::cerr << "GALMOD ERROR: Radii not in increasing order.\n";
-                    BBAROLO_FATAL();
+                    BBAROLO_FATAL_MSG("GALMOD ERROR: Radii not in increasing order.\n");
                 }
                 else {
-                    std::cerr << "GALMOD ERROR: Radius separation too small.\n";
-                    BBAROLO_FATAL();
+                    BBAROLO_FATAL_MSG("GALMOD ERROR: Radius separation too small.\n");
                 }
             }
         }
@@ -648,8 +641,7 @@ void Galmod<T>::galmod() {
 //      Get number of clouds inside ring.
         int nc = lround(cdens*pow(r->dens[ir],cmode)*twopi*rtmp*r->radsep/pixarea); 
         if (nc==0) {
-            std::cerr << " GALMOD ERROR: No clouds used. Choose higher CDENS " << std::endl;
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG(" GALMOD ERROR: No clouds used. Choose higher CDENS ");
 //          Do next ring, jump to end of loop for rings.
             continue;
         }
@@ -944,8 +936,7 @@ void Galmod<T>::galmod() {
 //      Get number of clouds inside ring.
         int nc = lround(cdens*pow(r->dens[ir],cmode)*twopi*rtmp*r->radsep/pixarea); 
         if (nc==0) {
-            std::cerr << " GALMOD ERROR: No clouds used. Choose higher CDENS " << std::endl;
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG(" GALMOD ERROR: No clouds used. Choose higher CDENS ");
 //          Do next ring, jump to end of loop for rings.
             continue;
         }
@@ -1265,12 +1256,10 @@ void Galmod_wind<T>::shellIO(Shells<T> *shells) {
         uradii[i]=shells->radii[i]/60.;
         if (uradii[i-1]+s->sep>=uradii[i]) {
             if (uradii[i-1]>uradii[i]) {
-                std::cout << "GALMOD error: Radii not in increasing order.\n";
-                BBAROLO_FATAL();
+                BBAROLO_FATAL_MSG("GALMOD error: Radii not in increasing order.\n");
             }
             else {
-                std::cout << "GALMOD error: Radius separation too small.\n";
-                BBAROLO_FATAL();
+                BBAROLO_FATAL_MSG("GALMOD error: Radius separation too small.\n");
             }
         }
     }
@@ -1282,15 +1271,13 @@ void Galmod_wind<T>::shellIO(Shells<T> *shells) {
         uvsph[i]  = shells->vsph[i]*1000;   
         uvdisp[i] = shells->vdisp[i]*1000;
         if (uvdisp[i]<0) {
-            std::cout << "GALMOD error: Negative velocity dispersion not allowed.\n";
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG("GALMOD error: Negative velocity dispersion not allowed.\n");
         }
         
         udens[i]=shells->dens[i];
 
         if (udens[i]<0) {
-            std::cout << "GALMOD error: Negative column-density not allowed.\n";
-            BBAROLO_FATAL(); 
+            BBAROLO_FATAL_MSG("GALMOD error: Negative column-density not allowed.\n");
         }
         
         uinc[i]   = shells->inc[i]*M_PI/180.;
@@ -1411,8 +1398,7 @@ void Galmod_wind<T>::galmod_wind() {
 //      Get number of clouds inside ring.
         int nc = lround(this->cdens*pow(s->dens[ir],this->cmode)*2*M_PI*rtmp*s->sep/this->pixarea); 
         if (nc==0) {
-            std::cerr << " GALMOD ERROR: No clouds used. Choose higher CDENS " << std::endl;
-            BBAROLO_FATAL();
+            BBAROLO_FATAL_MSG(" GALMOD ERROR: No clouds used. Choose higher CDENS ");
         }
 //      Get values of ir-radius.
         double vrottmp = s->vrot[ir];
