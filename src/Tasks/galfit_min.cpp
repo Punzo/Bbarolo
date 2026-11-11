@@ -144,7 +144,8 @@ bool Galfit<T>::minimize(Rings<T> *dring, T &minimum, T *pmin, Galmod<T> *modsoF
             return true;
         }
 
-        if (nfunc>=NMAX) {
+        // Abort requested (e.g. by the application): the ring is not fitted
+        if (nfunc>=NMAX || isAborted()) {
             deallocate_2D(p,ndim+1);
             delete [] y;
             return false;
