@@ -1010,7 +1010,14 @@ Model::Galmod<T>* Galfit<T>::getModel(Rings<T> *dr, int* bhi, int* blo, Model::G
     // It's better to have EMPTY=true when 3DFIT (otherwise it lowers the VROT and increase VDISP)
     Model::Galmod<T> *mod = new Model::Galmod<T>;
     mod->input(in,bhi,blo,dr);
+    // Progress of the final model: the rings, then the convolution
+    const bool reportProgress = finalModel && progressCallback;
+    if (reportProgress) {
+        std::function<void(int,int)> cb = progressCallback;
+        mod->setProgressCallback([cb](int done, int total) {cb(done, total+1);});
+    }
     mod->calculate();
+    if (reportProgress) progressCallback(dr->nr, dr->nr+1);
     
     // Adding up the "sofar" model, if requested
     T *modp = mod->Out()->Array();
@@ -1023,6 +1030,7 @@ Model::Galmod<T>* Galfit<T>::getModel(Rings<T> *dr, int* bhi, int* blo, Model::G
         if (in->pars().getflagFFT()) Convolve_fft(modp, bsize);
         else Convolve(modp, bsize);
     }
+    if (reportProgress) progressCallback(dr->nr+1, dr->nr+1);
 
     return mod;
 

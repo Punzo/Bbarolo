@@ -64,6 +64,7 @@
 #ifndef GALMOD_HH_
 #define GALMOD_HH_
 
+#include <functional>
 #include <iostream>
 #include <vector>
 #include <random>
@@ -101,6 +102,10 @@ public:
     bool smooth();
     bool addnoise(double noiseRMS);
 
+    /// Optional hook for applications embedding BBarolo: called with
+    /// (rings done, total rings) after each ring of the model.
+    void setProgressCallback (std::function<void(int,int)> cb) {progressCallback = cb;}
+
 protected:
     Cube<T>  *in;                        //< A pointer to the input cube.
     Cube<T>  *out;                       //< The Cube containing the model.
@@ -124,6 +129,7 @@ protected:
     std::vector<float> relvel;              //< Relative velocities of lines.
     std::vector<float> relint;              //< Relative velocities of lines.
     
+    std::function<void(int,int)> progressCallback;
     Rings<T> *r;                         //< Set of rings.       
     bool    ringDefined;
     
