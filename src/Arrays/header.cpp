@@ -876,7 +876,7 @@ int Header::wcsToPix(const double *world, double *pix, size_t npts) {
     if (status==9 && stat[0]==3) status=0;
     if(status>0){
         std::cerr << "\nCannot convert to wcs. WCS error code = " << status
-                  << ": stat="<<stat[0] << " : " << wcs_errmsg[status] << std::endl;
+                  << ": stat="<<stat[0] << " : " << wcsStatusMessage(status) << std::endl;
     }
     else{
         // correct from 1-indexed to 0-indexed pixel array
@@ -937,7 +937,7 @@ int Header::pixToWCS(const double *pix, double *world, size_t npts) {
 
     if(status>0){
         std::cerr << "\nCannot convert to wcs. WCS error code = " << status
-                  << ": stat="<<stat[0] << " : " << wcs_errmsg[status] << std::endl;
+                  << ": stat="<<stat[0] << " : " << wcsStatusMessage(status) << std::endl;
     }
     else {
         // return just the spatial/velocity information, keeping the

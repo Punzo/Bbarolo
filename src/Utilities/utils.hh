@@ -132,6 +132,10 @@ int  fitsarith(int argc, char *argv[]);
 int  ConvertFluxUnits(int argc, char *argv[], std::string whichtype);
 
 /// WCS Utilities, defined in wcsUtils.cpp
+/// Messages of the WCSLIB status codes (wcs_errmsg and wcsunits_errmsg are
+/// data symbols, which the WCSLIB DLL does not export on Windows)
+const char* wcsStatusMessage(int status);
+const char* wcsunitsStatusMessage(int status);
 int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world);
 int wcsToPixSingle(struct wcsprm *wcs, const double *world, double *pix);
 

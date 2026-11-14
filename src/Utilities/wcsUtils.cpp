@@ -24,6 +24,47 @@
 #include <wcslib/wcsunits.h>
 #include <Utilities/utils.hh>
 
+const char* wcsStatusMessage(int status) {
+    static const char* const messages[] = {
+        "Success",
+        "Null wcsprm pointer passed",
+        "Memory allocation failed",
+        "Linear transformation matrix is singular",
+        "Inconsistent or unrecognized coordinate axis type",
+        "Invalid parameter value",
+        "Unrecognized coordinate transformation parameter",
+        "Ill-conditioned coordinate transformation parameter",
+        "One or more of the pixel coordinates were invalid",
+        "One or more of the world coordinates were invalid",
+        "Invalid world coordinate",
+        "No solution found in the specified interval",
+        "Invalid subimage specification",
+        "Non-separable subimage coordinate system",
+        "wcsprm struct is unset, use wcsset()"};
+    const int count = sizeof(messages)/sizeof(messages[0]);
+    return (status >= 0 && status < count) ? messages[status] : "Unknown WCSLIB error";
+}
+
+
+const char* wcsunitsStatusMessage(int status) {
+    static const char* const messages[] = {
+        "Success",
+        "Invalid numeric multiplier",
+        "Dangling binary operator",
+        "Invalid symbol in INITIAL context",
+        "Function in invalid context",
+        "Invalid symbol in EXPON context",
+        "Unbalanced bracket",
+        "Unbalanced parenthesis",
+        "Consecutive binary operators",
+        "Internal parser error",
+        "Non-conformant unit specifications",
+        "Non-conformant functions",
+        "Potentially unsafe translation"};
+    const int count = sizeof(messages)/sizeof(messages[0]);
+    return (status >= 0 && status < count) ? messages[status] : "Unknown WCSLIB units error";
+}
+
 int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world) {
 
     ///  @details
@@ -60,7 +101,7 @@ int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world) {
                   phi, theta, tempworld, stat);
     if(status>0){
         std::cout << "\nCannot convert to wcs. WCS error code = " << status
-                 <<": stat="<<stat[0] << " : " << wcs_errmsg[status] << std::endl;
+                 <<": stat="<<stat[0] << " : " << wcsStatusMessage(status) << std::endl;
     }
 
     //return just the spatial/velocity information
@@ -114,7 +155,7 @@ int wcsToPixSingle(struct wcsprm *wcs, const double *world, double *pix) {
 
   if( status > 0 ){
       std::cout << "\nCannot convert to wcs. WCS error code = " << status
-               <<": stat="<<stat[0] << " : " << wcs_errmsg[status] << std::endl;
+               <<": stat="<<stat[0] << " : " << wcsStatusMessage(status) << std::endl;
   }
 
   pix[0] = temppix[wcs->lng]-1.;
@@ -175,7 +216,7 @@ int pixToWCSMulti(struct wcsprm *wcs, const double *pix,
     std::stringstream statstr;
     statstr<<"|";
     for(int i=0;i<npts;i++) statstr<<stat[i]<<"|";
-    DUCHAMPTHROW("pixToWCSMulti","WCS Error Code = " << status <<": stat="<<statstr.str() << " : " << wcs_errmsg[status]);
+    DUCHAMPTHROW("pixToWCSMulti","WCS Error Code = " << status <<": stat="<<statstr.str() << " : " << wcsStatusMessage(status));
   }
   else{
     //return just the spatial/velocity information, keeping the
@@ -243,7 +284,7 @@ int wcsToPixMulti(struct wcsprm *wcs, const double *world,
     std::stringstream statstr;
     statstr<<"|";
     for(int i=0;i<npts;i++) statstr<<stat[i]<<"|";
-    DUCHAMPTHROW("wcsToPixMulti","WCS Error Code = " << status <<": stat="<<statstr.str() << " : " << wcs_errmsg[status]);
+    DUCHAMPTHROW("wcsToPixMulti","WCS Error Code = " << status <<": stat="<<statstr.str() << " : " << wcsStatusMessage(status));
   }
   else{
     // correct from 1-indexed to 0-indexed pixel array 
@@ -304,7 +345,7 @@ double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z,
     std::stringstream statstr;
     statstr<<"|";
     for(int i=0;i<naxis;i++) statstr<<stat[i]<<"|";
-    DUCHAMPTHROW("pixelToVelocity","WCS Error Code = " << status <<": stat="<<stat[0] << " : " << wcs_errmsg[status]);
+    DUCHAMPTHROW("pixelToVelocity","WCS Error Code = " << status <<": stat="<<stat[0] << " : " << wcsStatusMessage(status));
   }
 
   double vel = coordToVel(wcs, world[specAxis], velUnits);
@@ -344,7 +385,7 @@ double coordToVel(struct wcsprm *wcs, const double coord,
     if(errflag==0){
       std::stringstream errmsg;
       errmsg << "WCSUNITS Error Code = " << status << ":"
-         << wcsunits_errmsg[status];
+         << wcsunitsStatusMessage(status);
       if(status == 10) errmsg << "\nTried to get conversion from " 
                   << wcs->cunit[specIndex]
                   << " to " << outputUnits.c_str();
@@ -380,7 +421,7 @@ double velToCoord(struct wcsprm *wcs, const float velocity,
 
   if(status > 0){
     std::stringstream errmsg;
-    errmsg << "WCSUNITS Error Code = " << status << ":" << wcsunits_errmsg[status];
+    errmsg << "WCSUNITS Error Code = " << status << ":" << wcsunitsStatusMessage(status);
 // << "\nUsing coordinate value instead.\n";
     DUCHAMPERROR("velToCoord",errmsg.str());
     return velocity;
