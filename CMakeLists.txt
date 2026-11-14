@@ -80,6 +80,11 @@ if(WIN32)
   target_compile_definitions(bbarolo PRIVATE _USE_MATH_DEFINES NOMINMAX _CRT_SECURE_NO_WARNINGS)
   set_target_properties(bbarolo PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
+if(MSVC)
+  # The Microsoft C runtime declares a non-standard wcsset() that conflicts
+  # with WCSLIB's wcsset() (see WCSLIB's CMakeLists.txt).
+  target_compile_definitions(bbarolo PUBLIC _CRT_DECLARE_NONSTDC_NAMES=0)
+endif()
 
 if(OpenMP_CXX_FOUND)
   target_link_libraries(bbarolo PRIVATE OpenMP::OpenMP_CXX)

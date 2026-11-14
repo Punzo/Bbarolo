@@ -143,10 +143,16 @@ public:
             remove_file = false;
         }
         else {
+#ifdef _WIN32
+            char buf[L_tmpnam_s];
+            if(tmpnam_s(buf, L_tmpnam_s) != 0) return GNUPLOT_NG;
+            fp = ::fopen(buf, "w");
+#else
             char buf[] = "/tmp/gnuplot_XXXXXX";
             int fd = ::mkstemp(buf);
             if(fd==-1) return GNUPLOT_NG;
             fp = ::fdopen( fd, "w" );
+#endif
             tmpfilename = buf;
             remove_file = true;
         }
