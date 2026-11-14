@@ -32,6 +32,10 @@
 #include <Map/scan.hh>
 #include <Map/voxel.hh>
 
+// Detection is a global class (Map/detection.hh): declared here so that the
+// friend declaration below does not introduce PixelInfo::Detection (MSVC)
+template <class T> class Detection;
+
 namespace PixelInfo
 {
 
@@ -122,7 +126,7 @@ namespace PixelInfo
     friend Object2D operator+ (Object2D lhs, Object2D rhs);
     
     friend class Object3D; 
-    template <class T> friend class Detection;
+    template <class T> friend class ::Detection;
 
   protected:
     std::vector<Scan> scanlist;       ///< The list of Scans
