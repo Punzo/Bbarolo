@@ -28,7 +28,9 @@
 #include <string>
 #include <cmath>
 #include <thread>
+#ifndef _WIN32
 #include <getopt.h>
+#endif
 #include <Arrays/param.hh>
 #include <Utilities/utils.hh>
 
@@ -263,6 +265,7 @@ bool Param::getopts(int argc, char **argv) {
 
     bool returnValue = false;
     
+#ifndef _WIN32
     if(argc<2) helpscreen();
     else {
         
@@ -421,6 +424,11 @@ bool Param::getopts(int argc, char **argv) {
         
     }
 
+#else
+    // getopt is POSIX: command-line options only in the BBarolo program
+    (void)argc; (void)argv;
+    std::cerr << "\n BBAROLO ERROR: command-line options are not supported on Windows.\n\n";
+#endif
     return returnValue;
 }
 
