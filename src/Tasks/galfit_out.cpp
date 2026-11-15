@@ -46,6 +46,72 @@ namespace Model {
 
 
 template <class T>
+Galmod<T>* Galfit<T>::buildFinalModel (std::string normtype) {
+
+    // Same steps as writeModel (radial profile, azimuthal or local
+    // normalization), without the output files.
+    bool verb = in->pars().isVerbose();
+    in->pars().setVerbosity(false);
+    in->pars().setFluxConvert(false);
+
+    Tasks::Ellprof<T> ell(in,outr,true);
+    ell.RadialProfile();
+
+    float scaling_factor = 1;
+    if (normtype=="AZIM" || normtype=="BOTH") {
+        double profmin=FLT_MAX;
+        for (auto i=0; i<outr->nr; i++) {
+            double mean = ell.getSurfDensFaceOn(i);
+            if (!isNaN(mean) && profmin>mean && mean>0) profmin = mean;
+        }
+        while(profmin<0.1) {
+            profmin*=10;
+            scaling_factor *=10;
+        }
+        while (profmin>10) {
+            profmin /= 10;
+            scaling_factor /= 10;
+        }
+        for (auto i=0; i<outr->nr; i++) {
+            if (outr->dens[i]>0) outr->dens[i] = scaling_factor*fabs(ell.getSurfDensFaceOn(i));
+        }
+    }
+
+    Galmod<T> *mod = getFullModel();
+    mod->Out()->Head().setMinMax(0.,0.);
+    mod->Out()->Head().setName(in->Head().Name()+"mod");
+    T *outarray = mod->Out()->Array();
+
+    if (normtype=="AZIM" || normtype=="BOTH") {
+        for (auto i=in->NumPix(); i--;) outarray[i] /= scaling_factor;
+    }
+
+    if (normtype=="LOCAL" || normtype=="BOTH") {
+        for (int y=0; y<in->DimY(); y++) {
+            for (int x=0; x<in->DimX(); x++) {
+                T factor = 0;
+                T modSum = 0;
+                T obsSum = 0;
+                for (int z=0; z<in->DimZ(); z++) {
+                    long Pix = in->nPix(x,y,z);
+                    modSum += outarray[Pix];
+                    obsSum += in->Array(Pix)*mask[Pix];
+                }
+                if (modSum!=0) factor = obsSum/modSum;
+                for (int z=0; z<in->DimZ(); z++)
+                    outarray[in->nPix(x,y,z)] *= factor;
+            }
+        }
+    }
+
+    in->pars().setVerbosity(verb);
+    return mod;
+}
+template Galmod<float>* Galfit<float>::buildFinalModel(std::string);
+template Galmod<double>* Galfit<double>::buildFinalModel(std::string);
+
+
+template <class T>
 void Galfit<T>::writeModel (std::string normtype, bool makeplots) {
 
     bool verb = in->pars().isVerbose();

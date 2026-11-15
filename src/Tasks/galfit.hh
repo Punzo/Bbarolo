@@ -81,6 +81,10 @@ public:
     /// Final model of the output rings over the full field of view of the input cube.
     /// The output rings are left unchanged. The caller owns the returned object.
     Galmod<T>* getFullModel();
+    /// The final model of writeModel (same profile, same normalization: "AZIM",
+    /// "LOCAL", "NONE" or "BOTH"), returned instead of written to FITS files,
+    /// for applications embedding BBarolo. The caller deletes it.
+    Galmod<T>* buildFinalModel(std::string normtype);
     T* getModel_BBB(Rings<T> *dr, int* bhi, int* blo, int iseed);
 
     bool AsymmetricDrift(T *rad, T *densprof, T *dispprof, T *rotcur, T *inc, int nn);
