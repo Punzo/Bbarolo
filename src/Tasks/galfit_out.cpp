@@ -60,7 +60,7 @@ Galmod<T>* Galfit<T>::buildFinalModel (std::string normtype) {
     float scaling_factor = 1;
     if (normtype=="AZIM" || normtype=="BOTH") {
         double profmin=FLT_MAX;
-        for (auto i=0; i<outr->nr; i++) {
+        for (int i=0; i<outr->nr; i++) {
             double mean = ell.getSurfDensFaceOn(i);
             if (!isNaN(mean) && profmin>mean && mean>0) profmin = mean;
         }
@@ -72,7 +72,7 @@ Galmod<T>* Galfit<T>::buildFinalModel (std::string normtype) {
             profmin /= 10;
             scaling_factor /= 10;
         }
-        for (auto i=0; i<outr->nr; i++) {
+        for (int i=0; i<outr->nr; i++) {
             if (outr->dens[i]>0) outr->dens[i] = scaling_factor*fabs(ell.getSurfDensFaceOn(i));
         }
     }
@@ -83,7 +83,7 @@ Galmod<T>* Galfit<T>::buildFinalModel (std::string normtype) {
     T *outarray = mod->Out()->Array();
 
     if (normtype=="AZIM" || normtype=="BOTH") {
-        for (auto i=in->NumPix(); i--;) outarray[i] /= scaling_factor;
+        for (size_t i=in->NumPix(); i--;) outarray[i] /= scaling_factor;
     }
 
     if (normtype=="LOCAL" || normtype=="BOTH") {
